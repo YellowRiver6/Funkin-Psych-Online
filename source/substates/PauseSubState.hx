@@ -43,10 +43,11 @@ class PauseSubState extends MusicBeatSubstate
 
 	public function new(x:Float, y:Float)
 	{
+		controls.isInSubstate = true;
 		super();
 
 		if (!GameClient.isConnected()) {
-			menuItemsOG = ['Resume', 'Restart Song', 'Change Difficulty', 'Options', 'Exit to menu'];
+			menuItemsOG = ['Resume', 'Restart Song', 'Chart Editor', 'Change Difficulty', 'Options', 'Exit to menu'];
 
 			if(Difficulty.list.length < 2) menuItemsOG.remove('Change Difficulty'); //No need to change difficulty if there is only one!
 
@@ -192,7 +193,11 @@ class PauseSubState extends MusicBeatSubstate
 
 		regenMenu();
 		//cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
-		cameras = [PlayState.instance.camOther];
+		//cameras = [PlayState.instance.camOther];
+		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]]; //mobilePad cameras has a more priority, so use this instead
+
+		mobileManager.addMobilePad(menuItems.contains('Skip Time') ? 'FULL' : 'UP_DOWN', 'A_B');
+		mobileManager.addMobilePadCamera();
 	}
 
 	var holdTime:Float = 0;
@@ -327,6 +332,8 @@ class PauseSubState extends MusicBeatSubstate
 				case "Restart Song":
 					PlayState.deathCounter++;
 					restartSong();
+				case 'Chart Editor':
+					PlayState.instance.openChartEditor();
 				case "Leave Charting Mode":
 					PlayState.deathCounter = 0;
 					restartSong();
@@ -497,6 +504,7 @@ class PauseSubState extends MusicBeatSubstate
 
 	override function destroy()
 	{
+		controls.isInSubstate = false;
 		if (pauseMusic != null)
 			pauseMusic.destroy();
 

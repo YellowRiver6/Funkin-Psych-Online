@@ -93,7 +93,10 @@ class Note extends FlxSprite
 	}
 	public static var noteScale(get, default):Float = 0.7;
 	static function get_noteScale() {
-		return (swagWidth * 4) / (swagWidth * Math.max(4, maniaKeys)) * (1 + (0.1 * (Math.min(9, Math.max(4, maniaKeys)) - 4)));
+		if (ClientPrefs.data.ogGameControls && Note.maniaKeys < 10)
+			return (swagWidth * 4) / (swagWidth * 4) + (0.055 * (4 - 4));
+		else
+			return (swagWidth * 4) / (swagWidth * Math.max(4, maniaKeys)) * (1 + (0.1 * (Math.min(9, Math.max(4, maniaKeys)) - 4)));
 	}
 
 	public static function getNoteOffsetX() {
@@ -183,12 +186,14 @@ class Note extends FlxSprite
 		var arr:Array<FlxColor> = ClientPrefs.getRGBColor(mustPress == (GameClient.getPlayerSelf()?.bfSide ?? true) ? 0 : 1)[noteData];
 		if(PlayState.isPixelStage) arr = ClientPrefs.getRGBPixelColor(mustPress == (GameClient.getPlayerSelf()?.bfSide ?? true) ? 0 : 1)[noteData];
 
-		if (noteData > -1 && arr.length >= 3)
-		{
-			rgbShader.r = arr[0];
-			rgbShader.g = arr[1];
-			rgbShader.b = arr[2];
-		}
+		try {
+			if (noteData > -1 && arr.length >= 3)
+			{
+				rgbShader.r = arr[0];
+				rgbShader.g = arr[1];
+				rgbShader.b = arr[2];
+			}
+		} catch(e:Dynamic) {}
 	}
 
 	private function set_noteType(value:String):String {

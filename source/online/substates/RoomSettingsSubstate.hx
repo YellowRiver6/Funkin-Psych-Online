@@ -13,6 +13,7 @@ class RoomSettingsSubstate extends MusicBeatSubstate {
 	var curSelectedID:Int = 0;
 
 	var blurFilter:BlurFilter;
+	var blackSprite:FlxSprite;
 	var coolCam:FlxCamera;
 
     //options
@@ -34,11 +35,23 @@ class RoomSettingsSubstate extends MusicBeatSubstate {
 	override function create() {
 		super.create();
 
-		blurFilter = new BlurFilter();
-		for (cam in FlxG.cameras.list) {
-			if (cam.filters == null)
-				cam.filters = [];
-			cam.filters.push(blurFilter);
+		var bgCam:FlxCamera = new FlxCamera();
+		bgCam.bgColor.alpha = 0;
+		FlxG.cameras.add(bgCam, false);
+
+		if (!ClientPrefs.data.disableOnlineShaders) {
+			blurFilter = new BlurFilter();
+			for (cam in FlxG.cameras.list) {
+				if (cam.filters == null)
+					cam.filters = [];
+				cam.filters.push(blurFilter);
+			}
+		} else {
+			blackSprite = new FlxSprite();
+			blackSprite.makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+			blackSprite.alpha = 0.75;
+			add(blackSprite);
+			blackSprite.cameras = [bgCam]; // Lol
 		}
 
 		coolCam = new FlxCamera();
@@ -165,20 +178,24 @@ class RoomSettingsSubstate extends MusicBeatSubstate {
 
 		items.add(skinSelect = new Option("Select Skin", "Select your Skin here!", () -> {
 			if (!GameClient.room.state.disableSkins) {
+				controls.isInSubstate = false;
 				LoadingState.loadAndSwitchState(new SkinsState());
 			}
 			else {
 				Alert.alert('Skins are disabled!');
 			}
+
 		}, null, 0, 0, false, true));
 
 		items.add(gameOptions = new Option("Game Options", "Open your Game Options here!", () -> {
+			controls.isInSubstate = false;
 			LoadingState.loadAndSwitchState(new OptionsState());
 			OptionsState.onPlayState = false;
 			OptionsState.onOnlineRoom = true;
 		}, null, 0, 0, false, true));
 
 		items.add(mods = new Option("Mods", "Check your installed Mods here!", () -> {
+			controls.isInSubstate = false;
 			LoadingState.loadAndSwitchState(new ModsMenuState());
 			ModsMenuState.onOnlineRoom = true;
 		}, null, 0, 0, false, true));
@@ -188,6 +205,10 @@ class RoomSettingsSubstate extends MusicBeatSubstate {
 		add(items);
 
 		GameClient.send("status", "In the Room Settings");
+		
+		mobileManager.addMobilePad('NONE', 'B');
+		mobileManager.addMobilePadCamera();
+		controls.isInSubstate = true;
 	}
 
 	function updateItems() {
@@ -222,6 +243,7 @@ class RoomSettingsSubstate extends MusicBeatSubstate {
 
 	override function closeSubState() {
 		super.closeSubState();
+		controls.isInSubstate = true;
 
 		GameClient.send("status", "In the Room Settings");
 	}
@@ -229,10 +251,13 @@ class RoomSettingsSubstate extends MusicBeatSubstate {
 	override function destroy() {
 		super.destroy();
 
-		for (cam in FlxG.cameras.list) {
-			if (cam?.filters != null)
-				cam.filters.remove(blurFilter);
-		}
+		if (!ClientPrefs.data.disableOnlineShaders) {
+			for (cam in FlxG.cameras.list) {
+				if (cam?.filters != null)
+					cam.filters.remove(blurFilter);
+			}
+		} else
+			blackSprite.destroy();
 		FlxG.cameras.remove(coolCam);
 	}
 
@@ -240,6 +265,7 @@ class RoomSettingsSubstate extends MusicBeatSubstate {
 
     override function update(elapsed) {
         if (controls.BACK) {
+			controls.isInSubstate = false;
             close();
 			FlxG.mouse.visible = prevMouseVisibility;
         }

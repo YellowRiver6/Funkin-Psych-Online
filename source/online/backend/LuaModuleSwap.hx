@@ -55,7 +55,7 @@ class LuaModuleSwap {
 				return Sys.getEnv(varname);
 			},
 			remove: function(filename:String) {
-				return File.getContent(filePath(filename));
+				return FunkinFileSystem.getText(filePath(filename));
 			},
 			rename: function(oldname:String, newname:String) {
 				FileSystem.rename(filePath(oldname), filePath(newname));

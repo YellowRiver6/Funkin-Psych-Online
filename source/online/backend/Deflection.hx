@@ -5,6 +5,7 @@ import CompileTime;
 class Deflection {
 	//@:unreflective public static final luaClassBlacklist:Array<String> = ['cpp', 'lib', 'reflect', 'cffi', 'process', 'lua', 'http'];
     @:unreflective public static var classBlacklist(get, default):Array<Class<Dynamic>> = null;
+
 	public static var CLASS_ALIASES:Map<String, String> = [
 		"Achievements" => "backend.Achievements",
 		"AchievementsMenuState" => "",

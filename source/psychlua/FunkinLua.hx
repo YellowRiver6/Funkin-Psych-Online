@@ -40,6 +40,9 @@ import psychlua.LuaUtils.LuaTweenOptions;
 #if HSCRIPT_ALLOWED
 import psychlua.HScript;
 #end
+#if mobile
+import mobile.psychlua.Functions;
+#end
 import psychlua.DebugLuaText;
 import psychlua.ModchartSprite;
 
@@ -1640,14 +1643,14 @@ class FunkinLua {
 			var path:String;
 			#if MODS_ALLOWED
 			path = Paths.modsJson(Paths.formatToSongPath(PlayState.SONG.song) + '/' + dialogueFile);
-			if (!FileSystem.exists(path))
+			if(!FunkinFileSystem.exists(path))
 			#end
 			path = Paths.json(Paths.formatToSongPath(PlayState.SONG.song) + '/' + dialogueFile);
 
 			luaTrace('startDialogue: Trying to load dialogue: ' + path);
 
 			#if MODS_ALLOWED
-			if (FileSystem.exists(path))
+			if(FunkinFileSystem.exists(path))
 			#else
 			if (Assets.exists(path))
 			#end
@@ -1675,7 +1678,7 @@ class FunkinLua {
 		});
 		Lua_helper.add_callback(lua, "startVideo", function(videoFile:String) {
 			#if VIDEOS_ALLOWED
-			if (FileSystem.exists(Paths.video(videoFile))) {
+			if(FunkinFileSystem.exists(Paths.video(videoFile))) {
 				game.startVideo(videoFile);
 				return true;
 			}
@@ -1852,5 +1855,7 @@ class FunkinLua {
 		ShaderFunctions.implement(this);
 		DeprecatedFunctions.implement(this);
 		online.backend.OnlineScriptFunctions.implement(this);
+		#if android AndroidFunctions.implement(this); #end
+		#if mobile MobileFunctions.implement(this); #end
 	}
 }

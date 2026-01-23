@@ -183,6 +183,7 @@ class MainMenuState extends MusicBeatState
 			online.backend.DateEvent.isHalloween = true;
 		}
 
+		mobileManager.addMobilePad("UP_DOWN", "A_B_E");
 		super.create();
 	}
 
@@ -235,7 +236,7 @@ class MainMenuState extends MusicBeatState
 				FlxG.switchState(() -> new TitleState());
 			}
 
-			if (controls.ACCEPT || (FlxG.mouse.justPressed && FlxG.mouse.overlaps(menuItems.members[curSelected])))
+			if (controls.ACCEPT #if desktop || (FlxG.mouse.justPressed && FlxG.mouse.overlaps(menuItems.members[curSelected])) #end)
 			{
 				if (optionShit[curSelected] == 'donate')
 				{
@@ -297,14 +298,12 @@ class MainMenuState extends MusicBeatState
 					});
 				}
 			}
-			#if desktop
-			else if (controls.justPressed('debug_1'))
+			else if (mobileButtonJustPressed('E') || controls.justPressed('debug_1'))
 			{
 				selectedSomethin = true;
 				FlxG.switchState(() -> new MasterEditorMenu());
 			}
-			#end
-
+	
 			if (FlxG.mouse.justPressed && updatEBg != null && FlxG.mouse.overlaps(updatEBg)) {
 				if (TitleState.mustUpdate)
 					online.substates.RequestSubstate.requestURL(Main.updatePageURL, true);
