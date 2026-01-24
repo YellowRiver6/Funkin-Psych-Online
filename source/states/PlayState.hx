@@ -3092,10 +3092,12 @@ class PlayState extends MusicBeatState
 		}
 
 		super.closeSubState();
+		#if TOUCH_CONTROLS
 		if (GameClient.isConnected()) {
 			if (mobileManager?.hitbox != null) mobileManager.hitbox.visible = true;
 			if (mobileManager?.mobilePad != null) mobileManager.mobilePad.visible = true;
 		}
+		#end
 
 		effectMusic(FlxG.sound.music, true);
 		effectMusic(vocals, true);
@@ -3779,10 +3781,12 @@ class PlayState extends MusicBeatState
 				}
 		}
 
+		#if TOUCH_CONTROLS
 		if (GameClient.isConnected()) {
 			if (mobileManager?.hitbox != null) mobileManager.hitbox.visible = false;
 			if (mobileManager?.mobilePad != null) mobileManager.mobilePad.visible = false;
 		}
+		#end
 		openSubState(new PauseSubState(self.getScreenPosition().x, self.getScreenPosition().y));
 		//}
 
