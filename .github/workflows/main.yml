@@ -6,6 +6,7 @@ jobs:
   Build:
     name: ${{ matrix.name }}
     strategy:
+      fail-fast: false
       matrix:
         include:
           - name: Android
@@ -14,7 +15,7 @@ jobs:
             artifactName: androidBuild
             artifactPath: "export/release/android/bin/app/build/outputs/apk/release/*.apk"
           - name: Windows
-            os: windows-2022
+            os: windows-latest
             buildArgs: "windows -D officialBuild -final"
             artifactName: windowsBuild-x86_64
             artifactPath: export\release\windows\bin\*
@@ -24,7 +25,7 @@ jobs:
             artifactName: androidBuild-TR
             artifactPath: "export/release/android/bin/app/build/outputs/apk/release/*.apk"
           - name: Windows-TR
-            os: windows-2022
+            os: windows-latest
             buildArgs: "windows -D officialBuild -final -D turkiye"
             artifactName: windowsBuild-TR-x86_64
             artifactPath: export\release\windows\bin\*

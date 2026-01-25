@@ -57,6 +57,7 @@ jobs:
           haxelib install hxcpp > /dev/null --quiet
           haxelib install hmm --quiet
           haxelib run hmm install --quiet
+          haxelib run lime rebuild hxcpp --quiet
 
       - name: ReInstall hxcpp & Lime
         if: startsWith(inputs.name, 'Windows')
@@ -69,7 +70,6 @@ jobs:
       - name: Configure Android
         if: startsWith(inputs.name, 'Android')
         run: |
-          haxelib run lime rebuild hxcpp --quiet
           haxelib run lime config ANDROID_SDK $ANDROID_HOME
           haxelib run lime config ANDROID_NDK_ROOT $ANDROID_NDK_LATEST_HOME
           haxelib run lime config JAVA_HOME $JAVA_HOME_21_arm64
