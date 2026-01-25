@@ -147,7 +147,7 @@ class Language {
 			This Mod contains some flashing lights!\n
 			Press %{1}% to disable them now or go to Options Menu.\n
 			Press %{2}% to ignore this message.\n
-			You've been warned!"
+			You've been warned!",
 		"PlayState.updateTeamSide.daText" => '%{1}%
 			\nScore: %{2}%
 			\nMisses: %{3}%
