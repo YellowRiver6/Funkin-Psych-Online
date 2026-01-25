@@ -781,7 +781,7 @@ class ClientPrefs {
 			trace('Wut');
 			if (Note == null || Note.maniaKeysList == null) {
 				if (Note == null) trace("Note is null!");
-				else if (Note.maniaKeysList == null) trace('Note.maniaKeysList is null!')
+				else if (Note.maniaKeysList == null) trace('Note.maniaKeysList is null!');
 			}
 			trace('wut');
 			for (keys in Note.maniaKeysList) {
