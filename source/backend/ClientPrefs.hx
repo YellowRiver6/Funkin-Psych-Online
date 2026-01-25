@@ -770,8 +770,7 @@ class ClientPrefs {
 		var map:Map<String, Array<Array<FlxColor>>> = new Map();
 		//Null Safety
 		if (Note?.maniaKeysList == null) {
-				Note.maniaKeysList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 20, 21, 26, 50, 55, 61];
-			}
+			Note.maniaKeysList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 20, 21, 26, 50, 55, 61];
 		}
 		for (keys in Note.maniaKeysList) {
 			if (keys == 4)
