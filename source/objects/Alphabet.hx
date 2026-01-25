@@ -301,7 +301,7 @@ class AlphaCharacter extends FlxSprite
 		'y'  => null, 'z'  => null,
 
 		//turkish alphabet things
-		'ğ' => null, 'ş' => null, 'ı' => null, #if TURKIYE_BUILD 'İ' => null, 'I' => null, #end
+		'ğ' => null, 'ş' => null, 'ı' => null,
 
 		//additional alphabet
 		'á'  => null, 'é'  => null, 'í'  => null, 'ó'  => null, 'ú'  => null,
@@ -405,7 +405,15 @@ class AlphaCharacter extends FlxSprite
 				}
 				else suffix = ' normal';
 			}
-			else suffix = ' bold';
+			else {
+				#if TURKIYE_BUILD
+				if(this.character == 'İ')
+					lowercase = 'İ';
+				else if(this.character == 'I')
+					lowercase = 'I';
+				#end
+				suffix = ' bold';
+			}
 
 			var alphaAnim:String = lowercase;
 			if(curLetter != null && curLetter.anim != null) alphaAnim = curLetter.anim;

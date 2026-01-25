@@ -88,6 +88,10 @@ class TitleState extends MusicBeatState
 		ClientPrefs.loadPrefs();
 		#if ACHIEVEMENTS_ALLOWED Achievements.load(); #end
 
+		#if VIDEOS_ALLOWED
+		hxvlc.util.Handle.init(#if (hxvlc >= "1.8.0")  ['--no-lua'] #end);
+		#end
+
 		backend.NoteSkinData.reloadNoteSkins();
 
 		Highscore.load();
