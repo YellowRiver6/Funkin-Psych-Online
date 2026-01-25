@@ -43,9 +43,9 @@ class VisualsUISubState extends BaseOptionsMenu
 			'bool');
 		addOption(option);
 		option.onChange = () -> {
-			new FlxTimer().start(0.2, function(t:FlxTimer)
+			new FlxTimer().start(0.1, function(t:FlxTimer)
 			{
-				MusicBeatState.getState().resetSubState(); //temporarily here
+				close(); //temporarily here
 			});
 		};
 

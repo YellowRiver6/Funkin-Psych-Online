@@ -391,6 +391,10 @@
 	<SubTexture name="h uppercase instance 10001" x="1899" y="544" width="33" height="53"/>
 	<SubTexture name="h uppercase instance 10002" x="1085" y="547" width="33" height="52" frameX="0" frameY="0" frameWidth="33" frameHeight="53"/>
 	<SubTexture name="h uppercase instance 10003" x="1085" y="547" width="33" height="52" frameX="0" frameY="0" frameWidth="33" frameHeight="53"/>
+	<SubTexture name="I bold instance 10000" x="1932" y="297" width="44" height="65"/>
+	<SubTexture name="I bold instance 10001" x="1932" y="297" width="44" height="65"/>
+	<SubTexture name="I bold instance 10002" x="1932" y="297" width="44" height="65"/>
+	<SubTexture name="I bold instance 10003" x="1932" y="297" width="44" height="65"/>
 	<SubTexture name="ı bold instance 10000" x="1932" y="297" width="44" height="65"/>
 	<SubTexture name="ı bold instance 10001" x="1932" y="297" width="44" height="65"/>
 	<SubTexture name="ı bold instance 10002" x="1177" y="301" width="43" height="65" frameX="0" frameY="0" frameWidth="44" frameHeight="65"/>

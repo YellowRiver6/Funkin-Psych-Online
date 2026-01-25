@@ -78,6 +78,11 @@ class TitleState extends MusicBeatState
 		Paths.clearStoredMemory();
 		Paths.clearUnusedMemory();
 
+		#if LUA_ALLOWED
+		Mods.pushGlobalMods();
+		#end
+		Mods.loadTopMod();
+
 		curWacky = FlxG.random.getObject(getIntroTextShit());
 
 		super.create();

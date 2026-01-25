@@ -114,8 +114,8 @@ class Language {
 		"Controls" => "Kontroller",
 		"Adjust Delay and Combo" => "Gecikme ve Kombo",
 		"Graphics" => "Grafikler",
-		"Visuals" => "Gorseller",
-		"Gameplay" => "Oynanis",
+		"Visuals" => "Görseller",
+		"Gameplay" => "Oynanış",
 		"Mobile" => "Mobil",
 
 		//Mobil Ayarlar

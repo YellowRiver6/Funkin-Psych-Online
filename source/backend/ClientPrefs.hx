@@ -747,9 +747,7 @@ class ClientPrefs {
 
 	public static inline function genArrowColors(keys:Int, ?isPixel:Bool = false):Array<Array<FlxColor>> {
 		var arr = [];
-		#if TURKIYE_BUILD
 		try {
-		#end
 			var colColors = isPixel ? [
 				'purple' => [0xFFE276FF, 0xFFFFF9FF, 0xFF60008D],
 				'blue' => [0xFF3DCAFF, 0xFFF4FFFF, 0xFF003060],
@@ -768,9 +766,7 @@ class ClientPrefs {
 			for (key in 0...keys) {
 				arr.push(colColors.get(colArray[key]));
 			}
-		#if TURKIYE_BUILD
 		} catch(e:Dynamic) {}
-		#end
 		return arr;
 	}
 
