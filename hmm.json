@@ -19,7 +19,7 @@
     {
       "name": "flixel",
       "type": "git",
-      "ref": "main",
+      "ref": "peo-mobile",
       "url": "https://github.com/ArkoseLabsOfficial/flixel-peo"
     },
     {
