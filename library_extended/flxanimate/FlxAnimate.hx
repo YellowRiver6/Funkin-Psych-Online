@@ -37,6 +37,7 @@ import openfl.geom.ColorTransform;
 import flixel.math.FlxMath;
 import flixel.FlxBasic;
 import flixel.graphics.frames.FlxFramesCollection;
+import openfl.geom.Matrix;
 
 using flixel.util.FlxColorTransformUtil;
 
