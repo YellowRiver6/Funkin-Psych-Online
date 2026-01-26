@@ -325,6 +325,9 @@ class Character extends FunkinMergedSprite implements IBeatReceiver implements I
 					healthIcon = json.healthicon;
 					singDuration = json.sing_duration;
 					flipX = (json.flip_x == true);
+					if (json.flip_x == true) { //just for test
+						swapLeftRightAnimations(true);
+					}
 
 					if (json.healthbar_colors != null && json.healthbar_colors.length > 2)
 						healthColorArray = json.healthbar_colors;
@@ -874,14 +877,14 @@ class Character extends FunkinMergedSprite implements IBeatReceiver implements I
 		__baseFlipped = flipX;
 	}
 
-	public function swapLeftRightAnimations() {
+	public function swapLeftRightAnimations(?isNotCNE:Bool) {
 		CoolUtil.switchAnimFrames(animation.getByName('singRIGHT'), animation.getByName('singLEFT'));
 		CoolUtil.switchAnimFrames(animation.getByName('singRIGHTmiss'), animation.getByName('singLEFTmiss'));
 
 		switchOffset('singLEFT', 'singRIGHT');
 		switchOffset('singLEFTmiss', 'singRIGHTmiss');
 
-		__swappedLeftRightAnims = true;
+		if (!isNotCNE) __swappedLeftRightAnims = true;
 	}
 
 	@:noCompletion var __baseFlipped:Bool = false;
