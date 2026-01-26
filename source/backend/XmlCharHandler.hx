@@ -10,7 +10,6 @@ import sys.io.File;
 #end
 import flixel.util.FlxColor;
 import flixel.math.FlxPoint;
-import funkin.backend.scripting.events.sprite.PlayAnimContext;
 
 using StringTools;
 

@@ -16,6 +16,12 @@ import funkin.utils.*;
 import funkin.assets.*;
 import funkin.backend.FunkinSprite;
 import funkin.backend.utils.XMLUtil;
+import funkin.backend.scripting.events.sprite.PlayAnimContext;
+import funkin.backend.system.interfaces.IBeatReceiver;
+import funkin.backend.system.interfaces.IOffsetCompatible;
+import funkin.backend.utils.XMLUtil.AnimData;
+import funkin.backend.utils.XMLUtil.BeatAnim;
+import funkin.backend.utils.XMLUtil.IXMLEvents;
 
 #if sys
 import sys.*;

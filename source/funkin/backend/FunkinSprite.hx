@@ -7,12 +7,6 @@ import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
 import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.util.typeLimit.OneOfTwo;
-import funkin.backend.scripting.events.sprite.PlayAnimContext;
-import funkin.backend.system.interfaces.IBeatReceiver;
-import funkin.backend.system.interfaces.IOffsetCompatible;
-import funkin.backend.utils.XMLUtil.AnimData;
-import funkin.backend.utils.XMLUtil.BeatAnim;
-import funkin.backend.utils.XMLUtil.IXMLEvents;
 import haxe.io.Path;
 
 import flixel.util.FlxSignal;
