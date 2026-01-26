@@ -828,7 +828,8 @@ class Character extends FunkinMergedSprite implements IBeatReceiver implements I
 	}
 	#end
 
-	if (isCodenameChar) {
+	override public function destroy() {
+		if (isCodenameChar) {
 			if(scripts != null) {
 				scripts.call('destroy');
 				scripts.destroy();
