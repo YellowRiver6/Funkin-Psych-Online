@@ -8,7 +8,7 @@ import flixel.math.FlxRect;
 import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.util.typeLimit.OneOfTwo;
 import haxe.io.Path;
-import flxanimate.animate.SymbolStuff;
+import flxanimate.animate.FlxAnim;
 
 import flixel.util.FlxSignal;
 import flxanimate.animate.FlxElement;
