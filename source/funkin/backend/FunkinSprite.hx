@@ -7,7 +7,6 @@ import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
 import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.util.typeLimit.OneOfTwo;
-import flxanimate.animate.FlxAnim.FlxSymbolAnimation;
 import funkin.backend.scripting.events.sprite.PlayAnimContext;
 import funkin.backend.system.interfaces.IBeatReceiver;
 import funkin.backend.system.interfaces.IOffsetCompatible;
@@ -15,6 +14,22 @@ import funkin.backend.utils.XMLUtil.AnimData;
 import funkin.backend.utils.XMLUtil.BeatAnim;
 import funkin.backend.utils.XMLUtil.IXMLEvents;
 import haxe.io.Path;
+
+import flixel.util.FlxTypedSignal;
+import flxanimate.animate.FlxElement;
+
+//the stuff I need
+class FlxSymbolAnimation {
+	public var instance:FlxElement;
+	public var frameRate:Float;
+
+	public var onFinish:FlxTypedSignal<Void->Void> = new FlxTypedSignal();
+
+	public function new(instance:FlxElement, frameRate:Float) {
+		this.instance = instance;
+		this.frameRate = frameRate;
+	}
+}
 
 enum abstract XMLAnimType(Int)
 {
