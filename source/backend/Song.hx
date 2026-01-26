@@ -166,7 +166,7 @@ class Song
 		if (rawJson == null) {
 			rawJson = FunkinFileSystem.getText(Paths.json(formattedFolder + '/' + formattedSong));
 			var cneChartFile = FunkinFileSystem.getText(Paths.getPath('songs/${songName}/charts/${diffString}.json', TEXT, null, true));
-			var cneMetaFile = Paths.getPath('songs/${songName}/meta-${diffString}.json', TEXT, null, true));
+			var cneMetaFile = Paths.getPath('songs/${songName}/meta-${diffString}.json', TEXT, null, true);
 			if (!FunkinFileSystem.exists(cneMetaFile))
 				cneMetaFile = Paths.getPath('songs/${songName}/meta.json', TEXT, null, true);
 
