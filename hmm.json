@@ -114,8 +114,8 @@
       "name": "flxanimate",
       "type": "git",
       "dir": null,
-      "ref": "v4.0.0",
-      "url": "https://github.com/Dot-Stuff/flxanimate"
+      "ref": "master",
+      "url": "https://github.com/CodenameCrew/cne-flxanimate"
     },
     {
       "name": "lumod",

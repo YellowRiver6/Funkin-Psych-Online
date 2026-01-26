@@ -14,41 +14,16 @@ import funkin.backend.system.interfaces.IOffsetCompatible;
 import funkin.backend.utils.XMLUtil.AnimData;
 import funkin.backend.utils.XMLUtil.BeatAnim;
 import funkin.backend.utils.XMLUtil.IXMLEvents;
+import funkin.backend.FunkinSprite;
 import haxe.io.Path;
-
-enum abstract XMLAnimType(Int)
-{
-	var NONE = 0;
-	var BEAT = 1;
-	var LOOP = 2;
-
-	public static function fromString(str:String, def:XMLAnimType = XMLAnimType.NONE)
-	{
-		return switch (StringTools.trim(str).toLowerCase())
-		{
-			case "none": NONE;
-			case "beat" | "onbeat": BEAT;
-			case "loop": LOOP;
-			default: def;
-		}
-	}
-
-	@:to public function toString():String {
-		return switch (cast this)
-		{
-			case NONE: "none";
-			case BEAT: "beat";
-			case LOOP: "loop";
-		}
-	}
-}
 
 /**
 	 * This class will be changed with Original one, I'm seperated this because of the compability not tested fully yet.
 	 * %95 of the code same as the Codename Engine's Source, Also Characters Coming Soon Too.
 */
-class FunkinSprite extends FlxSkewedSprite implements IBeatReceiver implements IOffsetCompatible implements IXMLEvents
+class FunkinMergedSprite extends FlxSkewedSprite implements IBeatReceiver implements IOffsetCompatible implements IXMLEvents
 {
+	public var isCodenameChar:Bool = false;
 	public var extra:Map<String, Dynamic> = [];
 
 	public var spriteAnimType:XMLAnimType = NONE;
@@ -90,13 +65,13 @@ class FunkinSprite extends FlxSkewedSprite implements IBeatReceiver implements I
 	}
 
 	/**
-	 * Gets the graphics and copies other properties from another sprite (Works both for `FlxSprite` and `FunkinSprite`!).
+	 * Gets the graphics and copies other properties from another sprite (Works both for `FlxSprite` and `FunkinMergedSprite`!).
 	 */
-	public static function copyFrom(source:FlxSprite):FunkinSprite
+	public static function copyFrom(source:FlxSprite):FunkinMergedSprite
 	{
-		var spr = new FunkinSprite();
-		var casted:FunkinSprite = null;
-		if (source is FunkinSprite)
+		var spr = new FunkinMergedSprite();
+		var casted:FunkinMergedSprite = null;
+		if (source is FunkinMergedSprite)
 			casted = cast source;
 
 		@:privateAccess {
@@ -115,7 +90,7 @@ class FunkinSprite extends FlxSkewedSprite implements IBeatReceiver implements I
 				spr.skew.set(casted.skew.x, casted.skew.y);
 				spr.transformMatrix = casted.transformMatrix;
 				spr.matrixExposed = casted.matrixExposed;
-				spr.animOffsets = casted.animOffsets.copy();
+				spr.animOffsets_CNE = casted.animOffsets_CNE.copy();
 			}
 		}
 		return spr;
@@ -124,14 +99,15 @@ class FunkinSprite extends FlxSkewedSprite implements IBeatReceiver implements I
 	public override function update(elapsed:Float)
 	{
 		super.update(elapsed);
-		if (animateAtlas != null)
-			animateAtlas.update(elapsed);
+		if (isCodenameChar) { // Put this here for fixing the Speaker Pico's animations
+			if (animateAtlas != null)
+				animateAtlas.update(elapsed);
 
-		// hate how it looks like but hey at least its optimized and fast  - Nex
-		if (!debugMode && isAnimFinished()) {
-			var name = getAnimName() + '-loop';
-			if (hasAnimation(name))
-				playAnim(name, null, lastAnimContext);
+			// hate how it looks like but hey at least its optimized and fast  - Nex
+			if (!debugMode && isAnimFinished()) {
+				var name = getAnimName() + '-loop';
+				if (hasAnimation_CNE(name)) playAnim_CNE(name, null, lastAnimContext);
+			}
 		}
 	}
 
@@ -165,8 +141,10 @@ class FunkinSprite extends FlxSkewedSprite implements IBeatReceiver implements I
 		{
 			// TODO: find a solution without countedBeat
 			var anim = beatAnims[FlxMath.wrap(countedBeat++, 0, beatAnims.length - 1)];
-			if (anim.name != null && anim.name != "null" && anim.name != "none")
-				playAnim(anim.name, anim.forced);
+			if (anim.name != null && anim.name != "null" && anim.name != "none") {
+				if (isCodenameChar) playAnim_CNE(anim.name, anim.forced);
+				else playAnim();
+			}
 		}
 	}
 
@@ -221,14 +199,14 @@ class FunkinSprite extends FlxSkewedSprite implements IBeatReceiver implements I
 	{
 		animateAtlas = FlxDestroyUtil.destroy(animateAtlas);
 
-		if (animOffsets != null) {
-			for (key in animOffsets.keys()) {
-				final point = animOffsets[key];
-				animOffsets.remove(key);
+		if (animOffsets_CNE != null) {
+			for (key in animOffsets_CNE.keys()) {
+				final point = animOffsets_CNE[key];
+				animOffsets_CNE.remove(key);
 				if (point != null)
 					point.put();
 			}
-			animOffsets = null;
+			animOffsets_CNE = null;
 		}
 		super.destroy();
 	}
@@ -291,24 +269,28 @@ class FunkinSprite extends FlxSkewedSprite implements IBeatReceiver implements I
 	}
 
 	// OFFSETTING
-	public var animOffsets:Map<String, FlxPoint> = new Map<String, FlxPoint>();
+	public var animOffsets_CNE:Map<String, FlxPoint> = new Map<String, FlxPoint>();
 
 	public function addOffset(name:String, x:Float = 0, y:Float = 0)
 	{
-		animOffsets[name] = FlxPoint.get(x, y);
+		animOffsets_CNE[name] = FlxPoint.get(x, y);
 	}
 
 	public function switchOffset(anim1:String, anim2:String)
 	{
-		var old = animOffsets[anim1];
-		animOffsets[anim1] = animOffsets[anim2];
-		animOffsets[anim2] = old;
+		var old = animOffsets_CNE[anim1];
+		animOffsets_CNE[anim1] = animOffsets_CNE[anim2];
+		animOffsets_CNE[anim2] = old;
 	}
 
 	// PLAYANIM
 	public var lastAnimContext:PlayAnimContext = DANCE;
 
-	public function playAnim(AnimName:String, ?Force:Null<Bool>, Context:PlayAnimContext = NONE, Reversed:Bool = false, Frame:Int = 0):Void
+	public function playAnim(?AnimName:String, ?Force:Bool = false, ?Reversed:Bool = false, ?Frame:Int = 0, ?Context:PlayAnimContext = NONE):Void
+	{
+	}
+
+	public function playAnim_CNE(AnimName:String, ?Force:Null<Bool>, Context:PlayAnimContext = NONE, Reversed:Bool = false, Frame:Int = 0):Void
 	{
 		if (AnimName == null)
 			return;
@@ -371,8 +353,8 @@ class FunkinSprite extends FlxSkewedSprite implements IBeatReceiver implements I
 
 	public inline function getAnimOffset(name:String)
 	{
-		if (animOffsets.exists(name))
-			return animOffsets[name];
+		if (animOffsets_CNE.exists(name))
+			return animOffsets_CNE[name];
 		return FlxPoint.weak(0, 0);
 	}
 
@@ -418,11 +400,8 @@ class FunkinSprite extends FlxSkewedSprite implements IBeatReceiver implements I
 			super.updateAnimation(elapsed);
 	}
 
-	// PsychEngine compat
-	public inline function getAnimationName() return getAnimName();
-
 	// Backwards compat (the names used to be all different and it sucked, please lets use the same format in the future)  - Nex
-	public inline function hasAnimation(AnimName:String) return hasAnim(AnimName);
+	public inline function hasAnimation_CNE(AnimName:String) return hasAnim(AnimName);
 	public inline function removeAnimation(name:String) return removeAnim(name);
 	public inline function stopAnimation() return stopAnim();
 
