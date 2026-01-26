@@ -11,6 +11,7 @@ import funkin.backend.scripting.HScript;
 import flixel.util.typeLimit.OneOfTwo;
 import funkin.backend.system.interfaces.IOffsetCompatible;
 import haxe.xml.Access;
+import objects.Character;
 
 using StringTools;
 using backend.CoolUtil;

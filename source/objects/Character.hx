@@ -136,7 +136,8 @@ class Character extends XmlCharHandler {
 			if (xml.has.color) {
 				var colorStr = xml.att.color;
 				if(colorStr.startsWith("#")) colorStr = colorStr.substring(1);
-				healthColorArray = FlxColor.fromString("#" + colorStr).getRGB();
+				//healthColorArray = FlxColor.fromString("#" + colorStr).getRGB();
+				healthColorArray = [0, 255, 0];
 			}
 			
 			// Sync Position arrays
@@ -368,7 +369,12 @@ class Character extends XmlCharHandler {
 		}
 	}
 	
-	override public function dance() {
+	public var danced:Bool = false;
+
+	/**
+	 * FOR GF DANCING SHIT
+	 */
+	public function dance() {
 		if (!debugMode && !skipDance && !specialAnim) {
 			// Script hooks handled in super.dance() (CNECharacter)
 			
@@ -383,15 +389,22 @@ class Character extends XmlCharHandler {
 		}
 	}
 
+	public var danceEveryNumBeats:Int = 2;
 	public function recalculateDanceIdle() {
 		var lastDanceIdle:Bool = danceIdle;
 		danceIdle = (animation.getByName('danceLeft' + idleSuffix) != null && animation.getByName('danceRight' + idleSuffix) != null);
 
 		if(settingCharacterUp) {
 			danceOnBeat = (danceIdle || animation.getByName('idle' + idleSuffix) != null);
+			danceEveryNumBeats = (danceIdle ? 1 : 2);
 		}
 		else if(lastDanceIdle != danceIdle) {
-			var calc:Float = danceIdle ? 1/2 : 1;
+			var calc:Float = danceEveryNumBeats;
+			if (danceIdle)
+				calc /= 2;
+			else
+				calc *= 2;
+
 			singDuration /= calc;
 			holdTimer /= calc;
 		
@@ -406,6 +419,7 @@ class Character extends XmlCharHandler {
 				singDuration = Math.round(Math.max(singDuration, 1));
 				holdTimer = Math.round(Math.max(holdTimer, 1));
 			}
+			danceEveryNumBeats = Math.round(Math.max(calc, 1));
 		}
 		settingCharacterUp = false;
 	}
@@ -466,7 +480,7 @@ class Character extends XmlCharHandler {
 		return animation.curAnim == null;
 	}
 
-	public function getAnimationName():String {
+	public override function getAnimationName():String {
 		var name:String = '';
 		@:privateAccess
 		#if flxanimate
@@ -510,5 +524,11 @@ class Character extends XmlCharHandler {
 			return false;
 		}
 		return true;
+	}
+
+	public function onCombo(from:Int, to:Int) {}
+	public function onHealth(from:Float, to:Float) {}
+	public function animExists(AnimName:String) {
+		return animOffsets.exists(AnimName);
 	}
 }

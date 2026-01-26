@@ -21,8 +21,6 @@ using StringTools;
 class XmlCharHandler extends FunkinSprite {
 	
 	// --- CNE SPECIFIC VARIABLES ---
-	public var scripts:ScriptPack;
-	public var script(default, set):Script;
 	public var xml:Access;
 	public var isCNELoaded:Bool = false;
 
@@ -44,7 +42,6 @@ class XmlCharHandler extends FunkinSprite {
 
 	public function new(x:Float, y:Float) {
 		super(x, y);
-		scripts = new ScriptPack([]);
 	}
 
 	// --- CNE LOADING LOGIC ---
@@ -59,30 +56,10 @@ class XmlCharHandler extends FunkinSprite {
 
 		this.curCharacter = character;
 
-		// 1. Load Script
-		var scriptPathName = 'characters/$character';
-		#if MODS_ALLOWED
-		var scriptPath = Paths.modFolders(scriptPathName + '.hx');
-		if (!FunkinFileSystem.exists(scriptPath)) scriptPath = Paths.getPreloadPath(scriptPathName + '.hx');
-		#else
-		var scriptPath = Paths.getPreloadPath(scriptPathName + '.hx');
-		#end
-
-		if (FunkinFileSystem.exists(scriptPath)) {
-			script = Script.create(scriptPath);
-		}
-		
-		if (script == null) script = new DummyScript(character);
-		
-		scripts.add(script);
-		script.load();
-		scripts.call("create");
-
 		// 2. Build from XML (Using FunkinSprite methods)
 		buildFromXML(xml);
 		
 		isCNELoaded = true;
-		scripts.call("postCreate");
 		return true;
 	}
 
@@ -163,47 +140,23 @@ class XmlCharHandler extends FunkinSprite {
 
 	// --- SCRIPT HOOKS & OVERRIDES ---
 	override function update(elapsed:Float) {
-		if (scripts != null) scripts.call("update", [elapsed]);
 		super.update(elapsed);
-		if (scripts != null) scripts.call("postUpdate", [elapsed]);
 	}
 
 	override function destroy() {
-		if (scripts != null) {
-			scripts.call('destroy');
-			scripts.destroy();
-		}
 		super.destroy();
 	}
 
 	override public function beatHit(curBeat:Int) {
-		if (scripts != null) scripts.call("beatHit", [curBeat]);
 		super.beatHit(curBeat); 
 	}
 
 	override public function stepHit(curStep:Int) {
-		if (scripts != null) scripts.call("stepHit", [curStep]);
 		super.stepHit(curStep);
 	}
 
 	// PlayAnim Override: Script Events & Global Offsets
 	override public function playAnim(AnimName:String, ?Force:Null<Bool>, Context:PlayAnimContext = NONE, Reversed:Bool = false, Frame:Int = 0):Void {
-		// Script Hook
-		if (scripts != null) {
-			var f:Bool = (Force == null) ? false : Force;
-			var event = new PlayAnimEvent(AnimName, f, Reversed, Frame);
-			event.context = Context;
-			scripts.call("onPlayAnim", [event]);
-			
-			if (event.cancelled) return;
-			
-			AnimName = event.animName;
-			Force = event.force;
-			Reversed = event.reverse;
-			Frame = event.startingFrame;
-			Context = event.context;
-		}
-
 		super.playAnim(AnimName, Force, Context, Reversed, Frame);
 
 		frameOffset.x += globalOffset.x;

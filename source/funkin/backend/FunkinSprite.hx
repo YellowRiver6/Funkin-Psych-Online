@@ -8,6 +8,7 @@ import flixel.math.FlxRect;
 import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.util.typeLimit.OneOfTwo;
 import haxe.io.Path;
+import flxanimate.animate.SymbolStuff;
 
 import flixel.util.FlxSignal;
 import flxanimate.animate.FlxElement;
@@ -121,8 +122,6 @@ class FunkinSprite extends FlxSkewedSprite implements IBeatReceiver implements I
 			spr.scrollFactor.set(source.scrollFactor.x, source.scrollFactor.y);
 
 			if (casted != null) {
-				spr.skew.set(casted.skew.x, casted.skew.y);
-				spr.transformMatrix = casted.transformMatrix;
 				spr.matrixExposed = casted.matrixExposed;
 				spr.animOffsets = casted.animOffsets.copy();
 			}
@@ -219,8 +218,6 @@ class FunkinSprite extends FlxSkewedSprite implements IBeatReceiver implements I
 			animateAtlas.shader = shader;
 			animateAtlas.shaderEnabled = ClientPrefs.data.shaders;
 			animateAtlas.antialiasing = antialiasing;
-			animateAtlas.skew = skew;
-			animateAtlas.transformMatrix = transformMatrix;
 			animateAtlas.matrixExposed = matrixExposed;
 			animateAtlas.colorTransform = colorTransform;
 		}
@@ -371,7 +368,7 @@ class FunkinSprite extends FlxSkewedSprite implements IBeatReceiver implements I
 			animation.remove(name);
 	}
 
-	public function getAnim(name:String):OneOfTwo<FlxAnimation, FlxSymbolAnimation>
+	public function getAnim(name:String):SymbolStuff
 	{
 		if(animateAtlas != null)
 			return animateAtlas.anim.getByName(name);

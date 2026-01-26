@@ -6,14 +6,14 @@ import backend.Discord;
 import haxe.xml.Access;
 
 //Import all funkin stuff (cne stuff)
-import funkin.system.*;
-import funkin.shaders.*;
-import funkin.scripting.*;
-import funkin.scripting.events.*;
-import funkin.scripting.events.character.*;
-import funkin.scripting.events.sprite.*;
-import funkin.utils.*;
-import funkin.assets.*;
+import funkin.backend.system.*;
+import funkin.backend.shaders.*;
+import funkin.backend.scripting.*;
+import funkin.backend.scripting.events.*;
+import funkin.backend.scripting.events.character.*;
+import funkin.backend.scripting.events.sprite.*;
+import funkin.backend.utils.*;
+import funkin.backend.assets.*;
 import funkin.backend.FunkinSprite;
 import funkin.backend.utils.XMLUtil;
 import funkin.backend.scripting.events.sprite.PlayAnimContext;
