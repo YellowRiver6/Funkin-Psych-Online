@@ -7078,11 +7078,11 @@ class PlayState extends MusicBeatState
 	public function addHitboxDeadZone(?managerName:String, deadZoneButtons:Array<String>) {
 		#if TOUCH_CONTROLS
 		var manager = checkManager(managerName);
-		manager.hitbox.forEachAlive((button) ->
+		manager?.hitbox.forEachAlive((button) ->
 		{
 			for (deadButton in deadZoneButtons) {
-				if (manager.mobilePad.getButton(deadButton) != null)
-					button.deadZones.push(manager.mobilePad.getButton(deadButton));
+				if (manager.mobilePad?.getButton(deadButton) != null)
+					button.deadZones.push(manager.mobilePad?.getButton(deadButton));
 			}
 		});
 		#end

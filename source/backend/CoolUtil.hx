@@ -122,6 +122,26 @@ class CoolUtil
 		anim1.frames = anim2.frames;
 		anim2.frames = old;
 	}
+	
+	/**
+	 * Alternative linear interpolation function for each frame use, without worrying about framerate changes.
+	 * @param v1 Begin value
+	 * @param v2 End value
+	 * @param ratio Ratio
+	 * @return Float Final value
+	 */
+	@:noUsing public static inline function fpsLerp(v1:Float, v2:Float, ratio:Float):Float {
+		return FlxMath.lerp(v1, v2, getFPSRatio(ratio));
+	}
+	
+	/**
+	 * Modifies a lerp ratio based on current FPS to keep a stable speed on higher framerate.
+	 * @param ratio Ratio
+	 * @return FPS-Modified Ratio
+	 */
+	@:noUsing public static inline function getFPSRatio(ratio:Float):Float {
+		return FlxMath.bound(ratio * 60 * FlxG.elapsed, 0, 1);
+	}
 
 	/**
 	 * Tries to get a color from a `Dynamic` variable.

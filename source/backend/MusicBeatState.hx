@@ -245,4 +245,19 @@ class MusicBeatState extends FlxUIState
 		if(PlayState.SONG != null && PlayState.SONG.notes[curSection] != null) val = PlayState.SONG.notes[curSection].sectionBeats;
 		return val == null ? 4 : val;
 	}
+	
+	/* Codename Engine */
+	/**
+	 * Shortcut to `FlxMath.lerp` or `CoolUtil.lerp`, depending on `fpsSensitive`
+	 * @param v1 Value 1
+	 * @param v2 Value 2
+	 * @param ratio Ratio
+	 * @param fpsSensitive Whenever the ratio should not be adjusted to run at the same speed independent of framerate.
+	 */
+	public function lerp(v1:Float, v2:Float, ratio:Float, fpsSensitive:Bool = false) {
+		if (fpsSensitive)
+			return FlxMath.lerp(v1, v2, ratio);
+		else
+			return CoolUtil.fpsLerp(v1, v2, ratio);
+	}
 }
