@@ -73,6 +73,10 @@ import flixel.addons.display.FlxRuntimeShader;
 import openfl.filters.ShaderFilter;
 #end
 
+#if STRUM_REWORK
+import objects.StrumLine;
+#end
+
 #if sys
 import sys.FileSystem;
 import sys.io.File;
@@ -250,8 +254,15 @@ class PlayState extends MusicBeatState
 	private static var prevCamFollowPos:FlxObject;
 
 	public var strumLineNotes:FlxTypedGroup<StrumNote>;
+
+	#if STRUM_REWORK
+	public var opponentStrums:StrumLine;
+	public var playerStrums:StrumLine;
+	public var players:Array<StrumLine> = []; // The new array for all strumlines
+	#else
 	public var opponentStrums:FlxTypedGroup<StrumNote>;
 	public var playerStrums:FlxTypedGroup<StrumNote>;
+	#end
 	public var grpHoldSplashes:FlxTypedGroup<SustainSplash>;
 	public var grpNoteSplashes:FlxTypedGroup<NoteSplash>;
 
@@ -2121,6 +2132,23 @@ class PlayState extends MusicBeatState
 		if (skipCountdown || startOnTime > 0)
 			skipArrowStartTween = true;
 
+		#if STRUM_REWORK
+		for(p in players)
+			p.generateStrums();
+
+		if (playerStrums != null && playerStrums.members != null) {
+			for (i in 0...playerStrums.members.length) {
+				setOnScripts('defaultPlayerStrumX' + i, playerStrums.members[i].x);
+				setOnScripts('defaultPlayerStrumY' + i, playerStrums.members[i].y);
+			}
+		}
+		if (opponentStrums != null && opponentStrums.members != null) {
+			for (i in 0...opponentStrums.members.length) {
+				setOnScripts('defaultOpponentStrumX' + i, opponentStrums.members[i].x);
+				setOnScripts('defaultOpponentStrumY' + i, opponentStrums.members[i].y);
+			}
+		}
+		#else
 		generateStaticArrows(0);
 		generateStaticArrows(1);
 		for (i in 0...playerStrums.length) {
@@ -2134,6 +2162,7 @@ class PlayState extends MusicBeatState
 		}
 
 		if (ClientPrefs.data.ogGameControls && Note.maniaKeys < 10) enableVSliceControls();
+		#end
 	}
 
 	public var defaultPlayerNotePositions:Array<Dynamic> = [-360, -140, 140, 360];
@@ -2141,12 +2170,12 @@ class PlayState extends MusicBeatState
 	{
 		theWorld = false;
 
+		#if HSC_ALLOWED if (scripts.event("onStartCountdown", new CancellableEvent()).cancelled) return false; #end
+
 		if(startedCountdown) {
 			callOnScripts('onStartCountdown');
 			return false;
 		}
-
-		#if HSC_ALLOWED if (scripts.event("onStartHxCountdown", new CancellableEvent()).cancelled) return false; #end
 
 		seenCutscene = true;
 		inCutscene = false;
@@ -5432,6 +5461,7 @@ class PlayState extends MusicBeatState
 	#end
 
 	// Hold notes
+	[cite_start]// [cite: 686-691] keysCheck adapted to verify note.player.controls instead of note.mustPress
 	@:unreflective
 	private function keysCheck():Void
 	{
@@ -5457,14 +5487,28 @@ class PlayState extends MusicBeatState
 
 		if (startedCountdown && !self.stunned && generatedMusic)
 		{
-			// rewritten inputs???
 			if(notes.length > 0)
 			{
 				notes.forEachAlive(function(daNote:Note)
 				{
+					#if STRUM_REWORK
+					// --- NEW CHECK ---
+					var isControllable = daNote.player != null && daNote.player.controls;
+					#else
+					// --- OLD CHECK ---
+					var isControllable = isPlayerNote(daNote);
+					#end
+
 					// hold note functions
-					if (strumsBlocked[daNote.noteData] != true && daNote.isSustainNote && holdArray[daNote.noteData] && daNote.canBeHit
-					&& isPlayerNote(daNote) && !daNote.tooLate && !daNote.wasGoodHit && !daNote.blockHit) {
+					if (strumsBlocked[daNote.noteData] != true 
+						&& daNote.isSustainNote 
+						&& holdArray[daNote.noteData] 
+						&& daNote.canBeHit
+						&& isControllable // Uses the check defined above
+						&& !daNote.tooLate 
+						&& !daNote.wasGoodHit 
+						&& !daNote.blockHit) 
+					{
 						goodNoteHit(daNote);
 					}
 				});
@@ -5482,7 +5526,6 @@ class PlayState extends MusicBeatState
 					&& !(self.animation.curAnim.name.endsWith('miss') || self.isMissing))
 			{
 				self.dance();
-				//boyfriend.animation.curAnim.finish();
 			}
 		}
 
@@ -5726,13 +5769,11 @@ class PlayState extends MusicBeatState
 				addHealth(note.hitHealth * healthGain);
 			}
 
-			// TODO: make it only provide the note.strumTime and Conductor.songPosition
 			GameClient.send("noteHit", [note.strumTime, note.noteData, note.isSustainNote, rating?.image, note.noteType, notes.members.indexOf(note), note.mustPress]);
 			GameClient.send("updateMaxCombo", maxCombo);
 
 			if(!note.noAnimation) {
 				var altAnim:String = note.animSuffix;
-
 				if (!playsAsBF()) {
 					if (SONG.notes[curSection] != null) {
 						if (SONG.notes[curSection].altAnim && !SONG.notes[curSection].gfSection) {
@@ -5740,22 +5781,16 @@ class PlayState extends MusicBeatState
 						}
 					}
 				}
-
 				var animToPlay:String = singAnimations[Std.int(Math.abs(Math.min(singAnimations.length - 1, note.noteData)))] + altAnim;
-
 				var char:Character = self;
 				var animCheck:String = 'hey';
-				if(note.gfNote)
-				{
+				if(note.gfNote) {
 					char = gf;
 					animCheck = 'cheer';
 				}
-				
-				if(char != null && !(GameClient.isConnected() && char == gf && GameClient.getPlayerSelf().ox != 0))
-				{
+				if(char != null && !(GameClient.isConnected() && char == gf && GameClient.getPlayerSelf().ox != 0)) {
 					char.playAnim(animToPlay, true);
 					char.holdTimer = 0;
-
 					if (note.noteType == 'Hey!' && char.animOffsets.exists(animCheck)) {
 						char.playAnim(animCheck, true);
 						char.specialAnim = true;
@@ -5769,7 +5804,15 @@ class PlayState extends MusicBeatState
 
 			if(!cpuControlled)
 			{
+				#if STRUM_REWORK
+				var spr:StrumNote = null;
+				if (note.player != null) {
+					 spr = note.player.members[note.noteData];
+				}
+				#else
 				var spr = getPlayerStrums().members[note.noteData];
+				#end
+				
 				GameClient.send("strumPlay", ["confirm", note.noteData, 0]);
 				if(spr != null) spr.playAnim('confirm', true);
 			}
@@ -5778,7 +5821,7 @@ class PlayState extends MusicBeatState
 			}
 			getPlayerVocals().volume = 1;
 
-			var isSus:Bool = note.isSustainNote; //GET OUT OF MY HEAD, GET OUT OF MY HEAD, GET OUT OF MY HEAD
+			var isSus:Bool = note.isSustainNote;
 			var leData:Int = Math.round(Math.abs(note.noteData));
 			var leType:String = note.noteType;
 
@@ -5790,7 +5833,6 @@ class PlayState extends MusicBeatState
 
 			if (!note.isSustainNote)
 			{
-				//note.kill();
 				notes.remove(note, true);
 				note.destroy();
 			}
@@ -6189,6 +6231,7 @@ class PlayState extends MusicBeatState
 		else if (funcToCall == 'onUpdate') cneLikeFunctions = 'update';
 		else if (funcToCall == 'onUpdatePost') cneLikeFunctions = 'postUpdate';
 		else if (funcToCall == 'onSongStart') doNotCall = true;
+		else if (funcToCall == 'onStartCountdown') doNotCall = true;
 
 		if (scripts != null && !doNotCall) scripts.call(cneLikeFunctions, args);
 		#end
