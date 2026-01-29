@@ -128,7 +128,7 @@ class PlayState extends MusicBeatState
 	 * The selected difficulty name.
 	 */
 	public static var difficulty(get, never):String;
-	function get_difficulty() {
+	private static function get_difficulty() {
 		return Difficulty.getString();
 	}
 
@@ -2103,21 +2103,18 @@ class PlayState extends MusicBeatState
 	public static var startOnTime:Float = 0;
 
 	public var introAssets:Map<String, Array<String>> = new Map<String, Array<String>>();
-	public var introSounds:Map<String, Array<String>> = new Map<String, Array<String>>();
+	public var introSounds:Array<String> = ['intro3', 'intro2', "intro1", "introGo"];
 
 	function cacheCountdown()
 	{
 		var introAlts:Array<String> = introAssets.get('default');
 		if (isPixelStage) introAlts = introAssets.get('pixel');
 
-		introSounds.set([Paths.sound('intro3' + introSoundsSuffix), Paths.sound('intro2' + introSoundsSuffix),
-						Paths.sound('intro1' + introSoundsSuffix), Paths.sound('introGo' + introSoundsSuffix)]);
-
 		for (asset in introAlts)
 			Paths.image(asset);
 
 		for (sound in introSounds)
-			Paths.sound(sound);
+			Paths.sound(sound + introSoundsSuffix);
 	}
 
 	public function generateStrums() {
@@ -2239,7 +2236,7 @@ class PlayState extends MusicBeatState
 							if (event.spritePath != null) countdownGo = createCountdownSprite(event.spritePath, event.antialiasing);
 						default:
 					}
-					if (event.soundPath != null) FlxG.sound.play(event.soundPath, event.volume);
+					if (event.soundPath != null) FlxG.sound.play(Paths.sound(event.soundPath), event.volume);
 					#else
 					//hsc is not default still, so this is here because or that.
 					switch (tick)
@@ -2254,7 +2251,7 @@ class PlayState extends MusicBeatState
 							if (introAlts[swagCounter] != null) countdownGo = createCountdownSprite(introAlts[swagCounter], antialias);
 						default:
 					}
-					if (introSounds[swagCounter] != null) FlxG.sound.play(introSounds[swagCounter], 0.6);
+					if (introSounds[swagCounter] != null) FlxG.sound.play(Paths.sound(introSounds[swagCounter]), 0.6);
 					#end
 				}
 				catch (exc) {
