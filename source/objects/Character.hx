@@ -104,7 +104,8 @@ class LazyReturnThing { //I'm lazy to use FlxPoint rn, so use this.
 		if (ValueY != null) y = ValueY;
 	}
 	function get() {
-		return tempPoint = new FlxPoint(x, y);
+		var tempPoint = new FlxPoint(x, y);
+		return tempPoint;
 	}
 }
 
