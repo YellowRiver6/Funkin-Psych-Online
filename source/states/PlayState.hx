@@ -4460,7 +4460,7 @@ class PlayState extends MusicBeatState
 		callOnScripts('onCameraMove', [curCameraTarget]);
 	}
 
-	public function setCamPosFromChar(char:Character, x:Int = 0, y:Int = 0, camPos:Array<Float> = [0, 0], camOffsetOG:FlxPoint) {
+	public function setCamPosFromChar(char:Character, x:Float, y:Float, camPos:Array<Float>, camOffsetOG:FlxPoint) {
 		if (char != null) {
 			var camOffset:Array<Float> = [camOffsetOG.x, camOffsetOG.y];
 			if (ClientPrefs.data.oldCameraSystem) camFollow.set(x, y);
