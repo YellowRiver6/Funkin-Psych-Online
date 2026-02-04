@@ -10,6 +10,7 @@ typedef SwagSection =
 	@:optional var bpm:Float;
 	@:optional var changeBPM:Bool;
 	@:optional var altAnim:Bool;
+	@:optional var targetCamera:Null<Int>;
 }
 
 class Section
@@ -20,6 +21,7 @@ class Section
 	public var gfSection:Bool = false;
 	public var typeOfSection:Int = 0;
 	public var mustHitSection:Bool = true;
+	public var targetCamera:Null<Int> = null;
 
 	/**
 	 *	Copies the first section into the second section!

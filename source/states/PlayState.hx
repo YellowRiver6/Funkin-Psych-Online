@@ -108,6 +108,7 @@ import tea.SScript;
 #end
 
 import online.backend.schema.Player;
+import objects.StrumLine;
 
 @:build(online.backend.Macros.getSetForwarder())
 class PlayState extends MusicBeatState
@@ -254,8 +255,9 @@ class PlayState extends MusicBeatState
 	private static var prevCamFollowPos:FlxObject;
 
 	public var strumLineNotes:FlxTypedGroup<StrumNote>;
-	public var opponentStrums:FlxTypedGroup<StrumNote>;
-	public var playerStrums:FlxTypedGroup<StrumNote>;
+	public var strumLines:FlxTypedGroup<StrumLine>; //A variable for CNE mods
+	public var opponentStrums:StrumLine;
+	public var playerStrums:StrumLine;
 	public var grpHoldSplashes:FlxTypedGroup<SustainSplash>;
 	public var grpNoteSplashes:FlxTypedGroup<NoteSplash>;
 
@@ -1201,8 +1203,11 @@ class PlayState extends MusicBeatState
 			noteGroup.add(grpHoldSplashes);
 			noteGroup.add(grpNoteSplashes);
 
-			opponentStrums = new FlxTypedGroup<StrumNote>();
-			playerStrums = new FlxTypedGroup<StrumNote>();
+			opponentStrums = new StrumLine([dad]);
+			playerStrums = new StrumLine([boyfriend]);
+
+			strumLines.add(opponentStrums);
+			strumLines.add(playerStrums);
 
 			generateSong(SONG.song);
 			keysArray = getKeysArray(Note.maniaKeys);
@@ -2343,7 +2348,7 @@ class PlayState extends MusicBeatState
 	}
 
 	public static var hitboxPositions:Array<Float> = [0, 0, 0, 0, 0, 0, 0, 0, 0];
-	public function fixHitboxPos(strumGroup:FlxTypedGroup<StrumNote>, ?keyCountIsDefault:Bool) {
+	public function fixHitboxPos(strumGroup:StrumLine, ?keyCountIsDefault:Bool) {
 		if (keyCountIsDefault) {
 			hitboxPositions[0] = Std.int(strumGroup.members[0].x) - 20;
 			hitboxPositions[1] = Std.int(strumGroup.members[1].x) - 20;
@@ -3564,7 +3569,7 @@ class PlayState extends MusicBeatState
 						var fakeCrochet:Float = (60 / SONG.bpm) * 1000;
 						notes.forEachAlive(function(daNote:Note)
 						{
-							var strumGroup:FlxTypedGroup<StrumNote> = playerStrums;
+							var strumGroup:StrumLine = playerStrums;
 							if(!daNote.mustPress) strumGroup = opponentStrums;
 
 							var strum:StrumNote = strumGroup.members[daNote.noteData];
@@ -4425,7 +4430,11 @@ class PlayState extends MusicBeatState
 		if(prevMustHit != null && prevMustHit == SONG.notes[sec].mustHitSection) return;
 		prevMustHit = SONG.notes[sec].mustHitSection;
 
-		moveCamera(SONG.notes[sec].mustHitSection != true, SONG.notes[sec].gfSection);
+		if (SONG.notes[sec].targetCamera != null) {
+			newMoveCamera(SONG.notes[sec].targetCamera); //Will be main thing in the future
+		} else {
+			moveCamera(SONG.notes[sec].mustHitSection != true, SONG.notes[sec].gfSection);
+		}
 	}
 
 	var aLookAt:Int = 1;
@@ -4433,6 +4442,57 @@ class PlayState extends MusicBeatState
 	var cameraTwn:FlxTween;
 	var cameraTwnX:FlxTween;
 	var cameraTwnY:FlxTween;
+	public function newMoveCamera(char:Int = 0, ?tX:Float, ?tY:Float)
+	{
+		var strumChar = strumLines.members[char].characters[0];
+		var posX = strumChar.getMidpoint().x;
+		var posY = strumChar.getMidpoint().y;
+		if (char == 0) {
+			posX += 150;
+			posY -= 100;
+		} else if (char == 1) {
+			posX -= 100;
+			posY -= 100;
+		}
+
+		setCameraPositionToChar(strumChar, tX + posX, tY + posY, strumChar.cameraPosition, strumChar.cameraOffset);
+		curCameraTarget = char;
+		callOnScripts('onCameraMove', [curCameraTarget]);
+	}
+
+	public function setCameraPositionToChar(char:Character, x:Float = 0, y:Float = 0, camPos:Array<Float> = [0, 0], camOffset:Array<Float> = [0, 0]) {
+		if (char != null) {
+			if (ClientPrefs.data.oldCameraSystem) camFollow.set(x, y);
+			else camFollow.setPosition(x, y);
+			camFollow.x += camPos[0] + camOffset[0];
+			camFollow.y += camPos[1] + camOffset[1];
+			if (char == boyfriend) {
+				if (Paths.formatToSongPath(SONG.song) == 'tutorial' && cameraTwn == null && FlxG.camera.zoom != 1)
+				{
+					cameraTwn = FlxTween.tween(FlxG.camera, {zoom: 1}, (Conductor.stepCrochet * 4 / 1000), {ease: FlxEase.elasticInOut, onComplete:
+						function (twn:FlxTween)
+						{
+							cameraTwn = null;
+						}
+					});
+				}
+
+				aLookAt = 1;
+				if (stage3D != null)
+					stage3D.setFollowCamera('bf');
+			} else if (char == dad) {
+				tweenCamIn();
+				aLookAt = 0;
+				if (stage3D != null)
+					stage3D.setFollowCamera('dad');
+			} else if (char == gf) {
+				tweenCamIn();
+				if (stage3D != null)
+					stage3D.setFollowCamera('gf');
+			}
+		}
+	}
+
 	public function moveCamera(isDad:Bool, ?toGirlfren:Bool = false, ?tX:Float, ?tY:Float)
 	{
 		if (toGirlfren && gf != null) {
@@ -5984,7 +6044,7 @@ class PlayState extends MusicBeatState
 		setOnScripts('curBeat', curBeat);
 		callOnScripts('onBeatHit');
 		#if HSC_ALLOWED
-		if (scripts != null) scripts.call('beatHit'); //why not
+		if (scripts != null) scripts.call('beatHit', [curBeat]); //why not
 		#end
 	}
 
