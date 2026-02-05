@@ -255,7 +255,7 @@ class PlayState extends MusicBeatState
 	private static var prevCamFollowPos:FlxObject;
 
 	public var strumLineNotes:FlxTypedGroup<StrumNote>;
-	public var strumLines:FlxTypedGroup<StrumLine>; //A variable for CNE mods
+	public var strumLines:FlxTypedGroup<StrumLine> = new FlxTypedGroup<StrumLine>(); //A variable for CNE mods
 	public var opponentStrums:StrumLine;
 	public var playerStrums:StrumLine;
 	public var grpHoldSplashes:FlxTypedGroup<SustainSplash>;
@@ -1208,6 +1208,8 @@ class PlayState extends MusicBeatState
 
 			strumLines.add(opponentStrums);
 			strumLines.add(playerStrums);
+
+			add(strumLines);
 
 			generateSong(SONG.song);
 			keysArray = getKeysArray(Note.maniaKeys);
