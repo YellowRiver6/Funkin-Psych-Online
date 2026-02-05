@@ -132,6 +132,7 @@ class PlayState extends MusicBeatState
 	private static function get_difficulty() {
 		return Difficulty.getString();
 	}
+	var globalStrumCount:Int = 2;
 
 	// use only for mod compatibility
 	@:deprecated public static var STRUM_X = 42;
@@ -254,10 +255,15 @@ class PlayState extends MusicBeatState
 	private static var prevCamFollow:FlxPoint;
 	private static var prevCamFollowPos:FlxObject;
 
-	public var strumLineNotes:FlxTypedGroup<StrumNote>;
+	public var strumLineNotes:StrumLine;
 	public var strumLines:FlxTypedGroup<StrumLine> = new FlxTypedGroup<StrumLine>(); //A variable for CNE mods
-	public var opponentStrums:StrumLine;
-	public var playerStrums:StrumLine;
+	public var opponentStrums(get, null):StrumLine;
+	private inline function get_opponentStrums():StrumLine
+		return strumLines.members[0];
+	public var playerStrums(get, null):StrumLine;
+	private inline function get_playerStrums():StrumLine
+		return strumLines.members[1];
+
 	public var grpHoldSplashes:FlxTypedGroup<SustainSplash>;
 	public var grpNoteSplashes:FlxTypedGroup<NoteSplash>;
 
@@ -1198,18 +1204,19 @@ class PlayState extends MusicBeatState
 				noteGroup.add(noteUnderlays);
 			}
 
-			strumLineNotes = new FlxTypedGroup<StrumNote>();
+			strumLineNotes = new StrumLine();
 			noteGroup.add(strumLineNotes);
 			noteGroup.add(grpHoldSplashes);
 			noteGroup.add(grpNoteSplashes);
 
-			opponentStrums = new StrumLine([dad]);
-			playerStrums = new StrumLine([boyfriend]);
+			for (strumNum in 0...globalStrumCount) {
+				var char:Array<Character> = [];
+				if (strumNum == 0) char.push(dad);
+				else if (strumNum == 1) char.push(boyfriend);
 
-			strumLines.add(opponentStrums);
-			strumLines.add(playerStrums);
-
-			add(strumLines);
+				var strum = new StrumLine(char);
+				strumLines.add(strum);
+			}
 
 			generateSong(SONG.song);
 			keysArray = getKeysArray(Note.maniaKeys);
