@@ -9,7 +9,7 @@ class StrumLine extends FlxTypedGroup<StrumNote> {
 	 */
 	public var characters:Array<Character>;
 
-	public function new(characters:Array<Character>) {
+	public function new(?characters:Array<Character> = []) {
 		super();
 		this.characters = characters;
 	}
