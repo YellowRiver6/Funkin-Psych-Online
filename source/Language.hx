@@ -282,14 +282,14 @@ class Language {
 		"Hold Backspace to Delete" => "Silmek için Backspace'e basılı tutun",
 		
 		// Menü ve Leaderboard Başlıkları
-		"GAMEPLAY MODIFIERS"	  => "OYNANIŞ MODİFİKASYONLARI",
-		"MODIFIERS UNAVAILABLE HERE" => "MODİFİKASYONLAR BURADA KULLANILAMAZ",
+		"GAMEPLAY MODIFIERS"	  => "OYNANIŞ MODiFiKASYONLARI",
+		"MODIFIERS UNAVAILABLE HERE" => "MODiFiKASYONLAR BURADA KULLANILAMAZ",
 		"LOAD REPLAY"			 => "TEKRARI YÜKLE",
 		"REPLAYS UNAVAILABLE"	 => "TEKRARLAR KULLANILAMAZ",
 		"RESET SCORE"			 => "SKORU SIFIRLA",
-		"LEADERBOARD"			 => "LİDERLİK TABLOSU",
+		"LEADERBOARD"			 => "LİDERLiK TABLOSU",
 		"< ALL TIME >"			=> "< HER ZAMAN >",
-		"LOADING"				 => "YÜKLENİYOR",
+		"LOADING"				 => "YÜKLENiYOR",
 		"FlashingState.warnText"  => "Hey, dikkat et!\n
 			Bu Mod bazı yanıp sönen ışıklar içeriyor!\n
 			Flaşları kapatmak veya Ayarlar'a gitmek için %{1}% tuşuna bas.\n

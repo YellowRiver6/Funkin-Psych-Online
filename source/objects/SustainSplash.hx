@@ -16,16 +16,20 @@ class SustainSplash extends FlxSprite {
 		x = -50000;
 
 		var skin:String = defaultNoteHoldSplash + getSplashSkinPostfix();
-		frames = Paths.getSparrowAtlas(skin);
-		if (frames == null) {
-			skin = defaultNoteHoldSplash;
-			frames = Paths.getSparrowAtlas(skin);
+		//cache hsv skins
+		final textures:Array<String> = [];
+		if (ClientPrefs.data.disableRGBNotes)
+		{
+			textures.push('${skin}Purple');
+			textures.push('${skin}Blue');
+			textures.push('${skin}Green');
+			textures.push('${skin}Red');
 		}
+		else
+			textures.push(skin);
 
-		if (frames != null) {
-			animation.addByPrefix('hold', 'hold', 24, true);
-			animation.addByPrefix('end', 'end', 24, false);
-		}
+		for (img in textures)
+			Paths.getSparrowAtlas(img);
 	}
 
 	override function update(elapsed) {
@@ -48,7 +52,36 @@ class SustainSplash extends FlxSprite {
 		}
 	}
 
+	private static function setTextureNameFromData(noteData:Int):Void
+	{
+		var tex:String = defaultNoteHoldSplash + getSplashSkinPostfix();
+
+		if (ClientPrefs.data.disableRGBNotes)
+		{
+			tex = switch (noteData)
+			{
+				case 0: '${tex}Purple';
+				case 1: '${tex}Blue';
+				case 2: '${tex}Green';
+				case 3: '${tex}Red';
+				default: tex;
+			}
+		}
+
+		if (frames == null)
+			tex = defaultNoteHoldSplash;
+
+		frames = Paths.getSparrowAtlas(tex);
+	}
+
 	public function setupSusSplash(strum:StrumNote, daNote:Note, ?playbackRate:Float = 1):Void {
+		setTextureNameFromData(daNote.noteData);
+
+		if (frames != null) {
+			animation.addByPrefix('hold', 'hold', 24, true);
+			animation.addByPrefix('end', 'end', 24, false);
+		}
+
 		final lengthToGet:Int = !daNote.isSustainNote ? daNote.tail.length : daNote.parent.tail.length;
 		final timeToGet:Float = !daNote.isSustainNote ? daNote.strumTime : daNote.parent.strumTime;
 		final timeThingy:Float = (startCrochet * lengthToGet + (timeToGet - Conductor.songPosition + ClientPrefs.data.ratingOffset)) / playbackRate * .001;
@@ -70,7 +103,7 @@ class SustainSplash extends FlxSprite {
 
 		clipRect = new flixel.math.FlxRect(0, !PlayState.isPixelStage ? 0 : -210, frameWidth, frameHeight);
 
-		if (daNote.shader != null) {
+		if (daNote.shader != null && !ClientPrefs.data.disableRGBNotes) {
 			// idk what this does, and it causes issues so i'm putting it into try-catch
 			try {
 				shader = new objects.NoteSplash.PixelSplashShaderRef().shader;
