@@ -6905,9 +6905,9 @@ class PlayState extends MusicBeatState
 					if (strumChars.length <= 0) {
 						strumChars.push(null);
 					}
-					for (strumChar in 0...strumChars.length) {
-						if (strumChars != null)
-							char = strumChar;
+					for (charIndex in 0...strumChars.length) {
+						if (strumChars[charIndex] != null)
+							char = strumChars[charIndex];
 
 						if (char == null)
 							return;
