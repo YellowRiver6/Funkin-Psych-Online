@@ -37,25 +37,13 @@ class VisualsUISubState extends BaseOptionsMenu
 
 		// options
 		var option:Option = new Option('Language:',
-			"Select your language.",
+			"Select your language. \n(This is temporary option, will have own state later)",
 			'lang',
 			'string',
 			["EN", "TR"]);
 		addOption(option);
 
-		var option:Option = new Option('Disable RGB',
-			"If checked, disables the rgb shader globally.",
-			'disableRGB',
-			'bool');
-		addOption(option);
-		option.onChange = () -> {
-			new FlxTimer().start(0.1, function(t:FlxTimer)
-			{
-				close(); //temporarily here
-			});
-		};
-
-		if(NoteSkinData.noteSkins.length > 0 && !ClientPrefs.data.disableRGB)
+		if(NoteSkinData.noteSkins.length > 0)
 		{
 			if(!NoteSkinData.noteSkinArray.contains(ClientPrefs.data.noteSkin))
 				ClientPrefs.data.noteSkin = ClientPrefs.defaultData.noteSkin; //Reset to default if saved noteskin couldnt be found
@@ -71,7 +59,7 @@ class VisualsUISubState extends BaseOptionsMenu
 		}
 		
 		var noteSplashes:Array<String> = Mods.mergeAllTextsNamed('images/noteSplashes/list.txt', 'shared');
-		if(noteSplashes.length > 0 && !ClientPrefs.data.disableRGB)
+		if(noteSplashes.length > 0)
 		{
 			if(!noteSplashes.contains(ClientPrefs.data.splashSkin))
 				ClientPrefs.data.splashSkin = ClientPrefs.defaultData.splashSkin; //Reset to default if saved splashskin couldnt be found
@@ -84,6 +72,12 @@ class VisualsUISubState extends BaseOptionsMenu
 				noteSplashes);
 			addOption(option);
 		}
+
+		var option:Option = new Option('Disable RGB Notes',
+			"If checked, notes will use the HSV coloring method.",
+			'disableRGBNotes',
+			'bool');
+		addOption(option);
 
 		var option:Option = new Option('Note Splash Opacity',
 			'How much transparent should the Note Splashes be.\n0% disables it.',

@@ -11,18 +11,7 @@ class StrumLine extends FlxTypedGroup<StrumNote> {
 	/**
 	 * Strum controlling by cpu or not.
 	 */
-	public var cpu(default, set):Bool;
-	private function set_cpu(variable:Bool) {
-		if (PlayState.instance != null && !isStrumCreation) {
-			for (note in PlayState.instance.unspawnNotes) {
-				if (note.rawNoteData >= targetNoteData && note.rawNoteData < targetNoteData + noteCount) {
-					note.mustPress = !variable;
-				}
-			}
-		}
-		cpu = variable; //silly me
-		return variable;
-	}
+	public var cpu:Bool;
 
 	/**
 	 * Targetted Note Data for this strumline.

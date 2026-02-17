@@ -38,10 +38,13 @@ class StrumNote extends FlxSprite
 	public function new(x:Float, y:Float, leData:Int, player:Int) {
 		var mustPress = player == 1;
 
-		if (ClientPrefs.data.disableRGB) {
+		if (ClientPrefs.data.disableRGBNotes)
+		{
 			colorSwap = new ColorSwap();
 			shader = colorSwap.shader;
-		} else {
+		}
+		else
+		{
 			rgbShader = new RGBShaderReference(this, Note.initializeGlobalRGBShader(leData, mustPress));
 			rgbShader.enabled = false;
 			if(PlayState.SONG != null && PlayState.SONG.disableNoteRGB) useRGBShader = false;
@@ -265,12 +268,16 @@ class StrumNote extends FlxSprite
 			centerOffsets();
 			centerOrigin();
 		}
-		if (ClientPrefs.data.disableRGB) {
-			if(animation.curAnim == null || animation.curAnim.name == 'static') {
+		if (ClientPrefs.data.disableRGBNotes)
+		{
+			if (animation.curAnim == null || animation.curAnim.name == 'static')
+			{
 				colorSwap.hue = 0;
 				colorSwap.saturation = 0;
 				colorSwap.brightness = 0;
-			} else {
+			}
+			else
+			{
 				if (noteData > -1 && noteData < ClientPrefs.data.arrowHSV.length)
 				{
 					colorSwap.hue = ClientPrefs.data.arrowHSV[noteData][0] / 360;
@@ -278,13 +285,15 @@ class StrumNote extends FlxSprite
 					colorSwap.brightness = ClientPrefs.data.arrowHSV[noteData][2] / 100;
 				}
 
-				if(animation.curAnim != null) {
-					if(animation.curAnim.name == 'confirm' && !PlayState.isPixelStage)
+				if (animation.curAnim != null)
+				{
+					if (animation.curAnim.name == 'confirm' && !PlayState.isPixelStage)
 						centerOrigin();
 				}
 			}
 		}
-		else if(useRGBShader) rgbShader.enabled = (animation.curAnim != null && animation.curAnim.name != 'static');
+		else if(useRGBShader)
+			rgbShader.enabled = (animation.curAnim != null && animation.curAnim.name != 'static');
 	}
 
 	override function set_visible(value:Bool):Bool {

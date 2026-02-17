@@ -21,7 +21,7 @@ class NoteSplash extends FlxSprite
 	private var _textureLoaded:String = null;
 	private var _configLoaded:String = null;
 
-	public static var defaultNoteSplash:String = 'noteSplashes/noteSplashes';
+	public static var defaultNoteSplash(get, never):String;
 	public static var configs:Map<String, NoteSplashConfig> = new Map<String, NoteSplashConfig>();
 
 	public function new(x:Float = 0, y:Float = 0) {
@@ -31,12 +31,13 @@ class NoteSplash extends FlxSprite
 		if(PlayState.SONG.splashSkin != null && PlayState.SONG.splashSkin.length > 0) skin = PlayState.SONG.splashSkin;
 		else skin = defaultNoteSplash + getSplashSkinPostfix();
 
-		if (ClientPrefs.data.disableRGB) {
-			defaultNoteSplash = 'noteSplashes';
+		if (ClientPrefs.data.disableRGBNotes)
+		{
 			colorSwap = new ColorSwap();
 			shader = colorSwap.shader;
 		}
-		else {
+		else
+		{
 			rgbShader = new PixelSplashShaderRef();
 			shader = rgbShader.shader;
 		}
@@ -75,25 +76,32 @@ class NoteSplash extends FlxSprite
 			config = precacheConfig(_configLoaded);
 
 		var tempShader:RGBPalette = null;
-		if (ClientPrefs.data.disableRGB) {
+		if (ClientPrefs.data.disableRGBNotes)
+		{
 			var hue:Float = 0;
-			var sat:Float = 0;
-			var brt:Float = 0;
+			var saturation:Float = 0;
+			var brightness:Float = 0;
+
 			if (direction > -1 && direction < ClientPrefs.data.arrowHSV.length)
 			{
 				hue = ClientPrefs.data.arrowHSV[direction][0] / 360;
-				sat = ClientPrefs.data.arrowHSV[direction][1] / 100;
-				brt = ClientPrefs.data.arrowHSV[direction][2] / 100;
-				if(note != null) {
+				saturation = ClientPrefs.data.arrowHSV[direction][1] / 100;
+				brightness = ClientPrefs.data.arrowHSV[direction][2] / 100;
+
+				if (note != null)
+				{
 					hue = note.noteSplashHue;
-					sat = note.noteSplashSat;
-					brt = note.noteSplashBrt;
+					saturation = note.noteSplashSaturation;
+					brightness = note.noteSplashBrightness;
 				}
 			}
+
 			colorSwap.hue = hue;
-			colorSwap.saturation = sat;
-			colorSwap.brightness = brt;
-		} else {
+			colorSwap.saturation = saturation;
+			colorSwap.brightness = brightness;
+		}
+		else
+		{
 			if((note == null || note.noteSplashData.useRGBShader) && (PlayState.SONG == null || !PlayState.SONG.disableNoteRGB))
 			{
 				// If Note RGB is enabled:
@@ -110,7 +118,8 @@ class NoteSplash extends FlxSprite
 
 		alpha = ClientPrefs.data.splashAlpha;
 		if(note != null) alpha = note.noteSplashData.a;
-		if (!ClientPrefs.data.disableRGB) rgbShader.copyValues(tempShader);
+		if (!ClientPrefs.data.disableRGBNotes)
+			rgbShader.copyValues(tempShader);
 
 		if(note != null) antialiasing = note.noteSplashData.antialiasing;
 		if(PlayState.isPixelStage || !ClientPrefs.data.antialiasing) antialiasing = false;
@@ -228,6 +237,10 @@ class NoteSplash extends FlxSprite
 
 		super.update(elapsed);
 	}
+
+	@:noCompletion
+	private static function get_defaultNoteSplash():String
+		return !ClientPrefs.data.disableRGBNotes ? 'noteSplashes/noteSplashes' : 'noteSplashes';
 }
 
 class PixelSplashShaderRef {

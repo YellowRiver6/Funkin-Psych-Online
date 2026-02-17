@@ -112,7 +112,7 @@ class Note extends FlxSprite
 	}
 
 	public static var colArray:Array<String> = ['purple', 'blue', 'green', 'red'];
-	public static var defaultNoteSkin:String = 'noteSkins/NOTE_assets';
+	public static var defaultNoteSkin(get, never):String;
 
 	public var noteSplashData:NoteSplashData = {
 		disabled: false,
@@ -206,17 +206,15 @@ class Note extends FlxSprite
 
 	private function set_noteType(value:String):String {
 		noteSplashData.texture = PlayState.SONG != null ? PlayState.SONG.splashSkin : 'noteSplashes';
-		if (ClientPrefs.data.disableRGB) {
+		(ClientPrefs.data.disableRGBNotes)
 			if (noteData > -1 && noteData < ClientPrefs.data.arrowHSV.length)
 			{
-				colorSwap.hue = ClientPrefs.data.arrowHSV[noteData][0] / 360;
-				colorSwap.saturation = ClientPrefs.data.arrowHSV[noteData][1] / 100;
-				colorSwap.brightness = ClientPrefs.data.arrowHSV[noteData][2] / 100;
+				colorSwap.hue = noteSplashHue = ClientPrefs.data.arrowHSV[noteData][0] / 360;
+				colorSwap.saturation = noteSplashSaturation = ClientPrefs.data.arrowHSV[noteData][1] / 100;
+				colorSwap.brightness = noteSplashBrightness = ClientPrefs.data.arrowHSV[noteData][2] / 100;
 			}
-		}
-		else {
+		else
 			defaultRGB();
-		}
 
 		if(noteData > -1 && noteType != value) {
 			switch(value) {
@@ -227,22 +225,28 @@ class Note extends FlxSprite
 					//but i've changed it to something more optimized with the implementation of RGBPalette:
 
 					// note colors
-					if (ClientPrefs.data.disableRGB) {
-						reloadNote('HURT', "NOTE_assets");
-						colorSwap.hue = 0;
-						colorSwap.saturation = 0;
-						colorSwap.brightness = 0;
+					if (ClientPrefs.data.disableRGBNotes)
+					{
+						reloadNote('HURTNOTE_assets');
+						// note and splash data colors
+						colorSwap.hue = noteSplashHue = 0;
+						colorSwap.saturation = noteSplashSaturation = 0;
+						colorSwap.brightness = noteSplashBrightness = 0;
+
+						noteSplashData.texture = 'HURTnoteSplashes';
 					}
-					else {
+					else
+					{
+						// note colors
 						rgbShader.r = 0xFF101010;
 						rgbShader.g = 0xFFFF0000;
 						rgbShader.b = 0xFF990022;
-					}
 
-					// splash data and colors
-					noteSplashData.r = 0xFFFF0000;
-					noteSplashData.g = 0xFF101010;
-					noteSplashData.texture = 'noteSplashes/noteSplashes-electric';
+						// splash data and colors
+						noteSplashData.r = 0xFFFF0000;
+						noteSplashData.g = 0xFF101010;
+						noteSplashData.texture = 'noteSplashes/noteSplashes-electric';
+					}
 
 					// gameplay data
 					lowPriority = true;
@@ -261,11 +265,6 @@ class Note extends FlxSprite
 			if (value != null && value.length > 1) NoteTypesConfig.applyNoteTypeData(this, value);
 			if (hitsound != 'hitsound' && ClientPrefs.data.hitsoundVolume > 0) Paths.sound(hitsound); //precache new sound for being idiot-proof
 			noteType = value;
-		}
-		if (ClientPrefs.data.disableRGB) {
-			noteSplashHue = colorSwap.hue;
-			noteSplashSat = colorSwap.saturation;
-			noteSplashBrt = colorSwap.brightness;
 		}
 		return value;
 	}
@@ -341,13 +340,16 @@ class Note extends FlxSprite
 
 		if(noteData > -1) {
 			texture = '';
-			if (ClientPrefs.data.disableRGB) {
+			if (ClientPrefs.data.disableRGBNotes)
+			{
 				colorSwap = new ColorSwap();
 				shader = colorSwap.shader;
 			}
-			else {
+			else
+			{
 				rgbShader = new RGBShaderReference(this, initializeGlobalRGBShader(noteData, mustPress));
-				if(PlayState.SONG != null && PlayState.SONG.disableNoteRGB) rgbShader.enabled = false;
+				if (PlayState.SONG != null && PlayState.SONG.disableNoteRGB)
+					rgbShader.enabled = false;
 			}
 
 			x += swagScaledWidth * (noteData);
@@ -441,7 +443,6 @@ class Note extends FlxSprite
 	public function reloadNote(texture:String = '', postfix:String = '') {
 		if(texture == null) texture = '';
 		if(postfix == null) postfix = '';
-		if (ClientPrefs.data.disableRGB) defaultNoteSkin = 'NOTE_assets';
 
 		Note.colArray = Note.getColArrayFromKeys();
 
@@ -739,4 +740,7 @@ class Note extends FlxSprite
 
 		return value;
 	}
+
+	private static function get_defaultNoteSkin():String
+		return ClientPrefs.data.disableRGBNotes ? 'NOTE_assets' : 'noteSkins/NOTE_assets';
 }

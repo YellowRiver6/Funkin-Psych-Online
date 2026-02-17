@@ -22,9 +22,9 @@ class OptionsState extends MusicBeatState
 		}
 		switch(label) {
 			case 'Note Colors':
-				if (ClientPrefs.data.disableRGB) {
+				if (ClientPrefs.data.disableRGBNotes) {
 					controls.isInSubstate = true;
-					openSubState(new options.NotesSubStateOld()); //use old menu for old system
+					openSubState(new options.NotesSubStateOld());
 				}
 				else openSubState(new options.NotesSubState());
 			case 'Controls':

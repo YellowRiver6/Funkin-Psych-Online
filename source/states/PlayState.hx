@@ -3370,6 +3370,13 @@ class PlayState extends MusicBeatState
 				GameClient.send("charPlay", ["taunt" + altSuffix]);
 		}
 
+		//should fix realtime cpu switch lag.
+		notes.forEachAlive(function(note:Note) {
+			if (note.mustPress == strumLines.members[getStrumIndexFromData(note)].cpu) {
+				note.mustPress = !strumLines.members[getStrumIndexFromData(note)].cpu;
+			}
+		});
+
 		if (GameClient.isConnected()) {
 			//if player 2 left then go back to lobby // nvm, unreliable on reconnects
 			// if (!GameClient.reconnecting && GameClient.room.state.player2.name == "") {

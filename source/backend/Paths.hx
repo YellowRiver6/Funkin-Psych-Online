@@ -391,7 +391,7 @@ class Paths
 
 	inline static public function font(key:String)
 	{
-		if (ClientPrefs.data.lang != "EN") key = ClientPrefs.data.lang + "/" + key;
+		key = ClientPrefs.data.lang + "/" + key;
 		#if MODS_ALLOWED
 		var file:String = modsFont(key);
 		if(FileSystem.exists(file)) {
