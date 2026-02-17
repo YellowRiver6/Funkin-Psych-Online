@@ -8,14 +8,13 @@
     {
       "name": "lime",
       "type": "git",
-      "ref": null,
-      "url": "https://github.com/ShadowEngineTeam/lime"
+      "ref": "main",
+      "url": "https://github.com/ArkoseLabsOfficial/lime-termux"
     },
     {
       "name": "openfl",
-      "type": "git",
-      "ref": "feature/desktop-angle",
-      "url": "https://github.com/FunkinCrew/openfl"
+      "type": "haxelib",
+      "version": "9.3.3"
     },
     {
       "name": "flixel",
@@ -41,6 +40,7 @@
     {
       "name": "hxcpp",
       "type": "git",
+      "dir": null,
       "ref": null,
       "url": "https://github.com/ShadowEngineTeam/hxcpp"
     },
@@ -52,8 +52,9 @@
     {
       "name": "SScript",
       "type": "git",
+      "dir": null,
       "ref": "main",
-      "url": "https://github.com/ShadowEngineTeam/SScript"
+      "url": "https://github.com/Snirozu/SScript-7.7.0"
     },
     {
       "name": "hxdiscord_rpc",
@@ -63,8 +64,9 @@
     {
       "name": "linc_luajit",
       "type": "git",
-      "ref": null,
-      "url": "https://github.com/ShadowEngineTeam/linc_luajit"
+      "dir": null,
+      "ref": "main",
+      "url": "https://github.com/th2l-devs/linc_luajit"
     },
     {
       "name": "colyseus",
@@ -88,7 +90,13 @@
     },
     {
       "name": "away3d",
+      "type": "haxelib",
+      "version": "5.0.9"
+    },
+    {
+      "name": "away3d",
       "type": "git",
+      "dir": null,
       "ref": "master",
       "url": "https://github.com/Snirozu/away3d"
     },
@@ -127,8 +135,9 @@
     {
       "name": "grig.audio",
       "type": "git",
-      "ref": "57f5d47f2533fd0c3dcd025a86cb86c0dfa0b6d2",
-      "url": "https://github.com/osakared/grig.audio"
+      "dir": null,
+      "ref": "162f924bdde427fc84af5b51961d2faef51f6955",
+      "url": "https://github.com/Snirozu/grig.audio"
     },
     {
       "name": "tink_core",
@@ -137,31 +146,34 @@
     },
     {
       "name": "hxvlc",
-      "type": "git",
-      "ref": null,
-      "url": "https://github.com/ShadowEngineTeam/hxvlc"
+      "type": "haxelib",
+      "version": "2.0.1"
     },
     {
       "name": "yagp",
       "type": "git",
+      "dir": null,
       "ref": "master",
       "url": "https://github.com/Snirozu/yagp"
     },
     {
       "name": "funkin.vis",
       "type": "git",
+      "dir": null,
       "ref": "1966f8fbbbc509ed90d4b520f3c49c084fc92fd6",
       "url": "https://github.com/FunkinCrew/funkVis"
     },
     {
       "name": "mobile-controls",
       "type": "git",
+      "dir": null,
       "ref": "main",
       "url": "https://github.com/Prohack101010/mobile-controls-dev"
     },
     {
       "name": "hscript-improved",
       "type": "git",
+      "dir": null,
       "ref": null,
       "url": "https://github.com/PsychExtendedThings/hscript-improved-Psych"
     },

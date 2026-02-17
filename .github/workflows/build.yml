@@ -57,8 +57,15 @@ jobs:
           restore-keys: |
             cache-build-${{ inputs.name }}
 
-      - name: Install Libraries
+      - name: Install Libraries (ANGLE)
+        if: endsWith(inputs.name, 'ANGLE')
         run: ${{ inputs.setupCommand }}
+
+      - name: Install Libraries (NORMAL)
+        if: endsWith(inputs.name, 'NORMAL')
+        run: |
+          haxelib install hmm --quiet
+          haxelib run hmm install --quiet
 
       - name: Configure Android
         if: startsWith(inputs.name, 'Android')

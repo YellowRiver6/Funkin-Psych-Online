@@ -9,13 +9,13 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: Android
+          - name: Android-NORMAL
             os: ubuntu-latest
             setupCommand: sh ./setup/unix-alter.sh
             buildArgs: "android -ONLY_ARM64"
             artifactName: androidBuild
             artifactPath: "export/release/android/bin/app/build/outputs/apk/release/*.apk"
-          - name: Windows
+          - name: Windows-NORMAL
             os: windows-latest
             setupCommand: .\"setup/windows.bat"
             buildArgs: "windows -D officialBuild -final"
