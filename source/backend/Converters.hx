@@ -110,9 +110,9 @@ class Converters {
 		var queueBPMChange:Dynamic = false;
 		var curBPM:Dynamic = metaData.bpm;
 		var songTime:Dynamic = 0;
-		var measureTimes:Dynamic = [0];
+		var measureTimes:Array<Float> = [0];
 
-		var altEvents:Dynamic = [];
+		var altEvents:Array<Array<Dynamic>> = [];
 		if (chartData.strumLines != null) {
 			for (i in 0...chartData.strumLines.length) {
 				altEvents.push([{time: 0, anim: false, idle: false}]);
@@ -263,11 +263,11 @@ class Converters {
 					}
 				}
 
-				var strumNotes:Dynamic = strum.notes;
+				var strumNotes:Array<Dynamic> = strum.notes;
 				strumNotes.sort(function(a, b) return Math.floor(a.time - b.time));
 
-				var measureIndex:Dynamic = 0;
-				var altIndex:Dynamic = 0;
+				var measureIndex:Int = 0;
+				var altIndex:Int = 0;
 				curBPM = metaData.bpm;
 				songTime = 0;
 				measureTimes = [0];
