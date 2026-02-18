@@ -1,5 +1,4 @@
-name: Build Psych Online + Release
-run-name: Psych Online 0.13.2 Mobile Port
+name: Build Psych Extended Online + Release
 on: workflow_dispatch
 
 permissions:
@@ -59,8 +58,8 @@ jobs:
       - name: Publish The Release
         uses: softprops/action-gh-release@v2
         with:
-          name: "PsychOnline 0.13.2 Mobile Bugfix"
-          tag_name: "0.13.2-bugfix-mobile"
+          name: "0.1.0"
+          tag_name: "0.1.0"
           prerelease: false
           files: |
             /home/runner/*.apk

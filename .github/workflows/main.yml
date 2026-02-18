@@ -1,4 +1,4 @@
-name: Build Psych Online Mobile
+name: Build Psych Extended Online
 
 on: workflow_dispatch
 
