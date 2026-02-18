@@ -85,7 +85,7 @@ class Converters {
 	public static function parseCodenameChart(chartData:Dynamic, metaData:Dynamic):Dynamic
 	{
 		var curCamera:Int = 0;
-		var psychJson = {
+		var psychJson:Dynamic = {
 			song: metaData.displayName,
 			notes: [],
 			events: [],
@@ -101,17 +101,17 @@ class Converters {
 		if (chartData.stage != null) psychJson.stage = chartData.stage;
 		else if (metaData.stage != null) psychJson.stage = metaData.stage;
 
-		var beatsPerMeasure = (metaData.beatsPerMeasure != null) ? metaData.beatsPerMeasure : 4;
-		var stepsPerBeat = (metaData.stepsPerBeat != null) ? metaData.stepsPerBeat : 4;
+		var beatsPerMeasure:Float = (metaData.beatsPerMeasure != null) ? metaData.beatsPerMeasure : 4;
+		var stepsPerBeat:Float = (metaData.stepsPerBeat != null) ? metaData.stepsPerBeat : 4;
 
-		var curSpeed = chartData.scrollSpeed;
-		var mustHit = false;
-		var queueBPMChange = false;
-		var curBPM = metaData.bpm;
-		var songTime = 0;
-		var measureTimes = [0];
+		var curSpeed:Float = chartData.scrollSpeed;
+		var mustHit:Bool = false;
+		var queueBPMChange:Bool = false;
+		var curBPM:Float = metaData.bpm;
+		var songTime:Float = 0;
+		var measureTimes:Array<Float> = [0];
 
-		var altEvents = [];
+		var altEvents:Array<Array<Dynamic>> = [];
 		if (chartData.strumLines != null) {
 			for (i in 0...chartData.strumLines.length) {
 				altEvents.push([{time: 0, anim: false, idle: false}]);
@@ -122,18 +122,18 @@ class Converters {
 		var addSections = function(tilTime) {
 			if (songTime + sectionThreshold >= tilTime) return;
 
-			var crochet = 60.0 / curBPM * 1000.0;
-			var diff = tilTime - measureTimes[measureTimes.length - 1];
-			var beats = diff / crochet;
+			var crochet:Float = 60.0 / curBPM * 1000.0;
+			var diff:Float = tilTime - measureTimes[measureTimes.length - 1];
+			var beats:Float = diff / crochet;
 
-			var targetBeats = beats / (4 / sectionSnapping);
-			var snappedBeats = (snappingMethod == "round") ? Math.round(targetBeats) : Math.floor(targetBeats);
+			var targetBeats:Float = beats / (4 / sectionSnapping);
+			var snappedBeats:Float = (snappingMethod == "round") ? Math.round(targetBeats) : Math.floor(targetBeats);
 			beats = snappedBeats * (4 / sectionSnapping);
 
-			var totalSections = Math.ceil(beats / beatsPerMeasure);
+			var totalSections:Int = Math.ceil(beats / beatsPerMeasure);
 
 			for (i in 0...totalSections) {
-				var secBeats = beatsPerMeasure;
+				var secBeats:Float = beatsPerMeasure;
 				if (i == 0 && beats % beatsPerMeasure > 0) secBeats = beats % beatsPerMeasure;
 
 				psychJson.notes.push({
@@ -154,18 +154,18 @@ class Converters {
 
 		// --- EVENTS ---
 		if (chartData.events != null) {
-			var sortedEvents = chartData.events;
+			var sortedEvents:Array<Dynamic> = chartData.events;
 			sortedEvents.sort(function(ev1, ev2) return Math.floor(ev1.time - ev2.time));
 
 			for (event in sortedEvents) {
 				switch (event.name) {
 					case "Camera Movement":
 						addSections(event.time);
-						var strumId = event.params[0];
+						var strumId:Int = event.params[0];
 						if (chartData.strumLines != null && chartData.strumLines.length > strumId) {
 							var charPosName = chartData.strumLines[strumId].position;
 							if (charPosName == null) {
-								var sType = chartData.strumLines[strumId].type;
+								var sType:Int = chartData.strumLines[strumId].type;
 								if (sType == 0) charPosName = "dad";
 								else if (sType == 1) charPosName = "boyfriend";
 								else if (sType == 2) charPosName = "girlfriend";
@@ -179,14 +179,22 @@ class Converters {
 						curBPM = event.params[0];
 						queueBPMChange = true;
 					case "Add Camera Zoom":
-						var psychEvent = ["Add Camera Zoom", event.params[0] * (event.params[1] == "camGame" ? 1 : 0), event.params[0] * (event.params[1] == "camHUD" ? 1 : 0)];
+						var psychEvent:Array<Dynamic> = [
+							"Add Camera Zoom",
+							event.params[0] * (event.params[1] == "camGame" ? 1 : 0),
+							event.params[0] * (event.params[1] == "camHUD" ? 1 : 0)
+						];
 						if (psychJson.events.length <= 0 || Math.abs(psychJson.events[psychJson.events.length - 1][0] - event.time) > 0.1)
 							psychJson.events.push([event.time, [psychEvent]]);
 						else
 							psychJson.events[psychJson.events.length - 1][1].push(psychEvent);
 					case "Scroll Speed Change":
 						if (curSpeed != event.params[1]) {
-							var psychEvent = ["Change Scroll Speed", event.params[1] / curSpeed, event.params[2] / (60 / curBPM * 1000.0) * json.meta.stepsPerBeat];
+							var psychEvent:Array<Dynamic> = [
+								"Change Scroll Speed",
+								event.params[1] / curSpeed,
+								event.params[2] / (60 / curBPM * 1000.0) * json.meta.stepsPerBeat
+							];
 							curSpeed = event.params[1];
 							if (psychJson.events.length <= 0 || Math.abs(psychJson.events[psychJson.events.length - 1][0] - event.time) > 0.1)
 								psychJson.events.push([event.time, [psychEvent]]);
@@ -194,7 +202,7 @@ class Converters {
 								psychJson.events[psychJson.events.length - 1][1].push(psychEvent);
 						}
 					case "Play Animation":
-						var psychEvent = ["Play Animation", event.params[1], json.strumLines[event.params[0]].type];
+						var psychEvent:Array<Dynamic> = ["Play Animation", event.params[1], json.strumLines[event.params[0]].type];
 						if (psychJson.events.length <= 0 || Math.abs(psychJson.events[psychJson.events.length - 1][0] - event.time) > 0.1)
 							psychJson.events.push([event.time, [psychEvent]]);
 						else
@@ -210,19 +218,19 @@ class Converters {
 							anim: event.params[0],
 							idle: event.params[1]
 						});
-						var lastState = altEvents[event.params[2]][altEvents[event.params[2]].length - 2];
+						var lastState:Dynamic = altEvents[event.params[2]][altEvents[event.params[2]].length - 2];
 						if (lastState != null && lastState.idle != event.params[1]) {
-							var psychEvent = ["Alt Idle Animation", Std.string(json.strumLines[event.params[0]].type), (event.params[1]) ? "-alt" : ""];
+							var psychEvent:Array<Dynamic> = ["Alt Idle Animation", Std.string(json.strumLines[event.params[0]].type), (event.params[1]) ? "-alt" : ""];
 							if (psychJson.events.length <= 0 || Math.abs(psychJson.events[psychJson.events.length - 1][0] - event.time) > 0.1)
 								psychJson.events.push([event.time, [psychEvent]]);
 							else
 								psychJson.events[psychJson.events.length - 1][1].push(psychEvent);
 						}
 					default:
-						var val1 = "";
-						var val2 = "";
+						var val1:String = "";
+						var val2:String = "";
 						if (event.params != null) {
-							var mid = Math.ceil(event.params.length * 0.5);
+							var mid:Int = Math.ceil(event.params.length * 0.5);
 							val1 = [for (i in 0...mid) Std.string(event.params[i])].join(", ");
 							val2 = [for (i in mid...event.params.length) Std.string(event.params[i])].join(", ");
 						}
@@ -247,10 +255,10 @@ class Converters {
 		});
 
 			if (chartData.strumLines != null) {
-			var numberThing = 2; // Counter for extra players (starts at 2 so first extra becomes 3)
+			var numberThing:Int = 2; // Counter for extra players (starts at 2 so first extra becomes 3)
 
 			for (s in 0...chartData.strumLines.length) {
-				var strum = chartData.strumLines[s];
+				var strum:Dynamic = chartData.strumLines[s];
 
 				// --- Character Name Assignment based on Index ---
 				if (strum.characters != null && strum.characters.length > 0) {
@@ -262,11 +270,11 @@ class Converters {
 					}
 				}
 
-				var strumNotes = strum.notes;
+				var strumNotes:Array<Dynamic> = strum.notes;
 				strumNotes.sort(function(a, b) return Math.floor(a.time - b.time));
 
-				var measureIndex = 0;
-				var altIndex = 0;
+				var measureIndex:Int = 0;
+				var altIndex:Int = 0;
 				curBPM = metaData.bpm;
 				songTime = 0;
 				measureTimes = [0];
@@ -281,13 +289,13 @@ class Converters {
 							while (measureIndex < measureTimes.length && measureTimes[measureIndex] <= note.time + sectionThreshold) measureIndex++;
 							while (altEvents[s].length > altIndex && altEvents[s][altIndex].time <= note.time + sectionThreshold) altIndex++;
 
-							var targetSecIdx = measureIndex - 1;
+							var targetSecIdx:Int = measureIndex - 1;
 							if (targetSecIdx < 0) targetSecIdx = 0;
 							if (targetSecIdx >= psychJson.notes.length) targetSecIdx = psychJson.notes.length - 1;
-							var sec = psychJson.notes[targetSecIdx];
+							var sec:Dynamic = psychJson.notes[targetSecIdx];
 
-							var intFix = sec.mustHitSection ? 1 : 0;
-							var psychNote = [note.time, (note.id % 4) + 4 * intFix, note.sLen];
+							var intFix:Int = sec.mustHitSection ? 1 : 0;
+							var psychNote:Array<Dynamic> = [note.time, (note.id % 4) + 4 * intFix, note.sLen];
 
 							if (note.type != null && note.type > 0 && chartData.noteTypes != null) 
 								psychNote.push(chartData.noteTypes[note.type]);
@@ -308,13 +316,13 @@ class Converters {
 							while (measureIndex < measureTimes.length && measureTimes[measureIndex] <= note.time + sectionThreshold) measureIndex++;
 							while (altEvents[s].length > altIndex && altEvents[s][altIndex].time <= note.time + sectionThreshold) altIndex++;
 
-							var targetSecIdx = measureIndex - 1;
+							var targetSecIdx:Int = measureIndex - 1;
 							if (targetSecIdx < 0) targetSecIdx = 0;
 							if (targetSecIdx >= psychJson.notes.length) targetSecIdx = psychJson.notes.length - 1;
-							var sec = psychJson.notes[targetSecIdx];
+							var sec:Dynamic = psychJson.notes[targetSecIdx];
 
-							var intFix = !sec.mustHitSection ? 1 : 0;
-							var psychNote = [note.time, (note.id % 4) + (4 * intFix), note.sLen];
+							var intFix:Int = !sec.mustHitSection ? 1 : 0;
+							var psychNote:Array<Dynamic> = [note.time, (note.id % 4) + (4 * intFix), note.sLen];
 
 							if (note.type != null && note.type > 0 && chartData.noteTypes != null) 
 								psychNote.push(chartData.noteTypes[note.type]);
@@ -335,13 +343,13 @@ class Converters {
 							while (measureIndex < measureTimes.length && measureTimes[measureIndex] <= note.time + sectionThreshold) measureIndex++;
 							while (altEvents[s].length > altIndex && altEvents[s][altIndex].time <= note.time + sectionThreshold) altIndex++;
 
-							var targetSecIdx = measureIndex - 1;
+							var targetSecIdx:Int = measureIndex - 1;
 							if (targetSecIdx < 0) targetSecIdx = 0;
 							if (targetSecIdx >= psychJson.notes.length) targetSecIdx = psychJson.notes.length - 1;
-							var sec = psychJson.notes[targetSecIdx];
+							var sec:Dynamic = psychJson.notes[targetSecIdx];
 
 							// GF is usually mapped to 8-11 or handled separately, here we map to 8-11
-							var psychNote = [note.time, (note.id % 4) + (4 * 2), note.sLen];
+							var psychNote:Array<Dynamic> = [note.time, (note.id % 4) + (4 * 2), note.sLen];
 
 							if (note.type == 0) {
 								// Added GF Sing for 0 type if desired, otherwise remove logic below to be pure ID
@@ -368,13 +376,13 @@ class Converters {
 							while (measureIndex < measureTimes.length && measureTimes[measureIndex] <= note.time + sectionThreshold) measureIndex++;
 							while (altEvents[s].length > altIndex && altEvents[s][altIndex].time <= note.time + sectionThreshold) altIndex++;
 
-							var targetSecIdx = measureIndex - 1;
+							var targetSecIdx:Int = measureIndex - 1;
 							if (targetSecIdx < 0) targetSecIdx = 0;
 							if (targetSecIdx >= psychJson.notes.length) targetSecIdx = psychJson.notes.length - 1;
-							var sec = psychJson.notes[targetSecIdx];
+							var sec:Dynamic = psychJson.notes[targetSecIdx];
 
 							// Map to strums 12+, 16+, etc.
-							var psychNote = [note.time, (note.id % 4) + (4 * numberThing), note.sLen];
+							var psychNote:Array<Dynamic> = [note.time, (note.id % 4) + (4 * numberThing), note.sLen];
 
 							// Only add note types if strictly necessary (from chart data), no generic "Player X Sing" bc multiple strums exists
 							if (note.type != null && note.type > 0 && chartData.noteTypes != null) 
@@ -385,12 +393,12 @@ class Converters {
 								else psychNote[3] = "Alt Animation";
 							}
 							sec.sectionNotes.push(psychNote);
-							}
+						}
 				}
 			}
 		}
 
-		var jsonOutput = {
+		var jsonOutput:Dynamic = {
 			song: psychJson
 		};
 
