@@ -39,6 +39,7 @@ class Note extends FlxSprite
 {
 	public var extraData:Map<String, Dynamic> = new Map<String, Dynamic>();
 
+	public var strumLineID:Int = 0; //A strumline id this note belongs.
 	public var strumTime:Float = 0;
 	public var mustPress(default, set):Bool = false;
 	public var noteData:Int = 0;

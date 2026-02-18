@@ -2348,6 +2348,7 @@ class PlayState extends MusicBeatState
 				stagesFunc(function(stage:BaseStage) stage.countdownTick(tick, swagCounter));
 				callOnLuas('onCountdownTick', [swagCounter]);
 				callOnHScript('onCountdownTick', [tick, swagCounter]);
+				scripts.event("onPostCountdown", event);
 
 				swagCounter += 1;
 			}, 5);
@@ -3544,13 +3545,22 @@ class PlayState extends MusicBeatState
 			while (unspawnNotes.length > 0 && unspawnNotes[0].strumTime - Conductor.songPosition < time)
 			{
 				var dunceNote:Note = unspawnNotes[0];
-				notes.insert(0, dunceNote);
-				dunceNote.spawned = true;
+				var noteType = dunceNote.noteType;
+				var strumlineID = getStrumIndexFromData(dunceNote);
+				var mustHit = dunceNote.mustPress;
+				var animSuffix = dunceNote.animSuffix;
+				var event = EventManager.get(NoteCreationEvent).recycle(dunceNote, noteType, strumlineID, mustHit, animSuffix);
 
-				callOnLuas('onSpawnNote', [0, dunceNote.noteData, dunceNote.noteType, dunceNote.isSustainNote, dunceNote.strumTime]);
-				callOnHScript('onSpawnNote', [dunceNote]);
+				if (!scripts.event('onNoteCreation', event).cancelled) {
+					notes.insert(0, dunceNote);
+					dunceNote.spawned = true;
 
-				unspawnNotes.shift();
+					callOnLuas('onSpawnNote', [0, dunceNote.noteData, dunceNote.noteType, dunceNote.isSustainNote, dunceNote.strumTime]);
+					callOnHScript('onSpawnNote', [dunceNote]);
+					scripts.event('onPostNoteCreation', event);
+
+					unspawnNotes.shift();
+				}
 
 				// insert tesla and einstein png here
 				// var index:Int = unspawnNotes.indexOf(dunceNote);
