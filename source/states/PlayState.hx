@@ -3606,9 +3606,13 @@ class PlayState extends MusicBeatState
 						notes.forEachAlive(function(daNote:Note)
 						{
 							var strumGroup:StrumLine = strumLines.members[getStrumIndexFromData(daNote)];
+							var __updateNote_event:NoteUpdateEvent;
+							var __updateNote_strum:StrumNote = strumGroup.members[daNote.noteData];
 
-							var strum:StrumNote = strumGroup.members[daNote.noteData];
-							if (strum == null) {
+							__updateNote_event.recycle(daNote, FlxG.elapsed, __updateNote_strum);
+							strumGroup.onNoteUpdate.dispatch(__updateNote_event);
+
+							if (__updateNote_strum == null) {
 								return;
 							}
 
@@ -3619,7 +3623,7 @@ class PlayState extends MusicBeatState
 									daNote.noteAlpha = 1;
 								}
 							}
-							daNote.followStrumNote(strum, fakeCrochet, songSpeed / playbackRate);
+							daNote.followStrumNote(__updateNote_strum, fakeCrochet, songSpeed / playbackRate);
 
 							if (GameClient.isConnected() && daNote.strumTime <= Conductor.songPosition) {
 								camZooming = true;
@@ -3638,7 +3642,7 @@ class PlayState extends MusicBeatState
 							else if (daNote.wasGoodHit && !daNote.hitByOpponent && !daNote.ignoreNote && (!GameClient.isConnected() || playOtherSide || GameClient.room.state.royalMode))
 								opponentNoteHit(daNote);
 
-							if(daNote.isSustainNote && strum.sustainReduce) daNote.clipToStrumNote(strum);
+							if(daNote.isSustainNote && __updateNote_strum.sustainReduce) daNote.clipToStrumNote(__updateNote_strum);
 
 							// Kill extremely late notes and cause misses
 							if (Conductor.songPosition - daNote.strumTime > noteKillOffset)

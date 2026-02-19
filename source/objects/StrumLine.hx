@@ -28,6 +28,13 @@ class StrumLine extends FlxTypedGroup<StrumNote> {
 	 */
 	public var noteCount:Int;
 
+	/**
+	 * Signal that triggers whenever a note is being updated. Similar to onNoteUpdate, except strumline specific.
+	 * To add a listener, do
+	 * `strumLine.onNoteUpdate.add(function(e:NoteUpdateEvent) {});`
+	 */
+	public var onNoteUpdate:FlxTypedSignal<NoteUpdateEvent->Void> = new FlxTypedSignal<NoteUpdateEvent->Void>();
+
 	public function new(?cpu:Bool, ?characters:Array<Character>, ?noteCount:Int, ?targetNoteData:Int, ?isStrumCreation:Bool) {
 		super();
 		this.isStrumCreation = isStrumCreation;
