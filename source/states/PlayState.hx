@@ -116,7 +116,7 @@ class PlayState extends MusicBeatState
 	@:dox(hide)
 	public var __updateNote_event:NoteUpdateEvent = null;
 
-	public var scrollSpeed(get, set):Float;
+	@:isVar public var scrollSpeed(get, set):Float;
 	private function get_scrollSpeed() {
 		return songSpeed;
 	}
