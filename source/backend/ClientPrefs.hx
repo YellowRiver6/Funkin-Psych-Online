@@ -101,7 +101,7 @@ import states.TitleState;
 	// PSYCH ONLINE
 	private var nickname:String = "Boyfriend";
 	public var serverAddress:String = null;
-	public var modSkin:Array<String> = null;
+	public var currentSkin:Array<String> = null;
 	public var trustedSources:Array<String> = ["https://gamebanana.com/"];
 	public var comboOffsetOP1:Array<Int> = [0, 0, 0, 0];
 	public var comboOffsetOP2:Array<Int> = [0, 0, 0, 0];
@@ -139,6 +139,9 @@ import states.TitleState;
 	public var midSongCommentsOpacity:Float = 0.5;
 	public var friendOnlineNotification:Bool = false;
 	public var newFPPreview:Bool = false;
+	public var camShakes:Bool = true;
+	public var camAngles:Bool = true;
+	public var camMovement:Bool = true;
 
 	public function new()
 	{

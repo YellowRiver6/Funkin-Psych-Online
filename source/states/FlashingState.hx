@@ -23,8 +23,8 @@ class FlashingState extends MusicBeatState
 
 		warnText = new FlxText(0, 0, FlxG.width,
 			Language.getText("FlashingState.warnText", [enter, back]),
-			32);
-		warnText.setFormat("VCR OSD Mono", 32, FlxColor.WHITE, CENTER);
+			28);
+		warnText.setFormat("VCR OSD Mono", 28, FlxColor.WHITE, CENTER);
 		warnText.screenCenter(Y);
 		add(warnText);
 
@@ -40,9 +40,7 @@ class FlashingState extends MusicBeatState
 				FlxTransitionableState.skipNextTransIn = true;
 				FlxTransitionableState.skipNextTransOut = true;
 				if(!back) {
-					ClientPrefs.data.flashing = false;
-					ClientPrefs.saveSettings();
-					FlxG.sound.play(Paths.sound('confirmMenu'));
+					openSubState(new options.VisualsUISubState('Accessibility'));
 					FlxFlicker.flicker(warnText, 1, 0.1, false, true, function(flk:FlxFlicker) {
 						new FlxTimer().start(0.5, function (tmr:FlxTimer) {
 							FlxG.switchState(() -> new TitleState());

@@ -1,5 +1,7 @@
 package online;
 
+import io.colyseus.serializer.schema.types.IRef;
+import io.colyseus.serializer.schema.Callbacks;
 import online.http.HTTPHandler;
 import io.colyseus.serializer.schema.Schema;
 import backend.NoteSkinData;
@@ -26,7 +28,12 @@ typedef Error = #if (colyseus < "0.15.3") io.colyseus.error.MatchMakeError #else
 
 class GameClient {
     public static var client:Client;
-	public static var room:Room<GameRoom>;
+	public static var room(default, set):Room<GameRoom>;
+	static function set_room(v) {
+		callbacks = v == null ? null : Callbacks.get(v);
+		return room = v; 
+	}
+	public static var callbacks(default, null):SchemaCallbacks<GameRoom>;
 	public static var isOwner(get, never):Bool;
 	public static var address:String;
 	public static var reconnecting:Bool = false;
@@ -65,6 +72,7 @@ class GameClient {
 		}, (exc) -> {
 			onJoin(exc);
 			LoadingScreen.toggle(false);
+			trace(exc.details());
 			Alert.alert("Failed to connect!", exc.details());
 		});
     }
@@ -94,6 +102,7 @@ class GameClient {
 		}, (exc) -> {
 			onJoin(exc);
 			LoadingScreen.toggle(false);
+			trace(exc.details());
 			Alert.alert("Failed to connect!", exc.toString());
 		});
     }
@@ -119,11 +128,14 @@ class GameClient {
 		clearOnMessage();
 
 		GameClient.room.onError += (code:Int, e:String) -> {
-			Alert.alert("Room error!", "room.onError: " + ShitUtil.prettyStatus(code) + "\n" + ShitUtil.readableError(e));
 			Sys.println("Room.onError: " + code + " - " + e);
+			if (code == 524)
+				return;
+			Alert.alert("Room error!", "room.onError: " + ShitUtil.prettyStatus(code) + "\n" + ShitUtil.readableError(e));
 		}
 
-		GameClient.room.onLeave += () -> {
+		GameClient.room.onLeave += (code) -> {
+			trace(code);
 			if (room?.roomId != null)
 				trace("Left/Kicked from room: " + room.roomId);
 			else
@@ -234,10 +246,9 @@ class GameClient {
 			options.set("networkToken", Auth.authToken);
 		}
 
-		if (ClientPrefs.data.modSkin != null && ClientPrefs.data.modSkin.length >= 2) {
-			options.set("skinMod", ClientPrefs.data.modSkin[0]);
-			options.set("skinName", ClientPrefs.data.modSkin[1]);
-			options.set("skinURL", OnlineMods.getModURL(ClientPrefs.data.modSkin[0]));
+		if (ClientPrefs.data.currentSkin != null) {
+			options.set("skin", ClientPrefs.data.currentSkin);
+			options.set("skinURL", OnlineMods.getModURL(ClientPrefs.data.currentSkin[3]));
 		}
 
 		var data:NoteSkinStructure = NoteSkinData.getCurrent(-1);
@@ -314,17 +325,18 @@ class GameClient {
 		}
 
 		GameClient.room.onMessageHandlers.clear();
-		clearCallbacks(GameClient.room.state);
-		clearCallbacks(GameClient.room.state.diffList);
-		clearCallbacks(GameClient.room.state.gameplaySettings);
+
 		for (sid => player in GameClient.room.state.players) {
 			if (player == null)
 				continue;
 
 			clearCallbacks(player);
-			clearCallbacks(player.arrowColors);
-			clearCallbacks(player.arrowColorsPixel);
+			// clearCallbacks(player.arrowColors);
+			// clearCallbacks(player.arrowColorsPixel);
 		}
+		clearCallbacks(GameClient.room.state);
+		// clearCallbacks(GameClient.room.state, "diffList");
+		// clearCallbacks(GameClient.room.state, "gameplaySettings");
 
 		// clear waiter queue to avoid tasks that want to access stuff from the previous state
 		// and then lead to a crash
@@ -374,11 +386,10 @@ class GameClient {
 
 		GameClient.room.onMessage("requestSkin", function(?msg:Dynamic) {
 			Waiter.putPersist(() -> {
-				if (ClientPrefs.data.modSkin != null && ClientPrefs.data.modSkin.length >= 2) {
+				if (ClientPrefs.data.currentSkin != null) {
 					GameClient.send("setSkin", [
-						ClientPrefs.data.modSkin[0],
-						ClientPrefs.data.modSkin[1],
-						OnlineMods.getModURL(ClientPrefs.data.modSkin[0])
+						ClientPrefs.data.currentSkin,
+						OnlineMods.getModURL(ClientPrefs.data.currentSkin[3])
 					]);
 				}
 				else {
@@ -404,19 +415,43 @@ class GameClient {
 		});
 
 		#if DISCORD_ALLOWED
-		GameClient.room.state.listen("isPrivate", (value, prev) -> {
+		GameClient.callbacks.listen("isPrivate", (value, prev) -> {
 			DiscordClient.updateOnlinePresence();
 		});
 		#end
 	}
 
-	@:privateAccess static function clearCallbacks(schema:Dynamic) {
-		if (schema == null)
+	public static function clearCallbacks(irefSchema:IRef, ?fieldNameOrOperation:String) @:privateAccess {
+		if (irefSchema == null)
 			return;
-		if (schema._callbacks != null)
-			schema._callbacks.clear();
-		if (schema._propertyCallbacks != null)
-			schema._propertyCallbacks.clear();
+
+		final refId = irefSchema.__refId;
+
+		// if specific field wasn't provided the whole schema gets purged
+		if (fieldNameOrOperation == null) {
+			callbacks.decoder.refs.callbacks.set(refId, new Map<String, Array<Dynamic>>());
+
+			for (field in Reflect.fields(irefSchema)) {
+				final childIRef = Reflect.field(irefSchema, field);
+				if (childIRef is IRef)
+					clearCallbacks(childIRef);
+			}
+
+			return;
+		}
+
+		// remove child fields that have their own IRefs???
+		if (Std.isOfType(fieldNameOrOperation, String) && Reflect.hasField(irefSchema, fieldNameOrOperation)) {
+			final childIRef = Reflect.field(irefSchema, fieldNameOrOperation);
+			if (childIRef is IRef)
+				clearCallbacks(childIRef);
+		}
+
+		final key = (Std.isOfType(fieldNameOrOperation, String))
+            ? fieldNameOrOperation
+            : "#" + fieldNameOrOperation;
+
+		callbacks.decoder.refs.callbacks.get(refId).remove(key);
 	}
 
 	private static var _pendingMessages:Array<Array<Dynamic>> = [];

@@ -134,7 +134,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 			return;
 
 		playMusic(GameClient.getPlayerSelf().hasSong);
-		GameClient.getPlayerSelf().listen("hasSong", (value:Bool, prev) -> {
+		GameClient.callbacks.listen(GameClient.getPlayerSelf(), "hasSong", (value:Bool, prev) -> {
 			Waiter.putPersist(() -> {
 				playMusic(value);
 			});
@@ -153,7 +153,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 		});
 
 		function listenUpdateTextOnField(player:Player, field:String) {
-			player.listen(field, (value, prev) -> {
+			GameClient.callbacks.listen(player, field, (value, prev) -> {
 				if (value == prev)
 					return;
 				Waiter.put(() -> {
@@ -165,15 +165,18 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 			listenUpdateTextOnField(player, 'ping');
 			listenUpdateTextOnField(player, 'status');
 			listenUpdateTextOnField(player, 'name');
-			player.listen("skinName", (value, prev) -> {
+			GameClient.callbacks.listen(player, "skin", (value, prev) -> {
 				if (value == prev)
 					return;
 				Waiter.put(() -> {
-					characters.get(sid).loadCharacter();
+					final lobbyChar = characters.get(sid);
+					if (lobbyChar == null)
+						return;
+					lobbyChar.loadCharacter();
 					updateCharacters();
 				});
 			});
-			player.listen("isReady", (value, prev) -> {
+			GameClient.callbacks.listen(player, "isReady", (value, prev) -> {
 				Waiter.put(() -> {
 					if (value) {
 						var sond = FlxG.sound.play(Paths.sound('confirmMenu'), 0.5);
@@ -185,14 +188,14 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 					}
 				});
 			});
-			player.listen("noteSkin", (value, prev) -> {
+			GameClient.callbacks.listen(player, "noteSkin", (value, prev) -> {
 				if (value == prev)
 					return;
 				Waiter.put(() -> {
 					checkNoteSkin(player);
 				});
 			});
-			player.listen("bfSide", (value, prev) -> {
+			GameClient.callbacks.listen(player, "bfSide", (value, prev) -> {
 				if (value == prev)
 					return;
 
@@ -200,7 +203,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 					updateCharacters();
 				});
 			});
-			player.listen("ox", (value, prev) -> {
+			GameClient.callbacks.listen(player, "ox", (value, prev) -> {
 				if (value == prev)
 					return;
 
@@ -230,13 +233,13 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 		// 	trace('for: ' + sid + " " + player);
 		// 	initPlayer(sid, player);
 		// }
-		GameClient.room.state.players.onAdd((player, sid) -> {
+		GameClient.callbacks.onAdd("players", (player, sid) -> {
 			Waiter.put(() -> {
 				initPlayer(sid, player);
 			});
 		});
 
-		GameClient.room.state.players.onRemove((player, sid) -> {
+		GameClient.callbacks.onRemove("players", (player, sid) -> {
 			Waiter.put(() -> {
 				var character = characters.get(sid);
 				charactersLayer.remove(character, true);
@@ -269,7 +272,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 			});
 		});
 
-		GameClient.room.state.gameplaySettings.onChange((o, n) -> {
+		GameClient.callbacks.onChange(GameClient.room.state.gameplaySettings, () -> {
 			Waiter.putPersist(() -> {
 				FreeplayState.updateFreeplayMusicPitch();
 				//FlxG.animationTimeScale = ClientPrefs.getGameplaySetting('songspeed');
@@ -282,9 +285,10 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 		super.destroy();
 		
 		try {
-			@:privateAccess
-			GameClient.room.state.gameplaySettings._callbacks.clear();
-		} catch (exc) {}
+			GameClient.clearCallbacks(GameClient.room.state.gameplaySettings);
+		} catch (exc) {
+			trace(exc);
+		}
 	}
 
 	var lastSwapped = false;
@@ -832,7 +836,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 						Clipboard.text = GameClient.getRoomSecret(true);
 						Alert.alert("Room code copied!");
 					case 4:
-						if (GameClient.hasPerms()) {
+						if (GameClient.hasPerms() || GameClient.room.state.allPlayersChoose) {
 							FlxG.switchState(() -> new FreeplayState());
 							FlxG.mouse.visible = false;
 						}
@@ -863,6 +867,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 	
 	function verifyDownloadMod(manual:Bool, ?ignoreAlert:Bool = false) {
 		try {
+			trace(GameClient.getPlayerSelf().hasSong, GameClient.room.state.song, GameClient.room.state.modDir);
 			if (GameClient.room.state.song == "") {
 				if (ignoreAlert)
 					return false;
@@ -894,14 +899,14 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 				return false;
 			}
 
-			if (Mods.getModDirectories().contains(GameClient.room.state.modDir) || GameClient.room.state.modDir == "") {
+			if (Mods.getModDirectories().contains(GameClient.room.state.modDir) || GameClient.room.state.modDir == null || GameClient.room.state.modDir == "") {
 				Mods.currentModDirectory = GameClient.room.state.modDir;
 				try {
 					GameClient.send("verifyChart", Md5.encode(Song.loadRawSong(GameClient.room.state.song, GameClient.room.state.folder)));
+					return false;
 				}
 				catch (exc) {
 				}
-				return false;
 			}
 
 			if (GameClient.room.state.modDir != null && GameClient.room.state.modURL != null && GameClient.room.state.modURL != "") {
@@ -1241,29 +1246,27 @@ class LobbyCharacter extends FlxTypedGroup<FlxSprite> {
 			character = null;
 		}
 
-		if (FunkinFileSystem.exists(Paths.mods(player.skinMod))) {
-			if (player.skinMod != null)
-				Mods.currentModDirectory = player.skinMod;
-
-			if (player.skinName != null)
-				character = new Character(0, 0, player.skinName + (player.bfSide ? "-player" : ''), player.bfSide);
-		}
-		else if (enableDownload && player.skinURL != null) {
-			noSkin = true;
-			OnlineMods.downloadMod(player.skinURL, manualDownload, (_) -> {
-				if (RoomState.instance == null || RoomState.instance.destroyed)
-					return;
-
-				loadCharacter(false);
+		if (player.skin.length > 0) {
+			online.util.ShitUtil.tempSwitchMod(player.skin.items[3], () -> {
+				character = new Character(0, 0, player.skin.items[0] + player.skin.items[player.bfSide ? 2 : 1], player.bfSide);
 			});
-		}
 
-		// we loaded the skin ayyy
-		if (character != null) {
-			noSkin = false;
+			if (character?.loadFailed && enableDownload && player.skinURL != null) {
+				OnlineMods.downloadMod(player.skinURL, manualDownload, (_) -> {
+					if (RoomState.instance == null || RoomState.instance.destroyed)
+						return;
+
+					loadCharacter(false);
+				});
+			}
+			noSkin = character == null || character.loadFailed;
 		}
 		else {
-			character = new Character(0, 0, "default" + (player.bfSide ? "-player" : ''), player.bfSide);
+			noSkin = false;
+		}
+
+		if (character == null || character.loadFailed) {
+			character = new Character(0, 0, "bf" + (player.bfSide ? "" : '-opponent'), player.bfSide);
 		}
 
 		character.noHoldBullshit = true;

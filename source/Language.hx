@@ -383,10 +383,12 @@ class Language {
 	//normal texts will go there when turkish version done
 	public static var normalTexts:Map<String, String> = [
 		"FlashingState.warnText" => "Hey, watch out!\n
-			This Mod contains some flashing lights!\n
-			Press %{1}% to disable them now or go to Options Menu.\n
-			Press %{2}% to ignore this message.\n
-			You've been warned!",
+			This game can trigger photosensitive epilepsy! \n
+			If you have motion sickness you should check these settings!  \n\n
+			Press %{1}% to check Accessibility Settings.\n
+			Press %{2}% to ignore this message.\n\n
+			(These settings will not block all effects)\n
+			You've been warned!"
 
 		"PlayState.updateTeamSide.daText" => "%{1}%
 			\nScore: %{2}%

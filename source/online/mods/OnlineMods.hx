@@ -312,7 +312,8 @@ class OnlineMods {
 			File.saveContent(Paths.mods(modName + '/pack.json'), Json.stringify({
 				name: (gbMod != null ? gbMod.name : modName),
 				description: (gbMod != null ? gbMod.pageDownload : ""),
-				runsGlobally: FunkinFileSystem.exists(Paths.mods(modName + '/songs/')) ? false : isLegacy
+				//runsGlobally: FunkinFileSystem.exists(Paths.mods(modName + '/songs/')) ? false : isLegacy
+				runsGlobally: false
 			}));
 		}
 		else { // if (/*(gbMod != null ? gbMod.rootCategory == "Executables" : */isExecutable) { // sometimes dum dum people put their non-exe mods to that section

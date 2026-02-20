@@ -98,6 +98,8 @@ class Paths
 				currentTrackedSounds.remove(key);
 			}
 		}
+		sparrowAtlasCache.clear();
+		packerAtlasCache.clear();
 		// flags everything to be cleared out next unused memory clear
 		localTrackedAssets = [];
 		#if !html5 openfl.Assets.cache.clear("songs"); #end
@@ -155,6 +157,12 @@ class Paths
 	{
 		return 'assets/$file';
 	}
+
+	inline static public function getFolderPath(file:String, folder = "shared")
+		return 'assets/$folder/$file';
+
+	inline public static function getSharedPath(file:String = '')
+		return getFolderPath(file);
 
 	inline static public function txt(key:String, ?library:String)
 	{
@@ -434,8 +442,12 @@ class Paths
 		return getPackerAtlas(key, library);
 	}
 
+	static var sparrowAtlasCache:Map<String, FlxAtlasFrames> = new Map();
 	inline static public function getSparrowAtlas(key:String, ?library:String = null, ?allowGPU:Bool = true):FlxAtlasFrames
 	{
+		if (sparrowAtlasCache.exists(key + library))
+			return sparrowAtlasCache.get(key + library);
+
 		#if MODS_ALLOWED
 		var imageLoaded:FlxGraphic = image(key, allowGPU);
 		var xmlExists:Bool = false;
@@ -458,18 +470,27 @@ class Paths
 		else
 			xml = getPath('images/$key.xml', library);
 
-		return FlxAtlasFrames.fromSparrow((imageLoaded != null ? imageLoaded : image(key, library, allowGPU)), xml);
+		var frames = FlxAtlasFrames.fromSparrow((imageLoaded != null ? imageLoaded : image(key, library, allowGPU)), xml);
 		#else
 		var xml:String = getPath('images/$key.xml', library);
 		var xmlLang:String = getPath('images/${key}_${ClientPrefs.data.lang}.xml', library);
 		if (FunkinFileSystem.exists(xmlLang)) xml = xmlLang;
 
-		return FlxAtlasFrames.fromSparrow(image(key, library, allowGPU), xml);
+		var frames = FlxAtlasFrames.fromSparrow(image(key, library, allowGPU), xml);
 		#end
+
+		if (frames != null)
+			sparrowAtlasCache.set(key + library, frames);
+
+		return frames;
 	}
 
+	static var packerAtlasCache:Map<String, FlxAtlasFrames> = new Map();
 	inline static public function getPackerAtlas(key:String, ?library:String = null, ?allowGPU:Bool = true):FlxAtlasFrames
 	{
+		if (packerAtlasCache.exists(key + library))
+			return packerAtlasCache.get(key + library);
+
 		#if MODS_ALLOWED
 		var imageLoaded:FlxGraphic = image(key, allowGPU);
 		var txtExists:Bool = false;
@@ -479,10 +500,15 @@ class Paths
 			txtExists = true;
 		}
 
-		return FlxAtlasFrames.fromSpriteSheetPacker((imageLoaded != null ? imageLoaded : image(key, library, allowGPU)), (txtExists ? FunkinFileSystem.getText(txt) : getPath('images/$key.txt', library)));
+		var frames = FlxAtlasFrames.fromSpriteSheetPacker((imageLoaded != null ? imageLoaded : image(key, library, allowGPU)), (txtExists ? FunkinFileSystem.getText(txt) : getPath('images/$key.txt', library)));
 		#else
-		return FlxAtlasFrames.fromSpriteSheetPacker(image(key, library, allowGPU), getPath('images/$key.txt', library));
+		var frames = FlxAtlasFrames.fromSpriteSheetPacker(image(key, library, allowGPU), getPath('images/$key.txt', library));
 		#end
+
+		if (frames != null)
+			packerAtlasCache.set(key + library, frames);
+
+		return frames;
 	}
 
 	static var invalidChars = ~/[~&\\;:<>#]/;

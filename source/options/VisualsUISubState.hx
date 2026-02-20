@@ -15,15 +15,17 @@ class VisualsUISubState extends BaseOptionsMenu
 	var notes:FlxTypedGroup<StrumNote>;
 	var notesTween:Array<FlxTween> = [];
 	var noteY:Float = 90;
-	public function new()
-	{
-		title = 'Visuals and UI';
-		rpcTitle = 'Visuals & UI Settings Menu'; //for Discord Rich Presence
 
-		NoteSkinData.reloadNoteSkins();
+	override function closeSubState() {
+		controls.isInSubstate = true;
+		super.closeSubState();
+		MusicBeatSubstate.instance = this;
+		controls.isInSubstate = true;
+		mobileManager.removeMobilePad();
+		mobileManager.addMobilePad('UP_DOWN', 'A_B');
+	}
 
-		isOpened = true;
-
+	function openNotes() {
 		// for note skins
 		notes = new FlxTypedGroup<StrumNote>();
 		for (i in 0...Note.colArray.length)
@@ -41,6 +43,16 @@ class VisualsUISubState extends BaseOptionsMenu
 			'lang',
 			'string',
 			["EN", "TR"]);
+		addOption(option);
+
+		var option:Option = new Option('Note Colors',
+			'Set the colors for your notes!',
+			null,
+			'button');
+		option.onChange = () -> {
+			mobileManager.removeMobilePad();
+			openSubState(new options.NotesSubState());
+		};
 		addOption(option);
 
 		if(NoteSkinData.noteSkins.length > 0)
@@ -112,19 +124,23 @@ class VisualsUISubState extends BaseOptionsMenu
 		option.decimals = 1;
 		addOption(option);
 
-		var option:Option = new Option('Hide HUD',
-			'If checked, hides most HUD elements.',
-			'hideHud',
-			'bool');
+		var option:Option = new Option('Note Underlay Opacity', 'If higher than 0%, an underlay will be displayed behind player notes.', 'noteUnderlayOpacity', 'percent');
 		addOption(option);
-		
-		var option:Option = new Option('Time Bar:',
-			"What should the Time Bar display?",
-			'timeBarType',
-			'string',
-			['Time Left', 'Time Elapsed', 'Song Name', 'Disabled']);
-		addOption(option);
+		option.scrollSpeed = 1.6;
+		option.minValue = 0.0;
+		option.maxValue = 1;
+		option.changeValue = 0.05;
+		option.decimals = 2;
 
+		var option:Option = new Option('Note Underlay Type:',
+			"How should the game render note underlays.",
+			'noteUnderlayType',
+			'string',
+			['All-In-One', 'By Note']);
+		addOption(option);
+	}
+
+	function openAccessibility() {
 		var option:Option = new Option('Flashing Lights',
 			"Uncheck this if you're sensitive to flashing lights!",
 			'flashing',
@@ -137,10 +153,78 @@ class VisualsUISubState extends BaseOptionsMenu
 			'bool');
 		addOption(option);
 
+		var option:Option = new Option('Camera Shakes',
+			"If unchecked, camera will be allowed to shake.",
+			'camShakes',
+			'bool');
+		addOption(option);
+
+		var option:Option = new Option('Camera Tilt',
+			"If unchecked, camera will be allowed to tilt.",
+			'camAngles',
+			'bool');
+		addOption(option);
+
+		var option:Option = new Option('Camera Movement',
+			"If unchecked, camera will move instead of being locked still on girlfriend.",
+			'camMovement',
+			'bool');
+		addOption(option);
+
 		var option:Option = new Option('Score Text Zoom on Hit',
 			"If unchecked, disables the Score text zooming\neverytime you hit a note.",
 			'scoreZoom',
 			'bool');
+		addOption(option);
+	}
+
+	function openComboAndRating() {
+		var option:Option = new Option('Adjust Positions',
+			'Customize the offsets for combo and rating sprites here!',
+			null,
+			'button');
+		option.onChange = () -> {
+			FlxG.switchState(() -> new options.NoteOffsetState());
+		};
+		addOption(option);
+
+		var option:Option = new Option('Rating Color',
+			'If checked, the Rating text will be colored depending on your current... well... Rating, same with Combo.',
+			'colorRating',
+			'bool');
+		addOption(option);
+
+		var option:Option = new Option('Disable Combo Rating',
+			'If checked, the combo rating sprite will no longer show up.',
+			'disableComboRating',
+			'bool');
+		addOption(option);
+
+		var option:Option = new Option('Disable Combo Counter',
+			'If checked, the combo counter sprite will no longer show up.',
+			'disableComboCounter',
+			'bool');
+		addOption(option);
+
+		var option:Option = new Option('Show Note Timing',
+			'If checked, a timing of the hitted note will be shown on the screen (in miliseconds)',
+			'showNoteTiming',
+			'bool');
+		addOption(option);
+	}
+
+	function openUI() {
+		var option:Option = new Option('Hide HUD',
+			'If checked, hides most HUD elements.',
+			'hideHud',
+			'bool');
+		addOption(option);
+
+		var option:Option = new Option('Time Bar:',
+			"What should the Time Bar display?",
+			'timeBarType',
+			'string',
+			['Time Left', 'Time Elapsed', 'Song Name', 'Disabled']);
 		addOption(option);
 
 		var option:Option = new Option('Health Bar Opacity',
@@ -153,59 +237,28 @@ class VisualsUISubState extends BaseOptionsMenu
 		option.changeValue = 0.1;
 		option.decimals = 1;
 		addOption(option);
-		
-		var option:Option = new Option('FPS Counter',
-			'If unchecked, hides FPS Counter.',
-			'showFPS',
-			'bool');
-		addOption(option);
-		option.onChange = onChangeFPSCounter;
 
-		var option:Option = new Option('Disable Online Shaders',
-			'If checked, disables shaders that being used on online menus.',
-			'disableOnlineShaders',
-			'bool');
+		var option:Option = new Option('Nameplate Fade Time',
+			'After how many seconds should player nameplates be hidden?\nSet to 0 to instantly hide them.\nSet to -1 to never hide them.',
+			'nameplateFadeTime',
+			'int');
+		option.displayFormat = '%vs';
+		option.scrollSpeed = 20;
+		option.minValue = -1;
+		option.maxValue = 60;
+		option.changeValue = 1;
+		option.decimals = 0;
 		addOption(option);
 
-		var option:Option = new Option('Pause Screen Song:',
-			"What song do you prefer for the Pause Screen?",
-			'pauseMusic',
-			'string',
-			['None', 'Breakfast', 'Tea Time']);
-		addOption(option);
-		option.onChange = onChangePauseMusic;
-		
-		#if CHECK_FOR_UPDATES
-		var option:Option = new Option('Check for Updates',
-			'On Release builds, turn this on to check for updates when you start the game.',
-			'checkForUpdates',
-			'bool');
-		addOption(option);
-		#end
-
-		#if DISCORD_ALLOWED
-		var option:Option = new Option('Discord Rich Presence',
-			"Uncheck this to prevent accidental leaks, it will hide the Application from your \"Playing\" box on Discord",
-			'discordRPC',
-			'bool');
-		addOption(option);
-		#end
-
-		var option:Option = new Option('Debug Mode',
-			"If checked, enables debug warnings etc.",
-			'debugMode',
+		var option:Option = new Option('Show Funkin Points Counter',
+			'If checked, the current FP count will be shown in the score text, can be toggled in-game with F7',
+			'showFP',
 			'bool');
 		addOption(option);
 
-		var option:Option = new Option('Show Note timing',
-			'If checked, a timing of the hitted note will be shown on the screen (in miliseconds)',
-			'showNoteTiming',
-			'bool');
-		addOption(option);
-
-		var option:Option = new Option('Disable Automatic Downloads',
-			'Disables automatic downloads of Mods and Skins from the opponent',
-			'disableAutoDownloads',
+		var option:Option = new Option('FP V5 Preview',
+			'If enabled, new FP algorithm will be shown in the Counter',
+			'newFPPreview',
 			'bool');
 		addOption(option);
 
@@ -226,63 +279,39 @@ class VisualsUISubState extends BaseOptionsMenu
 		option.decimals = 1;
 		addOption(option);
 
-		var option:Option = new Option('Show Funkin Points Counter',
-			'If checked, the current FP count will be shown in the score text, can be toggled in-game with F7',
-			'showFP',
+		var option:Option = new Option('FPS Counter',
+			'If unchecked, hides FPS Counter.',
+			'showFPS',
 			'bool');
 		addOption(option);
+		option.onChange = onChangeFPSCounter;
 
-		var option:Option = new Option('FP V5 Preview',
-			'If enabled, new FP algorithm will be shown in the Counter',
-			'newFPPreview',
+		var option:Option = new Option('Disable Online Shaders',
+			'If checked, disables shaders that being used on online menus.',
+			'disableOnlineShaders',
 			'bool');
 		addOption(option);
+	}
 
-		var option:Option = new Option('Group Songs:',
-			"How should songs on Freeplay menu be group by?",
-			'groupSongsBy',
-			'string',
-			FreeplayState.GROUPS);
-		addOption(option);
+	public function new(category:String)
+	{
+		title = category;
+		rpcTitle = 'Visuals & UI Settings Menu'; //for Discord Rich Presence
 
-		var option:Option = new Option('Rating Color',
-			'If checked, the Rating text will be colored depending on your current... well... Rating, same with Combo.',
-			'colorRating',
-			'bool');
-		addOption(option);
+		NoteSkinData.reloadNoteSkins();
 
-		var option:Option = new Option('Favorite Tracks Menu Theme',
-			'If checked, the game will be picking your random favorite song as the main menu theme!',
-			'favsAsMenuTheme',
-			'bool');
-		option.onChange = () -> {
-			states.TitleState.playFreakyMusic();
-		};
-		addOption(option);
+		isOpened = true;
 
-		var option:Option = new Option('Disable Combo Rating',
-			'If checked, the combo rating sprite will no longer show up.',
-			'disableComboRating',
-			'bool');
-		addOption(option);
-
-		var option:Option = new Option('Disable Combo Counter',
-			'If checked, the combo counter sprite will no longer show up.',
-			'disableComboCounter',
-			'bool');
-		addOption(option);
-
-		var option:Option = new Option('Nameplate Fade Time',
-			'After how many seconds should player nameplates be hidden?\nSet to 0 to instantly hide them.\nSet to -1 to never hide them.',
-			'nameplateFadeTime',
-			'int');
-		option.displayFormat = '%vs';
-		option.scrollSpeed = 20;
-		option.minValue = -1;
-		option.maxValue = 60;
-		option.changeValue = 1;
-		option.decimals = 0;
-		addOption(option);
+		switch (category) {
+			case 'Notes':
+				openNotes();
+			case 'Combo & Rating':
+				openComboAndRating();
+			case 'User Interface':
+				openUI();
+			case 'Accessibility':
+				openAccessibility();
+		}
 
 		super();
 		add(notes);
@@ -303,17 +332,6 @@ class VisualsUISubState extends BaseOptionsMenu
 			else
 				notesTween[i] = FlxTween.tween(note, {y: -200}, Math.abs(note.y / (200 + noteY)) / 3, {ease: FlxEase.quadInOut});
 		}
-	}
-
-	var changedMusic:Bool = false;
-	function onChangePauseMusic()
-	{
-		if(ClientPrefs.data.pauseMusic == 'None')
-			FlxG.sound.music.volume = 0;
-		else
-			FlxG.sound.playMusic(Paths.music(Paths.formatToSongPath(ClientPrefs.data.pauseMusic)));
-
-		changedMusic = true;
 	}
 
 	function onChangeNoteSkin()
@@ -341,7 +359,6 @@ class VisualsUISubState extends BaseOptionsMenu
 
 	override function destroy()
 	{
-		if(changedMusic && !OptionsState.onPlayState) states.TitleState.playFreakyMusic();
 		isOpened = false;
 		if (GameClient.isConnected()) {
 			var data:NoteSkinStructure = NoteSkinData.getCurrent(-1);

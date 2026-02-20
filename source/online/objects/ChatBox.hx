@@ -96,6 +96,7 @@ class ChatBox extends FlxTypedSpriteGroup<FlxSprite> {
 			});
 	}
 
+	var nextFocused:Null<Bool> = null;
 	public function new(?camera:FlxCamera, ?onCommand:(command:String, args:Array<String>) -> Bool, ?chatHeight:Int = 400) {
 		super();
 
@@ -124,6 +125,18 @@ class ChatBox extends FlxTypedSpriteGroup<FlxSprite> {
 
 		chatGroup = new FlxTypedSpriteGroup<ChatMessage>();
 		addMessage(initMessage, true);
+
+		var invalidCount:Float = 0;
+		for (mod in Mods.getModDirectories()) {
+			var url = OnlineMods.getModURL(mod);
+			if (url == null || !(url.startsWith('https://') || url.startsWith('http://')))
+				invalidCount++;
+		}
+
+		if (invalidCount > 0) {
+			addMessage('WARNING: ' + invalidCount + ' of your mods do not have a valid URL set!', true);
+		}
+
 		for (msg in savedMessages) {
 			addMessage(msg, true);
 		}
@@ -141,7 +154,7 @@ class ChatBox extends FlxTypedSpriteGroup<FlxSprite> {
 			
 			typeText.text = "";
 			if (FlxG.state is PlayState)
-				focused = false;
+				nextFocused = false;
 		});
 		typeText.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 
@@ -171,6 +184,11 @@ class ChatBox extends FlxTypedSpriteGroup<FlxSprite> {
 	}
 
     override function update(elapsed) {
+		if (nextFocused != null) {
+			focused = nextFocused;
+			nextFocused = null;
+		}
+		
 		if (focused || alpha > 0) {
 			if (FlxG.keys.justPressed.ESCAPE #if android || FlxG.android.justReleased.BACK #end) {
 				focused = false;
