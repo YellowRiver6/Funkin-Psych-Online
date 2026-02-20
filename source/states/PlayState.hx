@@ -809,7 +809,7 @@ class PlayState extends MusicBeatState
 
 				#if MODS_ALLOWED
 				var moddyFile:String = Paths.modsJson('$songName/preload');
-				if (FileSystem.exists(moddyFile)) json = Json.parse(File.getContent(moddyFile));
+				if (FunkinFileSystem.exists(moddyFile)) json = Json.parse(File.getContent(moddyFile));
 				else json = Json.parse(File.getContent(path));
 				#else
 				json = Json.parse(Assets.getText(path));
@@ -1474,7 +1474,7 @@ class PlayState extends MusicBeatState
 				if(nam.endsWith('/')) {
 					for (subfolder in Mods.directoriesWithFile(Paths.getSharedPath(), '$prefix/$nam'))
 					{
-						for (file in FileSystem.readDirectory(subfolder))
+						for (file in FunkinFileSystem.readDirectory(subfolder))
 						{
 							if(file.endsWith(ext))
 							{
