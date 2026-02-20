@@ -38,20 +38,16 @@ class VisualsUISubState extends BaseOptionsMenu
 		}
 
 		// options
-		var option:Option = new Option('Language:',
-			"Select your language. \n(This is temporary option, will have own state later)",
-			'lang',
-			'string',
-			["EN", "TR"]);
-		addOption(option);
-
 		var option:Option = new Option('Note Colors',
 			'Set the colors for your notes!',
 			null,
 			'button');
 		option.onChange = () -> {
 			mobileManager.removeMobilePad();
-			openSubState(new options.NotesSubState());
+			if (ClientPrefs.data.disableRGBNotes)
+				openSubState(new options.NotesSubStateOld());
+			else
+				openSubState(new options.NotesSubState());
 		};
 		addOption(option);
 
@@ -214,6 +210,13 @@ class VisualsUISubState extends BaseOptionsMenu
 	}
 
 	function openUI() {
+		var option:Option = new Option('Language:',
+			"Select your language. \n(This is temporary option, will have own state later)",
+			'lang',
+			'string',
+			["EN", "TR"]);
+		addOption(option);
+
 		var option:Option = new Option('Hide HUD',
 			'If checked, hides most HUD elements.',
 			'hideHud',
