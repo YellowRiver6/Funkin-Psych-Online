@@ -388,7 +388,7 @@ class Language {
 			Press %{1}% to check Accessibility Settings.\n
 			Press %{2}% to ignore this message.\n\n
 			(These settings will not block all effects)\n
-			You've been warned!"
+			You've been warned!",
 
 		"PlayState.updateTeamSide.daText" => "%{1}%
 			\nScore: %{2}%
