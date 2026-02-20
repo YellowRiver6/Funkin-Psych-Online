@@ -199,7 +199,7 @@ class Song
 				return parsed;
 			}
 			
-			parsed.song.format = 'psych_legacy';
+			parsed.song.format ??= 'psych_legacy';
 			return parsed.song;
 		}
 		

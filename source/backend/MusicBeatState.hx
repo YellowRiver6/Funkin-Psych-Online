@@ -8,6 +8,7 @@ class MusicBeatState extends FlxUIState
 {
 	public static var instance:MusicBeatState;
 
+	/** stops time **/
 	private var theWorld:Bool = false;
 
 	private var curSection:Int = 0;

@@ -7,11 +7,8 @@
 	<architecture exclude="arm64" if="ONLY_ARMV7" />
 	<architecture exclude="arm64-v8a" if="ONLY_ARMV7" />
 
-	<app title="Psych Online" file="PsychOnline" main="Main" version="0.14.0" packageName="com.snirozu.psychonline" package="com.snirozu.psychonline" company="Snirozu" />
-
-	<section if="ios">
-		<app title="Psych Online" file="PsychOnline" main="Main" version="0.14.0" packageName="com.snirozu.psychonline" package="com.snirozu.psychonline" company="Snirozu" />
-	</section>
+	<app title="Friday Night Funkin': Psych Online" file="PsychOnline" main="Main" packageName="com.snirozu.psychonline" package="com.snirozu.psychonline" company="Snirozu" version="0.14.2" />
+	<app if="mobile" title='Psych Online' />
 
 	<!--Switch Export with Unique ApplicationID and Icon-->
 	<set name="APP_ID" value="0x0100f6c013bbc000" />
@@ -197,7 +194,7 @@
 	<haxedef name="HXC_DEBUG_TRACE" if="debug" />
 
 	<!--Disable the Flixel core debugger. Automatically gets set whenever you compile in release mode!-->
-	<haxedef name="FLX_NO_DEBUG" unless="debug" />
+	<haxedef name="FLX_NO_DEBUG" /> <!-- worst debugger ever lol -->
 
 	<!--Enable this for Nape release builds for a serious peformance improvement-->
 	<haxedef name="NAPE_RELEASE_BUILD" unless="debug" />
@@ -219,6 +216,9 @@
 	<!--Macro fixes-->
 	<haxeflag name="--macro" value="allowPackage('flash')" />
 	<haxeflag name="--macro" value="include('my.pack')" />
+
+	<haxeflag name="-D" value="HXCPP_DEBUGGER" if="debug"/>
+	<haxeflag name="-debug" if="debug"/>
 
 	<section if='debugmon'>
 		<haxeflag name="--macro" value="addGlobalMetadata('online', '@:build(online.backend.MonitorMacro.build())')" />

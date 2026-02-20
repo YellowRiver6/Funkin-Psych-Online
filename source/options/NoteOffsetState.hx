@@ -71,6 +71,11 @@ class NoteOffsetState extends MusicBeatState
 		return [placementX, placementY];
 	}
 
+	public function new(?mode:String = 'combo') {
+		onComboMenu = mode == 'combo';
+		super();
+	}
+
 	override public function create()
 	{
 		ClientPrefs.reloadKeyColors();
@@ -100,7 +105,7 @@ class NoteOffsetState extends MusicBeatState
 		gf = new Character(400, 130, 'gf');
 		gf.x += gf.positionArray[0];
 		gf.y += gf.positionArray[1];
-		gf.scrollFactor.set(0.95, 0.95);
+		// gf.scrollFactor.set(0.95, 0.95);
 		boyfriend = new Character(770, 100, 'bf', true);
 		boyfriend.x += boyfriend.positionArray[0];
 		boyfriend.y += boyfriend.positionArray[1];

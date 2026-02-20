@@ -179,15 +179,17 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 		reloadCheckboxes();
 
 		if (GameClient.isConnected()) {
-			GameClient.room.state.gameplaySettings.onChange(receiveChange);
 			MusicBeatState.getState().mobileManager.mobilePad.visible = false;
+
+			GameClient.callbacks.onChange(GameClient.room.state.gameplaySettings, receiveChange);
+
 		}
 
 		mobileManager.addMobilePad('FULL', 'A_B_C');
 		mobileManager.addMobilePadCamera();
 	}
 
-	function receiveChange(_:Dynamic, __:Dynamic) {
+	function receiveChange() {
 		Waiter.put(() -> {
 			updateAll();
 		});
@@ -206,7 +208,7 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 		
 		@:privateAccess
 		if (GameClient.isConnected())
-			GameClient.room.state.gameplaySettings._callbacks.clear();
+			GameClient.clearCallbacks(GameClient.room.state.gameplaySettings);
 	}
 
 	var nextAccept:Int = 5;
