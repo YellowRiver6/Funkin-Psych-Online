@@ -12,7 +12,7 @@ class OptionsState extends MusicBeatState
 		'main' => ['Controls', 'Performance', 'Visuals & UI', 'Game'],
 		'visuals' => ['Notes', 'Combo & Rating', 'User Interface', 'Accessibility'],
 		'game' => ['Gameplay', 'Preferences', 'Adjust Audio Delay'],
-		'mobile' => ['Mobile Extra Control', 'Mobile Options'];
+		'mobile' => ['Mobile Extra Control', 'Mobile Options'],
 	];
 	private var grpOptionsMap:Map<String, FlxTypedGroup<Alphabet>> = new Map();
 	static var optionsCategory(default, set):String = 'main';
