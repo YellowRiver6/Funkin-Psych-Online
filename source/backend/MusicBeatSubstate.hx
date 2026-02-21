@@ -294,6 +294,7 @@ class MusicBeatSubstate extends FlxSubState
 		#if macro
 		setToHScript(nameOf(basic), basic);
 		#end
+		return basic;
 	}
 
 	#if macro

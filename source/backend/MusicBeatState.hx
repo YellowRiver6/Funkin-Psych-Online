@@ -360,6 +360,7 @@ class MusicBeatState extends FlxUIState
 		#if macro
 		setToHScript(nameOf(basic), basic);
 		#end
+		return basic;
 	}
 
 	#if macro
