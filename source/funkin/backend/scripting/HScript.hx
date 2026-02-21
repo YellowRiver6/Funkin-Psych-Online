@@ -63,7 +63,7 @@ class HScript extends Script {
 		interp.variables.set("trace", Reflect.makeVarArgs((args) -> {
 			var v:String = Std.string(args.shift());
 			for (a in args) v += ", " + Std.string(a);
-			haxe.Log.trace(Std.string(v), inf);
+			haxe.Log.trace(Std.string(v));
 		}));
 
 		#if GLOBAL_SCRIPT

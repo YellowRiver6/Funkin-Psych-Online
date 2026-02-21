@@ -530,6 +530,37 @@ class Paths
 		#end
 	}
 
+	static public function getFolderContent(key:String, addPath:Bool = false, source:String = "BOTH"):Array<String> {
+		var content:Array<String> = [];
+		var folder = key.endsWith('/') ? key : key + '/';
+
+		#if MODS_ALLOWED
+		if (source == "MODS" || source == "BOTH") {
+			var modDirs:Array<String> = [];
+			if (Mods.currentModDirectory != null && Mods.currentModDirectory.length > 0)
+				modDirs.push(Mods.currentModDirectory);
+			modDirs = modDirs.concat(Mods.getGlobalMods());
+
+			for (mod in modDirs) {
+				var modFolder = mods('$mod/$folder');
+				if (FileSystem.exists(modFolder)) {
+					for (file in FileSystem.readDirectory(modFolder)) {
+						if (!FileSystem.isDirectory('$modFolder/$file')) {
+							var path = addPath ? '$folder$file' : file;
+							if (!content.contains(path))
+								content.push(path);
+						}
+					}
+				}
+			}
+		}
+		#end
+
+		if (content != []) return content;
+		trace('Content not found');
+		return null;
+	}
+
 	static var invalidChars = ~/[~&\\;:<>#]/;
 	static var hideChars = ~/[.,'"%?!]/;
 
@@ -594,54 +625,6 @@ class Paths
 
 	inline static public function vertShader(key:String)
 		return getTextFromFile('shaders/$key.vert');
-
-	inline static public function script(key:String, ?library:String, isOnlyScriptingPath:Bool = false, ?customEx:Array<String> = null) {
-		#if HSC_ALLOWED
-		var scriptToLoad:String = null;
-		var arrayNumber:Int = 0;
-		for(ex in Script.scriptExtensions) {
-			if (customEx != null) {
-				ex = customEx[arrayNumber];
-				arrayNumber += 1;
-			}
-			scriptToLoad = modFolders('${key}.$ex');
-			if(FileSystem.exists(scriptToLoad))
-				break;
-		}
-		return scriptToLoad;
-		#end
-	}
-
-	static public function getFolderContent(key:String, addPath:Bool = false, source:String = "BOTH"):Array<String> {
-		var content:Array<String> = [];
-		var folder = key.endsWith('/') ? key : key + '/';
-
-		#if MODS_ALLOWED
-		if (source == "MODS" || source == "BOTH") {
-			var modDirs:Array<String> = [];
-			if (Mods.currentModDirectory != null && Mods.currentModDirectory.length > 0)
-				modDirs.push(Mods.currentModDirectory);
-			modDirs = modDirs.concat(Mods.getGlobalMods());
-
-			for (mod in modDirs) {
-				var modFolder = mods('$mod/$folder');
-				if (FileSystem.exists(modFolder)) {
-					for (file in FileSystem.readDirectory(modFolder)) {
-						if (!FileSystem.isDirectory('$modFolder/$file')) {
-							var path = addPath ? '$folder$file' : file;
-							if (!content.contains(path))
-								content.push(path);
-						}
-					}
-				}
-			}
-		}
-		#end
-
-		if (content != []) return content;
-		trace('Content not found');
-		return null;
-	}
 
 	#if MODS_ALLOWED
 	inline static public function mods(key:String = '') {

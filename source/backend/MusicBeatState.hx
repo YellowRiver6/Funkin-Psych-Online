@@ -4,14 +4,12 @@ import flixel.addons.ui.FlxUIState;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.FlxState;
 
+#if SCRIPTING_ALLOWED
+import funkin.backend.scripting.HScript;
+#end
+
 class MusicBeatState extends FlxUIState
 {
-	#if SCRIPTING_ALLOWED
-	private var hscriptDebugGroup:FlxTypedGroup<psychlua.DebugLuaText>;
-	private var hscriptDebugCam:FlxCamera;
-	private var currentClassName:String;
-	#end
-
 	public var variables:Map<String, Dynamic> = new Map<String, Dynamic>();
 	public static function getVariables()
 		return getState().variables;
@@ -373,32 +371,6 @@ class MusicBeatState extends FlxUIState
 		add(hscriptDebugGroup);
 		#end
 	}
-
-	#if SCRIPTING_ALLOWED
-	public function addTextToDebug(text:String, color:FlxColor)
-	{
-		if (hscriptDebugGroup == null)
-			return #if sys Sys.println(text) #else trace(text) #end;
-
-		var newText:psychlua.DebugLuaText = hscriptDebugGroup.recycle(psychlua.DebugLuaText);
-		newText.text = text;
-		newText.color = color;
-		newText.disableTime = 6;
-		newText.alpha = 1;
-		newText.setPosition(10, 8 - newText.height);
-
-		hscriptDebugGroup.forEachAlive(function(spr:psychlua.DebugLuaText)
-		{
-			spr.y += newText.height + 2;
-		});
-		hscriptDebugGroup.add(newText);
-		#if sys
-		Sys.println(text);
-		#else
-		trace(text);
-		#end
-	}
-	#end
 
 	public override function tryUpdate(elapsed:Float):Void
 	{

@@ -36,6 +36,6 @@ haxelib git hxvlc https://github.com/ShadowEngineTeam/hxvlc --quiet --global
 haxelib git yagp https://github.com/Snirozu/yagp master --quiet --global
 haxelib git funkin.vis https://github.com/FunkinCrew/funkVis 1966f8fbbbc509ed90d4b520f3c49c084fc92fd6 --quiet --global
 haxelib git mobile-controls https://github.com/Prohack101010/mobile-controls-dev main --quiet --global
-haxelib git hscript-improved https://github.com/PsychExtendedThings/hscript-improved-Psych --quiet --global
+haxelib git hscript-improved https://github.com/PsychExtendedThings/hscript-improved --quiet --global
 haxelib install tink_await 0.6.0 --quiet --global
 echo Finished!
