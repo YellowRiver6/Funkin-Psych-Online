@@ -321,11 +321,13 @@ class MusicBeatState extends FlxUIState
 					filePath = customPath;
 				var path = Paths.script('data/' + filePath);
 				var script = Script.create(path);
-				if (script is DummyScript) continue;
-				script.remappedNames.set(script.fileName, '${script.fileName}');
-				stateScripts.add(script);
-				script.load();
-				call('create');
+				if (script is DummyScript) {
+				} else {
+					script.remappedNames.set(script.fileName, '${script.fileName}');
+					stateScripts.add(script);
+					script.load();
+					call('create');
+				}
 			}
 		}
 	}
@@ -361,15 +363,6 @@ class MusicBeatState extends FlxUIState
 		super.createPost();
 		persistentUpdate = true;
 		call("postCreate");
-
-		#if SCRIPTING_ALLOWED
-		hscriptDebugGroup = new FlxTypedGroup<psychlua.DebugLuaText>();
-		hscriptDebugCam = new FlxCamera();
-		hscriptDebugCam.bgColor.alpha = 0;
-		FlxG.cameras.add(hscriptDebugCam, false);
-		hscriptDebugGroup.cameras = [hscriptDebugCam];
-		add(hscriptDebugGroup);
-		#end
 	}
 
 	public override function tryUpdate(elapsed:Float):Void
