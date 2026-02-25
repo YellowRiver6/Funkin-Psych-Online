@@ -112,7 +112,15 @@ import objects.StrumLine;
 
 @:build(online.backend.Macros.getSetForwarder())
 class PlayState extends MusicBeatState
-{
+	/**
+	 * Speed at which the game camera zoom lerps to.
+	 */
+	public var camGameZoomLerp:Float = 0.05;
+	/**
+	 * Speed at which the hud camera zoom lerps to.
+	 */
+	public var camHUDZoomLerp:Float = 0.05;
+
 	@:dox(hide)
 	public var __updateNote_event:NoteUpdateEvent = null;
 
@@ -3610,9 +3618,15 @@ class PlayState extends MusicBeatState
 			}
 			//FIXME some way to force update the variables???
 		}
-		if (!ClientPrefs.data.camZooms) {
-			FlxG.camera.zoom = defaultCamZoom;
-			camHUD.zoom = defaultHUDCamZoom;
+		if (camZooming && !ClientPrefs.data.camZooms && alterZoom)
+		{
+			FlxG.camera.zoom = lerp(FlxG.camera.zoom, defaultCamZoom, camGameZoomLerp);
+			camHUD.zoom = lerp(camHUD.zoom, defaultHUDCamZoom, camHUDZoomLerp);
+		} else {
+			if (!ClientPrefs.data.camZooms) {
+				FlxG.camera.zoom = defaultCamZoom;
+				camHUD.zoom = defaultHUDCamZoom;
+			}
 		}
 
 		super.update(elapsed);
