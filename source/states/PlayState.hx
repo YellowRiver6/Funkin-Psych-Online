@@ -3619,7 +3619,7 @@ class PlayState extends MusicBeatState
 			}
 			//FIXME some way to force update the variables???
 		}
-		if (camZooming && !ClientPrefs.data.camZooms && alterZoom)
+		if (camZooming && !ClientPrefs.data.camZooms && ClientPrefs.data.alterZoom)
 		{
 			FlxG.camera.zoom = lerp(FlxG.camera.zoom, defaultCamZoom, camGameZoomLerp);
 			camHUD.zoom = lerp(camHUD.zoom, defaultHUDCamZoom, camHUDZoomLerp);
