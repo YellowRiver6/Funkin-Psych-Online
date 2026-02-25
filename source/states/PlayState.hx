@@ -1442,7 +1442,7 @@ class PlayState extends MusicBeatState
 				FlxG.camera.follow(camFollow, LOCKON, 0);
 			}
 
-			FlxG.camera.zoom = defaultCamZoom;
+			if (!ClientPrefs.data.alterZoom) FlxG.camera.zoom = defaultCamZoom; //I'm gonna find and kill the person who added this.
 			if (ClientPrefs.data.oldCameraSystem)
 				FlxG.camera.focusOn(camFollow);
 			else
