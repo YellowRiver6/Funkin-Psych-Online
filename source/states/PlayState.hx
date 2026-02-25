@@ -1442,7 +1442,7 @@ class PlayState extends MusicBeatState
 				FlxG.camera.follow(camFollow, LOCKON, 0);
 			}
 
-			if (!ClientPrefs.data.alterZoom) FlxG.camera.zoom = defaultCamZoom; //I'm gonna find and kill the person who added this.
+			FlxG.camera.zoom = defaultCamZoom; //I'm gonna find and kill the person who added this.
 			if (ClientPrefs.data.oldCameraSystem)
 				FlxG.camera.focusOn(camFollow);
 			else
@@ -3707,7 +3707,7 @@ class PlayState extends MusicBeatState
 
 		if (camZooming)
 		{
-			FlxG.camera.zoom = FlxMath.lerp(defaultCamZoom, FlxG.camera.zoom, FlxMath.bound(1 - (elapsed * 3.125 * camZoomingDecay * playbackRate), 0, 1));
+			if (!ClientPrefs.data.alterZoom) FlxG.camera.zoom = FlxMath.lerp(defaultCamZoom, FlxG.camera.zoom, FlxMath.bound(1 - (elapsed * 3.125 * camZoomingDecay * playbackRate), 0, 1));
 			camHUD.zoom = FlxMath.lerp(defaultHUDCamZoom, camHUD.zoom, FlxMath.bound(1 - (elapsed * 3.125 * camZoomingDecay * playbackRate), 0, 1));
 		}
 
