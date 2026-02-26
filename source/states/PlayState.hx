@@ -265,7 +265,7 @@ class PlayState extends MusicBeatState
 	private function get_boyfriend():Character {
 		if (strumLines != null && strumLines.members[1] != null)
 			return strumLines.members[1].characters[0];
-		return null;
+		return bf;
 	}
 	private function set_boyfriend(bf:Character):Character {
 		if (strumLines != null && strumLines.members[1] != null)
@@ -275,7 +275,7 @@ class PlayState extends MusicBeatState
 	private function get_dad():Character {
 		if (strumLines != null && strumLines.members[0] != null)
 			return strumLines.members[0].characters[0];
-		return null;
+		return dad;
 	}
 	private function set_dad(dad:Character):Character {
 		if (strumLines != null && strumLines.members[0] != null)
@@ -285,7 +285,7 @@ class PlayState extends MusicBeatState
 	private function get_gf():Null<Character> {
 		if (strumLines != null && strumLines.members[2] != null)
 			return strumLines.members[2].characters[0];
-		return null;
+		return gf;
 	}
 	private function set_gf(gf:Character):Null<Character> {
 		if (strumLines != null && strumLines.members[2] != null)
