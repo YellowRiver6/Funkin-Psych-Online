@@ -1240,35 +1240,6 @@ class PlayState extends MusicBeatState
 		}
 
 		preloadTasks.push(() -> {
-			comboGroup = new FlxSpriteGroup();
-			add(comboGroup);
-			noteGroup = new FlxTypedGroup<FlxBasic>();
-			add(noteGroup);
-			uiGroup = new FlxSpriteGroup();
-			add(uiGroup);
-
-			uiGroup.cameras = [camHUD];
-			noteGroup.cameras = [camHUD];
-			comboGroup.cameras = [camHUD];
-
-			noteGroup.add(strumLines);
-			#if HSC_ALLOWED
-			scripts.set("SONG", SONG);
-			scripts.setupPlayState();
-			scripts.load();
-			#end
-
-			//maybe this can fix all problems lol
-			var event = EventManager.get(AmountEvent).recycle(4);
-			if (!scripts.event("onPreGenerateStrums", event).cancelled) {
-				addStrum(true, [], 0); //empty because characters handling after the strum creation.
-				addStrum(false, [], 4);
-				scripts.event("onPostGenerateStrums", event);
-			}
-		});
-
-		/* Load the StrumLine First, then load characters for everyone's good */
-		preloadTasks.push(() -> {
 			//init characters
 			if (GameClient.isConnected()) {
 				for (sid => player in GameClient.room.state.players) {
@@ -1340,13 +1311,13 @@ class PlayState extends MusicBeatState
 					gfName = 'gf' + skinsSuffix;
 				}
 
-				var localGF = new Character(0, 0, gfName, false, false, 'gf');
-				localGF.loadSpeaker();
-				if (localGF?.speaker != null) {
-					gfGroup.add(localGF.speaker);
+				gf = new Character(0, 0, gfName, false, false, 'gf');
+				gf.loadSpeaker();
+				if (gf?.speaker != null) {
+					gfGroup.add(gf.speaker);
 
-					if (localGF.speaker is Character)
-						startCharacterPos(cast localGF.speaker);
+					if (gf.speaker is Character)
+						startCharacterPos(cast gf.speaker);
 				}
 				startCharacterPos(gf);
 
@@ -1354,8 +1325,7 @@ class PlayState extends MusicBeatState
 				// gfGroup.scrollFactor.set(0.95, 0.95);
 				gfGroup.add(gf);
 
-				startCharacterScripts(localGF.curCharacter);
-				gf = localGF;
+				startCharacterScripts(gf.curCharacter);
 			}
 
 			if (gf != null && GameClient.isConnected() && GameClient.room.state.hideGF) {
@@ -1381,6 +1351,34 @@ class PlayState extends MusicBeatState
 				dad.setPosition(GF_X, GF_Y);
 				if (gf != null)
 					gf.visible = false;
+			}
+		});
+
+		preloadTasks.push(() -> {
+			comboGroup = new FlxSpriteGroup();
+			add(comboGroup);
+			noteGroup = new FlxTypedGroup<FlxBasic>();
+			add(noteGroup);
+			uiGroup = new FlxSpriteGroup();
+			add(uiGroup);
+
+			uiGroup.cameras = [camHUD];
+			noteGroup.cameras = [camHUD];
+			comboGroup.cameras = [camHUD];
+
+			noteGroup.add(strumLines);
+			#if HSC_ALLOWED
+			scripts.set("SONG", SONG);
+			scripts.setupPlayState();
+			scripts.load();
+			#end
+
+			//maybe this can fix all problems lol
+			var event = EventManager.get(AmountEvent).recycle(4);
+			if (!scripts.event("onPreGenerateStrums", event).cancelled) {
+				addStrum(true, [dad], 0);
+				addStrum(false, [boyfriend], 4);
+				scripts.event("onPostGenerateStrums", event);
 			}
 		});
 
