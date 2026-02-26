@@ -12,11 +12,6 @@ import sys.FileSystem;
 
 import backend.Section;
 
-typedef MetaData =
-{
-	@:optional var displayName:String;
-}
-
 typedef SwagSong =
 {
 	var song:String;
@@ -48,9 +43,6 @@ typedef SwagSong =
 
 	//psych engine 1.0
 	@:optional var format:String;
-
-	//codename engine
-	@:optional var meta:MetaData; //this is not optional :| silly me what thinks.
 }
 
 class Song
@@ -234,12 +226,10 @@ class Song
 		if (parsed.song != null) {
 			if (Std.isOfType(parsed.song, String)) {
 				parsed.format ??= 'psych_v1';
-				parsed.meta.displayName ??= "nothing";
 				return parsed;
 			}
 			
 			parsed.song.format ??= 'psych_legacy';
-			parsed.song.meta.displayName ??= "nothing";
 			return parsed.song;
 		}
 		

@@ -229,16 +229,12 @@ class PlayState extends MusicBeatState
 
 	public static function loadSong(jsonInput:String, ?folder:String):SwagSong {
 		RAW_SONG = Song.loadRawSong(jsonInput, folder);
-		SONG = Song.parseRawJSON(jsonInput, RAW_SONG);
-		SONG.meta.displayName = SONG.song;
-		return SONG;
+		return SONG = Song.parseRawJSON(jsonInput, RAW_SONG);
 	}
 
 	public static function loadSongFromSwag(v:SwagSong):SwagSong {
 		RAW_SONG = haxe.Json.stringify(v);
-		SONG = Song.parseRawJSON('', RAW_SONG);
-		SONG.meta.displayName = SONG.song;
-		return SONG;
+		return SONG = Song.parseRawJSON('', RAW_SONG);
 	}
 	
 	public static var RAW_SONG:String = '';
