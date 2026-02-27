@@ -268,33 +268,45 @@ class PlayState extends MusicBeatState
 	public var gf(get, set):Null<Character>;
 	public var boyfriend(get, set):Character;
 	private function get_boyfriend():Character {
-		if (strumLines != null && strumLines.members[1] != null)
-			return strumLines.members[1].characters[0];
+		try {
+			if (strumLines != null && strumLines.members[1] != null)
+				return strumLines.members[1].characters[0];
+		} catch(e:Dynamic) {}
 		return __boyfriend;
 	}
 	private function set_boyfriend(bf:Character):Character {
-		if (strumLines != null && strumLines.members[1] != null)
-			strumLines.members[1].characters = [bf];
+		try {
+			if (strumLines != null && strumLines.members[1] != null)
+				strumLines.members[1].characters = [bf];
+		} catch(e:Dynamic) {}
 		return bf;
 	}
 	private function get_dad():Character {
-		if (strumLines != null && strumLines.members[0] != null)
-			return strumLines.members[0].characters[0];
+		try {
+			if (strumLines != null && strumLines.members[0] != null)
+				return strumLines.members[0].characters[0];
+		} catch(e:Dynamic) {}
 		return __dad;
 	}
 	private function set_dad(dad:Character):Character {
-		if (strumLines != null && strumLines.members[0] != null)
-			strumLines.members[0].characters = [dad];
+		try {
+			if (strumLines != null && strumLines.members[0] != null)
+				strumLines.members[0].characters = [dad];
+		} catch(e:Dynamic) {}
 		return dad;
 	}
 	private function get_gf():Null<Character> {
-		if (strumLines != null && strumLines.members[2] != null)
-			return strumLines.members[2].characters[0];
+		try {
+			if (strumLines != null && strumLines.members[2] != null)
+				return strumLines.members[2].characters[0];
+		} catch(e:Dynamic) {}
 		return __gf;
 	}
 	private function set_gf(gf:Character):Null<Character> {
-		if (strumLines != null && strumLines.members[2] != null)
-			strumLines.members[2].characters = [gf];
+		try {
+			if (strumLines != null && strumLines.members[2] != null)
+				strumLines.members[2].characters = [gf];
+		} catch(e:Dynamic) {}
 		return gf;
 	}
 	public var dummy:Character = null;
