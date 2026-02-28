@@ -1189,7 +1189,7 @@ class PlayState extends MusicBeatState
 			// when the character has failed to load
 			if (char == null || char.loadFailed) {
 				Mods.currentModDirectory = oldModDir;
-				char = new Character(0, 0, (isRight ? SONG.player1 : SONG.player2), playsAsBF() == isRight, false, isRight ? 'bf' : 'dad');
+				char = new Character(0, 0, (isRight ? SONG.player1 : SONG.player2), playsAsBF() == isRight, false, 'bf');
 			}
 			
 			char.ox = player?.ox ?? 0;
