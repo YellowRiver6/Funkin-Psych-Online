@@ -93,7 +93,6 @@ class Language {
 		"Favorites" => "Favoriler",
 		"Hidden" => "Gizli",
 		" MIX" => " KARIŞIMI",
-		"PLAYER" => "OYUNCU",
 		"SCORE" => "SKOR",
 		"ACCURACY" => "DOĞRULUK",
 		"RANK" => "RÜTBE",
@@ -308,7 +307,7 @@ class Language {
 		"< ALL TIME >"            => "< HER ZAMAN >",
 		"PLAYER"            => "OYUNCU",
 		"LOADING"                 => "YÜKLENİYOR",
-		"LOADING..."                 => "YÜKLENİYOR",
+		"LOADING..."                 => "YÜKLENİYOR...",
 		"FlashingState.warnText"  => "Hey, dikkat et!\n
 			Bu Oyun, bazı yanıp sönen ışıklar içeriyor!\n
 			Flaşları kapatmak veya Ayarlar'a gitmek için %{1}% tuşuna basın.\n
