@@ -163,7 +163,8 @@ class Language {
 		"If checked, the current FP count will be shown in the score text, can be toggled in-game with F7" => "İşaretlenirse, mevcut FP sayısı puan metninde gösterilir, oyun içinde F7 ile değiştirilebilir.",
 		"FP V5 Preview" => "FP V5 Önizlemesi",
 		"If enabled, new FP algorithm will be shown in the Counter" => "Etkinleştirilirse, sayaçta yeni FP algoritması gösterilir.",
-		"Group Songs:" => "Şarkıları Grupla:","How should songs on Freeplay menu be group by?" => "Serbest Oynanış menüsündeki şarkılar neye göre gruplandırılmalı?",
+		"Group Songs:" => "Şarkıları Grupla:",
+		"How should songs on Freeplay menu be group by?" => "Serbest Oynanış menüsündeki şarkılar neye göre gruplandırılmalı?",
 		"Rating Color" => "Derece Rengi",
 		"If checked, the Rating text will be colored depending on your current... well... Rating, same with Combo." => "İşaretlenirse, Derece metni ve Kombo mevcut derecenize göre renklendirilir.",
 		"Favorite Tracks Menu Theme" => "Favori Parçalar Menü Teması",
@@ -407,10 +408,8 @@ class Language {
 		"JOIN" => "ODAYA KATIL",
 		"HOST" => "ODA AÇ",
 		"FIND" => "ODA BUL",
-		"OPTIONS" => "AYARLAR",
 		"LEADERBOARD" => "LİDERLİK TABLOSU",
 		"MOD DOWNLOADER" => "MOD YÜKLEYİCİ",
-		"JOIN CODE:" => "ODA KODU:",
 		"OPTIONS" => "AYARLAR",
 		// OnlineState - Yeni Eklenecekler
 		"JOIN CODE:" => "ODA KODU:",
@@ -618,7 +617,7 @@ class Language {
 
 		if (turkishTexts.exists(text) && ClientPrefs.data.lang == "TR")
 			text = turkishTexts.get(text);
-		if (normalTexts.exists(text))
+		elae if (normalTexts.exists(text))
 			text = normalTexts.get(text);
 
 		if (args != null && args.length > 0) {
