@@ -259,39 +259,26 @@ class PlayState extends MusicBeatState
 	public var opponentVocals:FlxSound;
 	public var inst:FlxSound;
 
-	@:isVar public var dad(get, set):Character = null;
-	@:isVar public var gf(get, set):Null<Character> = null;
-	@:isVar public var boyfriend(get, set):Character = null;
-	private function get_boyfriend():Character {
-		if (strumLines != null && strumLines?.members[1] != null)
-			return strumLines.members[1].characters[0];
-		return boyfriend;
-	}
-	private function set_boyfriend(bf:Character):Character {
-		if (strumLines != null && strumLines?.members[1] != null)
-			strumLines.members[1].characters = [bf];
-		return this.boyfriend = bf;
-	}
-	private function get_dad():Character {
+	// dad (he's implemented)
+	@:isVar public var dad(default, set):Character;
+	private function set_dad(dad:Character):Character {
+		this.dad = dad;
 		if (strumLines != null && strumLines?.members[0] != null)
-			return strumLines.members[0].characters[0];
+			strumLines.members[0].characters = [this.dad];
 		return dad;
 	}
-	private function set_dad(dad:Character):Character {
-		if (strumLines != null && strumLines?.members[0] != null)
-			strumLines.members[0].characters = [dad];
-		return this.dad = dad;
+
+	// boyfriend (he's implemented too)
+	@:isVar public var boyfriend(default, set):Character;
+	private function set_boyfriend(bf:Character):Character {
+		this.boyfriend = bf;
+		if (strumLines != null && strumLines?.members[1] != null)
+			strumLines.members[1].characters = [this.boyfriend];
+		return bf;
 	}
-	private function get_gf():Null<Character> {
-		/* if (strumLines != null && strumLines?.members[2] != null)
-			return strumLines.members[2].characters[0]; */
-		return gf;
-	}
-	private function set_gf(gf:Character):Null<Character> {
-		/* if (strumLines != null && strumLines?.members[2] != null)
-			strumLines.members[2].characters = [gf]; */
-		return this.gf = gf;
-	}
+	//gf (her strums not implemented yet)
+	public var gf:Null<Character> = null;
+
 	public var dummy:Character = null;
 	//its you
 	public var self(get, never):Character;
