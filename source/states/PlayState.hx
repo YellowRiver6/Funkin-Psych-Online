@@ -1299,7 +1299,7 @@ class PlayState extends MusicBeatState
 			if (!stageData.hide_girlfriend) {
 				var gfName = SONG.gfVersion;
 
-				if (boyfriend.isSkin && boyfriend.speakerName != null 
+				if (boyfriend?.isSkin && boyfriend?.speakerName != null 
 				&& !SONG.player1.startsWith(boyfriend.curCharacter) && !SONG.gfVersion.startsWith(boyfriend.speakerName)) {
 					gfName = boyfriend.speakerName;
 					Mods.currentModDirectory = boyfriend.modDir;
