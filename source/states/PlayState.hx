@@ -270,7 +270,7 @@ class PlayState extends MusicBeatState
 	private function set_boyfriend(bf:Character):Character {
 		if (strumLines != null && strumLines?.members[1] != null)
 			strumLines.members[1].characters = [bf];
-		return bf;
+		return this.boyfriend = bf;
 	}
 	private function get_dad():Character {
 		if (strumLines != null && strumLines?.members[0] != null)
@@ -280,7 +280,7 @@ class PlayState extends MusicBeatState
 	private function set_dad(dad:Character):Character {
 		if (strumLines != null && strumLines?.members[0] != null)
 			strumLines.members[0].characters = [dad];
-		return dad;
+		return this.dad = dad;
 	}
 	private function get_gf():Null<Character> {
 		if (strumLines != null && strumLines?.members[2] != null)
@@ -290,7 +290,7 @@ class PlayState extends MusicBeatState
 	private function set_gf(gf:Character):Null<Character> {
 		if (strumLines != null && strumLines?.members[2] != null)
 			strumLines.members[2].characters = [gf];
-		return gf;
+		return this.gf = gf;
 	}
 	public var dummy:Character = null;
 	//its you
@@ -1292,14 +1292,16 @@ class PlayState extends MusicBeatState
 			}
 			iconP1s.sort(sortIconByOX);
 			iconP2s.sort(sortIconByOX);
+		});
 
-			//merge with other chars
+		// NOTE: in regular psych girlfriend is initialized before other characters (hopefully this doesn't cause issues with mods)
+		preloadTasks.push(() -> {
 			oldModDir = Mods.currentModDirectory;
 
 			if (!stageData.hide_girlfriend) {
 				var gfName = SONG.gfVersion;
 
-				if (boyfriend?.isSkin && boyfriend?.speakerName != null 
+				if (boyfriend.isSkin && boyfriend.speakerName != null 
 				&& !SONG.player1.startsWith(boyfriend.curCharacter) && !SONG.gfVersion.startsWith(boyfriend.speakerName)) {
 					gfName = boyfriend.speakerName;
 					Mods.currentModDirectory = boyfriend.modDir;
@@ -1310,7 +1312,7 @@ class PlayState extends MusicBeatState
 				}
 
 				gf = new Character(0, 0, gfName, false, false, 'gf');
-				gf?.loadSpeaker();
+				gf.loadSpeaker();
 				if (gf?.speaker != null) {
 					gfGroup.add(gf.speaker);
 
