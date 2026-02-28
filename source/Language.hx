@@ -617,7 +617,7 @@ class Language {
 
 		if (turkishTexts.exists(text) && ClientPrefs.data.lang == "TR")
 			text = turkishTexts.get(text);
-		elae if (normalTexts.exists(text))
+		else if (normalTexts.exists(text))
 			text = normalTexts.get(text);
 
 		if (args != null && args.length > 0) {
