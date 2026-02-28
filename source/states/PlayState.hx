@@ -268,46 +268,46 @@ class PlayState extends MusicBeatState
 	public var gf(get, set):Null<Character>;
 	public var boyfriend(get, set):Character;
 	private function get_boyfriend():Character {
-		try {
-			if (strumLines != null && strumLines.members[1] != null)
-				return strumLines.members[1].characters[0];
-		} catch(e:Dynamic) {}
+		//for safety
+		if (strumLines?.members[1]?.characters[0] == __boyfriend)
+			return __boyfriend;
+
+		if (strumLines != null && strumLines?.members[1] != null)
+			return strumLines.members[1].characters[0];
 		return __boyfriend;
 	}
 	private function set_boyfriend(bf:Character):Character {
-		try {
-			if (strumLines != null && strumLines.members[1] != null)
-				strumLines.members[1].characters = [bf];
-		} catch(e:Dynamic) {}
-		return bf;
+		if (strumLines != null && strumLines?.members[1] != null)
+			strumLines.members[1].characters = [bf];
+		return __boyfriend = bf;
 	}
 	private function get_dad():Character {
-		try {
-			if (strumLines != null && strumLines.members[0] != null)
-				return strumLines.members[0].characters[0];
-		} catch(e:Dynamic) {}
+		//for safety
+		if (strumLines?.members[1]?.characters[0] == __dad)
+			return __dad;
+
+		if (strumLines != null && strumLines?.members[0] != null)
+			return strumLines.members[0].characters[0];
 		return __dad;
 	}
 	private function set_dad(dad:Character):Character {
-		try {
-			if (strumLines != null && strumLines.members[0] != null)
-				strumLines.members[0].characters = [dad];
-		} catch(e:Dynamic) {}
-		return dad;
+		if (strumLines != null && strumLines?.members[0] != null)
+			strumLines.members[0].characters = [dad];
+		return __dad = dad;
 	}
 	private function get_gf():Null<Character> {
-		try {
-			if (strumLines != null && strumLines.members[2] != null)
-				return strumLines.members[2].characters[0];
-		} catch(e:Dynamic) {}
+		//for safety
+		if (strumLines?.members[1]?.characters[0] == __gf)
+			return __gf;
+
+		if (strumLines != null && strumLines?.members[2] != null)
+			return strumLines.members[2].characters[0];
 		return __gf;
 	}
 	private function set_gf(gf:Character):Null<Character> {
-		try {
-			if (strumLines != null && strumLines.members[2] != null)
-				strumLines.members[2].characters = [gf];
-		} catch(e:Dynamic) {}
-		return gf;
+		if (strumLines != null && strumLines?.members[2] != null)
+			strumLines.members[2].characters = [gf];
+		return __gf = gf;
 	}
 	public var dummy:Character = null;
 	//its you

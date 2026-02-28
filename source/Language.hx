@@ -408,11 +408,11 @@ class Language {
 		"JOIN" => "ODAYA KATIL",
 		"HOST" => "ODA AÇ",
 		"FIND" => "ODA BUL",
-		"LEADERBOARD" => "LİDERLİK TABLOSU",
+		"LEADERBOARD" => "LiDERLiK TABLOSU",
 		"MOD DOWNLOADER" => "MOD YÜKLEYİCİ",
 		"OPTIONS" => "AYARLAR",
 		// OnlineState - Yeni Eklenecekler
-		"JOIN CODE:" => "ODA KODU:",
+		"JOIN CODE: " => "ODA KODU: ",
 		"Fetching..." => "Bağlanılıyor...",
 		"NETWORK OFFLINE" => "AĞ ÇEVRİMDIŞI",
 		"Players Online: " => "Çevrimiçi Oyuncular: ",

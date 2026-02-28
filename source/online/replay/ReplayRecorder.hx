@@ -278,7 +278,7 @@ class ReplayRecorder extends FlxBasic {
 		data.goods = state.songGoods;
 		data.bads = state.songBads;
 		data.shits = state.songShits;
-		data.points = FunkinPoints.calcFP(state.ratingPercent, state.songMisses, state.songDensity, state.totalNotesHit, state.maxCombo) * state.pointMultiplier;
+		data.points = state.songPoints; //this shouod fix 5fp => 0fp and similar issues
 		data.beat_time = Date.now().getTime();
 		data.note_offset = ClientPrefs.data.noteOffset;
 		data.keys = Note.maniaKeys;
