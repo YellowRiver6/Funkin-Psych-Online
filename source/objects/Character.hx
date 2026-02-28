@@ -50,67 +50,56 @@ typedef AnimArray = {
 	@:optional var flip_x:Bool;
 }
 
-class LazyReturnThing { //I'm lazy to use FlxPoint rn, so use this.
+class CharacterCameraPoint extends FlxPoint {
 	public var charType:String = null;
-	public var curChar:Character;
+
 	public function new(character:Character, charType:String) {
+		super(0, 0);
 		this.charType = charType;
-		this.curChar = character;
 	}
-	public var x(get, set):Float;
-	function get_x() {
+
+	override function get_x():Float {
 		if (PlayState.instance != null) {
 			switch (charType) {
 				case 'bf': return PlayState.instance.boyfriendCameraOffset[0];
 				case 'gf': return PlayState.instance.girlfriendCameraOffset[0];
 				case 'dad': return PlayState.instance.opponentCameraOffset[0];
-				default: curChar.localCameraOffset.x;
 			}
 		}
-		return 0;
+		return super.get_x();
 	}
-	function set_x(Value:Float) {
+
+	override function set_x(Value:Float):Float {
 		if (PlayState.instance != null) {
 			switch (charType) {
 				case 'bf': PlayState.instance.boyfriendCameraOffset[0] = Value;
-				case 'gf': return PlayState.instance.girlfriendCameraOffset[0] = Value;
+				case 'gf': PlayState.instance.girlfriendCameraOffset[0] = Value;
 				case 'dad': PlayState.instance.opponentCameraOffset[0] = Value;
 			}
 		}
-		curChar.localCameraOffset.x = Value;
-		return Value;
+		return super.set_x(Value);
 	}
 
-	public var y(get, set):Float;
-	function get_y() {
+	override function get_y():Float {
 		if (PlayState.instance != null) {
 			switch (charType) {
 				case 'bf': return PlayState.instance.boyfriendCameraOffset[1];
 				case 'gf': return PlayState.instance.girlfriendCameraOffset[1];
 				case 'dad': return PlayState.instance.opponentCameraOffset[1];
-				default: curChar.localCameraOffset.y;
 			}
 		}
-		return 0;
+		return super.get_y();
 	}
-	function set_y(Value:Float) {
+
+	override function set_y(Value:Float):Float {
 		if (PlayState.instance != null) {
 			switch (charType) {
 				case 'bf': PlayState.instance.boyfriendCameraOffset[1] = Value;
-				case 'gf': return PlayState.instance.girlfriendCameraOffset[1] = Value;
+				case 'gf': PlayState.instance.girlfriendCameraOffset[1] = Value;
 				case 'dad': PlayState.instance.opponentCameraOffset[1] = Value;
 			}
 		}
-		curChar.localCameraOffset.y = Value;
-		return Value;
-	}
-	public function set(?ValueX:Null<Float>, ?ValueY:Null<Float>) {
-		if (ValueX != null) x = ValueX;
-		if (ValueY != null) y = ValueY;
-	}
-	public function get() {
-		var tempPoint = new FlxPoint(x, y);
-		return tempPoint;
+		return super.set_y(Value);
 	}
 }
 
@@ -163,8 +152,7 @@ class Character extends FlxSkewedSprite {
 	}
 	
 	/* Lazy cameraOffset compability */
-	public var cameraOffset:LazyReturnThing;
-	public var localCameraOffset:FlxPoint;
+	public var cameraOffset:FlxPoint;
 
 	public var sprite3D:AnimatedSprite3D;
 
@@ -310,7 +298,9 @@ class Character extends FlxSkewedSprite {
 		}
 
 		animOffsets = new Map<String, Array<Dynamic>>();
-		cameraOffset = new LazyReturnThing(this, charType);
+		var fixesCharType:String = charType;
+		if (!isPlayer && charType == "bf") fixesCharType = "dad"; //should fix dad camera.
+		cameraOffset = new CharacterCameraPoint(this, fixesCharType);
 		this.isPlayer = isPlayer;
 		this.isSkin = isSkin;
 		var library:String = null;
@@ -388,7 +378,6 @@ class Character extends FlxSkewedSprite {
 		if (json.position != null)
 			ogPositionArray = positionArray = json.position;
 		cameraPosition = json.camera_position;
-		localCameraOffset.set(json.camera_position[0], json.camera_position[1]); //set Local Camera Offset too
 
 		// data
 		healthIcon = json.healthicon;
@@ -466,7 +455,6 @@ class Character extends FlxSkewedSprite {
 	public function changeCharacter(character:String, ?charType:String) {
 		animationsArray = [];
 		animOffsets = [];
-		localCameraOffset = new FlxPoint(0, 0);
 		curCharacter = character;
 		switch (curCharacter) {
 			// case 'your character name in case you want to hardcode them instead':
