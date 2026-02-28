@@ -362,10 +362,6 @@ class Language {
 		"It's over 1000!" => "1000'den Fazla!",
 		"Completed a Song with combo higher than 1000." => "Bir şarkıyı 1000'den yüksek kombo ile tamamla.",
 
-		//Mods Menu
-		"NO MODS INSTALLED\nPRESS BACK TO EXIT AND INSTALL A MOD" => "iNiK HiÇ BiR MOD YOK\nÇIKMAK iÇiN BACK'E BAS VE MOD YÜKLE",
-		"\nBITCH." => "\nAMK.",
-
 		//Ayarlar
 		"Note Colors" => "Nota Renkleri",
 		"Controls" => "Kontroller",
@@ -403,6 +399,7 @@ class Language {
 		"No description provided." => "Açıklama sağlanmadı.",
 		"No mod URL provided!" => "Mod URL'si sağlanmadı!",
 		"Other players will not be able to download this mod!\nPlease set it in the Setup Mods option!" => "Diğer oyuncular bu modu indiremeyecek!\nLütfen bunu Mod Kurulumu seçeneğinden ayarlayın!",
+		"\nBITCH." => "\nAMK.",
 		
 		"In the Menus" => "Menülerde",
 		"Mods" => "Modlar",

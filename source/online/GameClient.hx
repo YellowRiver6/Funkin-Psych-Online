@@ -467,6 +467,8 @@ class GameClient {
 	}
 
 	public static function send(type:Dynamic, ?message:Null<Dynamic>) {
+		if (type == "status") message = Language.getText(message); //why not?
+
 		if (GameClient.isConnected() && type != null)
 			Waiter.putPersist(() -> {
 				try {
