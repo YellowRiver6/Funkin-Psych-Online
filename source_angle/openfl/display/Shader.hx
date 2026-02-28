@@ -149,7 +149,6 @@ class Shader
 	/**
 		Get or set the GLSL version used in the header when compiling with GLSL.
 
-		- `120` is required for initialization (i.e. providing a default value for) `uniform` variables
 		@default The default value is determined at compile time.
 	**/
 	public var glVersion(get, set):String;
