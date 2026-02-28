@@ -303,7 +303,6 @@ class Language {
 		"LOAD REPLAY"             => "TEKRARI YÜKLE",
 		"REPLAYS UNAVAILABLE"     => "TEKRARLAR KULLANILAMAZ",
 		"RESET SCORE"             => "SKORU SIFIRLA",
-		"LEADERBOARD"             => "LiDERLiK TABLOSU",
 		"< ALL TIME >"            => "< HER ZAMAN >",
 		"PLAYER"            => "OYUNCU",
 		"LOADING"                 => "YÜKLENİYOR",
