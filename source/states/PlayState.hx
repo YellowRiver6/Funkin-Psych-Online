@@ -4744,7 +4744,7 @@ class PlayState extends MusicBeatState
 	public function setCamPosFromChar(char:Character, x:Float, y:Float) {
 		if (char != null) {
 			//get these from character
-			var camOffsetOG:FlxPoint = char.cameraOffset.get();
+			var camOffsetOG:FlxPoint = char.cameraOffset;
 			var camPos:Array<Float> = char.cameraPosition;
 
 			if (ClientPrefs.data.oldCameraSystem) camFollow.set(x, y);

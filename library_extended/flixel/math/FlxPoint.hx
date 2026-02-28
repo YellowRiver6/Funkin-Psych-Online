@@ -1475,8 +1475,8 @@ class FlxBasePoint implements IFlxPooled
 		return point;
 	}
 
-	public var x(get, set):Float = 0;
-	public var y(get, set):Float = 0;
+	@:isVar public var x(get, set):Float = 0;
+	@:isVar public var y(get, set):Float = 0;
 
 	#if FLX_POINT_POOL
 	var _weak:Bool = false;
