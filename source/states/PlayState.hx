@@ -7283,7 +7283,7 @@ class PlayState extends MusicBeatState
 					var strumIdx:Int = message[3];
 					var charArray:Array<Character> = [];
 
-					if (strumIdx != null && strumLines.members[strumIdx] != null) {
+					if (strumLines.members[strumIdx] != null) {
 						charArray = strumLines.members[strumIdx].characters;
 					}
 
