@@ -15,6 +15,8 @@ For this you can head over to [the wiki](https://PsychExtendedThings.github.io/H
 
 ## Credits:
 * ArkoseLabs - Creator of PsychExtended & PsychExtended Online & Head Porter of PsychOnline Mobile.
+* SametGkte - Creator of Psych Extended Online Turkiye & helped for translation
+* Ethantobot - Helper of Psych Extented Online (a little) & future french transalation
 
 
 
