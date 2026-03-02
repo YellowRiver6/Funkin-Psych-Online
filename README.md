@@ -3,53 +3,39 @@
 > Expect breaking changes, missing features and unstable builds.<br>
 > Use at your own risk.
 
-# Friday Night Funkin' - PsychExtended Online (PEXO)
+# Friday Night Funkin' - Psych Extended Online (PEXO)
 ![PsychionalExtendedLogo](docs/img/PsychExtendedLogo.png)
 
-The continuation of PsychExtended.
+The continuation of Psych Extended.
 
-Engine originally used on [Sansational Sans Mix](https://youtu.be/ROtW8QMdWb4), intended to be unlocks a Official Psych's limitations for the while keeping the mod support of PsychEngine 0.6.3 aspect of it. Also aiming to be an Codename Engine alternative to PsychEngine coders.
+Psych Extended Online originally used on [Fan Made Cyber Sensation Malware Breakout Online](https://youtube.com/@ArkoseLabsOfficial), intended to make easier to play Codename Engine mods with your friends while keeping the support of playing with original Psych Online players
 
-## Softcoding (.hsc) [will be added later]
-For this you can head over to [the wiki](https://PsychExtendedThings.github.io/HScript-Improved)!
+Psych Extended originally used on [Sansational Sans Mix](https://youtu.be/ROtW8QMdWb4), intended to be unlocks a Official Psych's limitations for the while keeping the mod support of PsychEngine 0.6.3 aspect of it.
+
+## Softcoding (.hsc)
+For this you can head over to the [PsychEngine](https://shadowmario.github.io/psychengine.lua/) and [CodenameEngine](https://codename-engine.com/wiki/) wiki!
 
 ## Credits:
 * ArkoseLabs - Creator of PsychExtended & PsychExtended Online & Head Porter of PsychOnline Mobile.
-* SametGkte - Creator of Psych Extended Online Turkiye & helped for translation
-* Ethantobot - Helper of Psych Extented Online (a little) & future french transalation
+* SametGkTe - Creator of Psych Extended Online Turkiye & helper of Psych Extended Online.
+* Ethantobot - Tester & Helper of Psych Extended Online.
 
+## Features
+* Codename Engine Chart Support
+* Codename Engine Script Support (Not Fully)
+* Multi StrumLine Support
+* Mobile Support (Android and iOS)
 
+Be free to contribute your code to this project! [(Before you PR, read this!)](https://github.com/PsychExtendedThings/Psych-Extended-Online/blob/dev/CONTRIBUTING.md)
 
+## Psych Online
 <p align="center">
     <img width="200" src="https://github.com/Snirozu/Funkin-Online-Server/blob/main/client/public/images/transwag.png?raw=true">
 </p>
 
-## Features
-* Online Multiplayer (Public and LAN)
-* 2v2 PvP
-* Built-In Mod Downloader
-* No Port Forwarding needed
-* Game Modifiers
-* Custom API
-* Skins Support
-* Leaderboards
-* Erect/Nightmare Difficulty Support
-* Multi-Key Support
-* Mobile Support (Android and iOS)
-
-### Planned
-* Further Psych Engine 1.0 Mod Support (1.0.0 is no longer planned sorry, too much work!) 
-
-## Links 
+* [Github](https://github.com/Snirozu/Funkin-Psych-Online)
 * [Documentation](https://github.com/Snirozu/Funkin-Psych-Online/wiki)
 * [Server Source Code](https://github.com/Snirozu/Funkin-Online-Server)
-
-## Contributors!
-<a href="https://github.com/Snirozu/Funkin-Psych-Online/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=Snirozu/Funkin-Psych-Online" />
-</a>
-
-Be free to contribute your code to this project! [(Before you PR, read this!)](https://github.com/Snirozu/Funkin-Psych-Online/src/branch/main/CONTRIBUTING.md)
 
 ###### Generated with [contrib.rocks](https://contrib.rocks)!
 

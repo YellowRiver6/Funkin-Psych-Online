@@ -44,8 +44,10 @@ class CreditsState extends MusicBeatState
 		#end
 
 		var defaultList:Array<Array<String>> = [ //Name - Icon name - Description - Link - BG Color
-			['Mobile Porters'],
-			['ArkoseLabs',	 'arkoselabs',	'Porter of Psych Online Mobile',					'https://youtube.com/@arkoselabsofficial',		'95240E'],
+			['Psych Extended Team'],
+			['ArkoseLabs',	 'arkoselabs',	'Creator of Psych Extended Online',					'https://youtube.com/@arkoselabsofficial',		'95240E'],
+			['SametGkTe',	 'gkte',	'Creator of Psych Extended Online Turkiye & helper of Psych Extended Online',	'https://tiktok.com/@gktegameplay',		'24ED13'],
+			['Ethantobot',	 'face',	'Tester & Helper of Psych Extended Online',					'https://youtube.com/@ethanpater548',		'24ED13'],
 			[''],
 			['Psych Online'],
 			['Snirozu', 'snirozu', 'helo i made this mod :)', 'https://sniro.boo', 'FFCC33'],
