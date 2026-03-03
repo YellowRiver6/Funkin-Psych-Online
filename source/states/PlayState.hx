@@ -6514,16 +6514,29 @@ class PlayState extends MusicBeatState
 			return;
 
 		for (character in characters) {
-			if (isCharacterPlayer(character))
+			if (isCharacterPlayer(character) || character == null)
 				continue;
 
-			if ((!character.noteHold || endingSong) && character.animation.curAnim != null
-				&& character.holdTimer > Conductor.stepCrochet * (0.0011 / playbackRate) * character.singDuration
-				&& character.animation.curAnim.name.startsWith('sing')
-				&& !(character.animation.curAnim.name.endsWith('miss') || character.isMissing))
+			var isSinging:Bool = character.animation.curAnim != null && character.animation.curAnim.name.startsWith('sing');
+			var isMissing:Bool = character.animation.curAnim != null && (character.animation.curAnim.name.endsWith('miss') || character.isMissing);
+
+			if (isSinging && !isMissing && !character.stunned) {
+				var holdTimerExpired:Bool = character.holdTimer > Conductor.stepCrochet * (0.0011 / playbackRate) * character.singDuration;
+				
+				if (holdTimerExpired && (!character.noteHold || endingSong)) {
+					character.dance();
+				}
+			}
+
+			// Re-check singing status because the step above might have just made them stop singing!
+			isSinging = character.animation.curAnim != null && character.animation.curAnim.name.startsWith('sing');
+
+			if (character.danceEveryNumBeats != 0 
+				&& beat % character.danceEveryNumBeats == 0 
+				&& !isSinging 
+				&& !character.stunned) 
 			{
 				character.dance();
-				//boyfriend.animation.curAnim.finish();
 			}
 		}
 	}
