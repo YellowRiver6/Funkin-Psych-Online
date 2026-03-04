@@ -773,7 +773,7 @@ class Character extends FlxSkewedSprite {
 		if (isCodenameChar) {
 			offset.set(0, 0);
 			var daOffset = getAnimOffset(AnimName);
-			if (daOffset != null) {
+			if (daOffset != null)
 				frameOffset.set(daOffset[0], daOffset[1]);
 			else
 				frameOffset.set(0, 0);
