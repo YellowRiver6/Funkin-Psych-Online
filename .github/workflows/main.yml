@@ -15,36 +15,47 @@ jobs:
             buildArgs: "android -ONLY_ARM64"
             artifactName: androidBuild
             artifactPath: "export/release/android/bin/app/build/outputs/apk/release/*.apk"
+            doCache: "YES"
+            
           - name: Windows-NORMAL
             os: windows-latest
             setupCommand: .\"setup/windows.bat"
             buildArgs: "windows -D officialBuild -final"
             artifactName: windowsBuild-x86_64
             artifactPath: export\release\windows\bin\*
-          - name: Android-ANGLE
-            os: ubuntu-latest
-            setupCommand: sh ./setup/unix.sh
-            buildArgs: "android -ONLY_ARM64 -D ANGLE_BUILD"
-            artifactName: androidBuild-(ANGLE)
-            artifactPath: "export/release/android/bin/app/build/outputs/apk/release/*.apk"
-          - name: Windows-ANGLE
-            os: windows-latest
-            setupCommand: .\"setup/windows.bat"
-            buildArgs: "windows -D officialBuild -final -D ANGLE_BUILD"
-            artifactName: windowsBuild-x86_64-(ANGLE)
-            artifactPath: export\release\windows\bin\*
-          - name: iOS-ANGLE
-            os: macos-15
-            setupCommand: sh ./setup/unix.sh
-            buildArgs: "ios -final -nosign -D officialBuild -D ANGLE_BUILD"
-            artifactName: iOSBuild-(ANGLE)
-            artifactPath: "export/release/ios/build/Release-iphoneos/*.ipa"
+            doCache: "NO"
+            
           - name: iOS-NORMAL
             os: macos-15
             setupCommand: sh ./setup/unix.sh
             buildArgs: "ios -final -nosign -D officialBuild"
             artifactName: iOSBuild
             artifactPath: "export/release/ios/build/Release-iphoneos/*.ipa"
+            doCache: "NO"
+            
+          - name: Android-ANGLE
+            os: ubuntu-latest
+            setupCommand: sh ./setup/unix.sh
+            buildArgs: "android -ONLY_ARM64 -D ANGLE_BUILD"
+            artifactName: androidBuild-(ANGLE)
+            artifactPath: "export/release/android/bin/app/build/outputs/apk/release/*.apk"
+            doCache: "NO"
+            
+          - name: Windows-ANGLE
+            os: windows-latest
+            setupCommand: .\"setup/windows.bat"
+            buildArgs: "windows -D officialBuild -final -D ANGLE_BUILD"
+            artifactName: windowsBuild-x86_64-(ANGLE)
+            artifactPath: export\release\windows\bin\*
+            doCache: "YES"
+            
+          - name: iOS-ANGLE
+            os: macos-15
+            setupCommand: sh ./setup/unix.sh
+            buildArgs: "ios -final -nosign -D officialBuild -D ANGLE_BUILD"
+            artifactName: iOSBuild-(ANGLE)
+            artifactPath: "export/release/ios/build/Release-iphoneos/*.ipa"
+            doCache: "YES"
     uses: ./.github/workflows/build.yml
     with:
         name: ${{ matrix.name }}
@@ -53,3 +64,4 @@ jobs:
         buildArgs: ${{ matrix.buildArgs }}
         artifactName: ${{ matrix.artifactName }}
         artifactPath: ${{ matrix.artifactPath }}
+        doCache: ${{ matrix.doCache }}

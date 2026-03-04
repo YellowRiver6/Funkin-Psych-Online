@@ -629,17 +629,17 @@ class PlayState extends MusicBeatState
 
 	var canSpaceTaunt:Bool = true;
 
-	public function initStrumLineCharacter(isRight:Bool, charName:String, ?addToHealthBar:Bool, ?disableGroup:Bool) {
+	public function initStrumLineCharacter(startX:Int = 0, startY:Int = 0, charName:String, isRight:Bool, ?tag:String, ?addToHealthBar:Bool, ?disableGroup:Bool) {
 		var char:Character = null;
 		oldModDir = Mods.currentModDirectory;
 
-		char = new Character(0, 0, charName, playsAsBF() == isRight, false, isRight ? 'bf' : 'dad');
+		char = new Character(startX, startY, charName, playsAsBF() == isRight, false, tag);
 
 		if (char.loadFailed) {
 			for (suffix in (isRight ? online.states.SkinsState.RIGHT_SUFFIX : online.states.SkinsState.LEFT_SUFFIX)) {
 				final charExists = Character.getCharacterFile(charName + suffix, null, true) != null;
 				if (charExists) {
-					char = new Character(0, 0, charName + suffix, playsAsBF() == isRight, false, isRight ? 'bf' : 'dad');
+					char = new Character(startX, startY, charName + suffix, playsAsBF() == isRight, false, tag);
 					break;
 				}
 			}
@@ -647,7 +647,7 @@ class PlayState extends MusicBeatState
 
 		if (addToHealthBar) {
 			if (isRight) {
-				if (boyfriend == null || char.ox == 0)
+				if (boyfriend == null)
 					boyfriend = char;
 
 				var icon = new HealthIcon(char.healthIcon, true);
@@ -660,7 +660,7 @@ class PlayState extends MusicBeatState
 				iconP1s.push(icon);
 			}
 			else {
-				if (dad == null || char.ox == 0)
+				if (dad == null)
 					dad = char;
 
 				var icon = new HealthIcon(char.healthIcon, false);
@@ -1356,6 +1356,10 @@ class PlayState extends MusicBeatState
 			}
 			iconP1s.sort(sortIconByOX);
 			iconP2s.sort(sortIconByOX);
+			//try something
+			for (strum in SONG.strumLines) {
+				initStrumLineCharacter(0, 0, strum.character, strum.cpu);
+			}
 		});
 
 		// NOTE: in regular psych girlfriend is initialized before other characters (hopefully this doesn't cause issues with mods)
