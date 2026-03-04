@@ -694,7 +694,7 @@ class PlayState extends MusicBeatState
 
 	//backwards compatibility
 	public function addStrum(isCPU:Bool, targetCharacters:Array<Character>, targetNoteData:Int, ?amount:Null<Int>) {
-		addTextToDebug("addStrum: this code deprecated, use createStrum for avoiding this message" + fileName, FlxColor.YELLOW);
+		addTextToDebug("addStrum: this code deprecated, use createStrum for avoiding this message", FlxColor.YELLOW);
 		createStrum(isCPU, targetCharacters, targetNoteData, amount);
 	}
 
@@ -1457,7 +1457,7 @@ class PlayState extends MusicBeatState
 				for (strumIndex => strumData in SONG.strumLines) {
 					var char = initStrumLineCharacter(0, 0, strumData.character, strumData.cpu);
 					if (strumData.startData != null) {
-						var strum = createStrum(strum.cpu, [char], strumData.startData);
+						var strum = createStrum(strumData.cpu, [char], strumData.startData);
 						strum.characters.push(char);
 						//some things for making easier to access
 						scripts.set('strumLine[${strumIndex + 2}]', strum);
