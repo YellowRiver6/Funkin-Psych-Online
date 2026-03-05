@@ -475,6 +475,7 @@ class Character extends FlxSkewedSprite {
 					}
 			}*/
 		}
+		__baseFlipped = flipX;
 	}
 
 	public function setup3D() {
@@ -868,6 +869,7 @@ class Character extends FlxSkewedSprite {
 		}
 	}
 	
+	@:noCompletion var __baseFlipped:Bool = false;
 	@:noCompletion var __reverseDrawProcedure:Bool = false;
 	public override function getScreenBounds(?newRect:FlxRect, ?camera:FlxCamera):FlxRect {
 		if (__reverseDrawProcedure) {
@@ -880,7 +882,7 @@ class Character extends FlxSkewedSprite {
 	}
 
 	public function isFlippedOffsets()
-		return originalFlipX != flipX;
+		return isPlayer != (flipX != __baseFlipped);
 
 	public override function draw()
 	{
