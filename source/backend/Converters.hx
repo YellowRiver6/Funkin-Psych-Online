@@ -9,7 +9,7 @@ class Converters {
 
 	/**
 	 * Converts a Codename Engine XML string to a Psych Engine JSON string.
-	 * * @param xmlString The raw XML string from the CNE character file.
+	 * @param xmlString The raw XML string from the CNE character file.
 	 * @param imagePath The path to the character image (e.g., "characters/bfex").
 	 * @return A formatted JSON string for PsychEngine.
 	 */
@@ -18,9 +18,11 @@ class Converters {
 		var rawXml = Xml.parse(xmlString).firstElement();
 		var xml = new Access(rawXml);
 
+		var finalImagePath:String = xml.has.sprite ? 'characters/' + xml.att.sprite : fallbackImagePath;
+
 		var charFile:CharacterFile = {
 			animations: [],
-			image: imagePath,
+			image: finalImagePath,
 			scale: xml.has.scale ? Std.parseFloat(xml.att.scale) : 1.0,
 			sing_duration: xml.has.holdTime ? Std.parseFloat(xml.att.holdTime) : 4.0,
 			healthicon: xml.has.icon ? xml.att.icon : "face",
@@ -38,6 +40,7 @@ class Converters {
 			betterOffsets: true, // CNE like offset swapping feature
 			isPlayer: xml.has.isPlayer ? (xml.att.isPlayer == "true") : false
 		};
+		if (xml.att.isPlayer == "true") charFile.flip_x = !charFile.flip_x; //Player Flip Fix
 
 		// Parse animations
 		if (xml.hasNode.anim) {
@@ -73,7 +76,7 @@ class Converters {
 			}
 		}
 
-		return Json.stringify(charFile, "\t");
+		return Json.stringify(charFile, null, "\t");
 	}
 
 	// --- CONVERTION SETTINGS (`32, round, 5` is recommended) ---

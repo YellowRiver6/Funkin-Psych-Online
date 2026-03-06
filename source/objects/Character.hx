@@ -118,10 +118,12 @@ class Character extends FlxSkewedSprite {
 
 	public function switchOffset(anim1:String, anim2:String)
 	{
-		var old1 = animOffsets.get(anim1);
-		var old2 = animOffsets.get(anim2);
-		animOffsets.set(anim1, old2);
-		animOffsets.set(anim2, old1);
+		if (animOffsets.exists(anim1) && animOffsets.exists(anim2)) {
+			var old1 = animOffsets.get(anim1);
+			var old2 = animOffsets.get(anim2);
+			animOffsets.set(anim1, old2);
+			animOffsets.set(anim2, old1);
+		}
 	}
 	
 	public inline function getAnimOffset(name:String)
@@ -225,7 +227,7 @@ class Character extends FlxSkewedSprite {
 
 	public static function getCharacterFile(character:String, ?instance:Character, ?nullOnFail:Bool = false):CharacterFile {
 		var jsonCharacterPath:String = 'characters/' + character + '.json';
-		var xmlCharacterPath:String = 'characters/' + character + '.xml';
+		var xmlCharacterPath:String = 'data/characters/' + character + '.xml';
 
 		var finalPath:String = null;
 		var isXml:Bool = false;
@@ -494,6 +496,10 @@ class Character extends FlxSkewedSprite {
 
 		if(animOffsets.exists('singLEFTmiss') || animOffsets.exists('singDOWNmiss') || animOffsets.exists('singUPmiss') || animOffsets.exists('singRIGHTmiss')) hasMissAnimations = true;
 		recalculateDanceIdle();
+		//I'm pretty sure swapping will cause null object errors but I need to trya anyway
+		if (isPlayer != playerOffsets)
+			swapLeftRightAnimations();
+
 		dance();
 
 		var prevFlipX = flipX;
@@ -784,12 +790,11 @@ class Character extends FlxSkewedSprite {
 			animation.play(AnimName, Force, Reversed, Frame);
 		}
 
-		offset.set(0, 0);
 		var daOffset = getAnimOffset(AnimName);
 		if (daOffset != null)
-			frameOffset.set(daOffset[0], daOffset[1]);
+			offset.set(daOffset[0], daOffset[1]);
 		else
-			frameOffset.set(0, 0);
+			offset.set(0, 0);
 
 		if (curCharacter.startsWith('gf')) {
 			if (AnimName == 'singLEFT') {
