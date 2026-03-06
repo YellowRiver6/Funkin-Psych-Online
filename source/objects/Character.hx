@@ -886,7 +886,7 @@ class Character extends FlxSkewedSprite {
 	}
 
 	public function isFlippedOffsets()
-		return (isPlayer != originalFlipX) != (flipX != __baseFlipped);
+		return (isPlayer != (originalFlipX == __baseFlipped)) != (flipX != __baseFlipped);
 
 	public override function draw()
 	{
