@@ -20,6 +20,8 @@ import states.stages.objects.TankmenBG;
 import online.GameClient;
 import flixel.addons.effects.FlxSkewedSprite;
 
+import backend.Converters;
+
 typedef CharacterFile = {
 	var animations:Array<AnimArray>;
 	var image:String;
@@ -33,6 +35,8 @@ typedef CharacterFile = {
 	var flip_x:Bool;
 	var no_antialiasing:Bool;
 	var healthbar_colors:Array<Int>;
+	@:optional var betterOffsets:Bool;
+	@:optional var isPlayer:Bool;
 	@:optional var vocals_file:String;
 	@:optional var dead_character:Null<String>;
 	@:optional var results_character:Null<String>;
@@ -220,30 +224,65 @@ class Character extends FlxSkewedSprite {
 	public static var DEFAULT_CHARACTER:String = 'bf'; // In case a character is missing, it will use BF on its place
 
 	public static function getCharacterFile(character:String, ?instance:Character, ?nullOnFail:Bool = false):CharacterFile {
-		var characterPath:String = 'characters/' + character + '.json';
+		var jsonCharacterPath:String = 'characters/' + character + '.json';
+		var xmlCharacterPath:String = 'characters/' + character + '.xml';
+
+		var finalPath:String = null;
+		var isXml:Bool = false;
 
 		#if MODS_ALLOWED
-		var path:String = Paths.modFolders(characterPath);
-		if (!FunkinFileSystem.exists(path)) {
-			path = Paths.getPreloadPath(characterPath);
+		var xmlPath:String = Paths.modFolders(xmlCharacterPath);
+		if (!FunkinFileSystem.exists(xmlPath)) {
+			xmlPath = Paths.getPreloadPath(xmlCharacterPath);
 		}
 
-		if (!FunkinFileSystem.exists(path))
+		if (FunkinFileSystem.exists(xmlPath)) {
+			finalPath = xmlPath;
+			isXml = true;
+		} else {
+			var jsonPath:String = Paths.modFolders(jsonCharacterPath);
+			if (!FunkinFileSystem.exists(jsonPath)) {
+				jsonPath = Paths.getPreloadPath(jsonCharacterPath);
+			}
+
+			if (FunkinFileSystem.exists(jsonPath)) {
+				finalPath = jsonPath;
+				isXml = false;
+			}
+		}
 		#else
-		var path:String = Paths.getPreloadPath(characterPath);
-		if (!Assets.exists(path))
+		var xmlPath:String = Paths.getPreloadPath(xmlCharacterPath);
+		if (Assets.exists(xmlPath)) {
+			finalPath = xmlPath;
+			isXml = true;
+		} else {
+			var jsonPath:String = Paths.getPreloadPath(jsonCharacterPath);
+			if (Assets.exists(jsonPath)) {
+				finalPath = jsonPath;
+				isXml = false;
+			}
+		}
 		#end
-		{
+
+		if (finalPath == null) {
 			if (instance != null)
 				instance.loadFailed = true;
 			if (nullOnFail)
 				return null;
-			path = Paths.getPreloadPath('characters/' + DEFAULT_CHARACTER + '.json'); // If a character couldn't be found, change him to BF just to prevent a crash
+				
+			finalPath = Paths.getPreloadPath('characters/' + DEFAULT_CHARACTER + '.json'); // Prevent crash
+			isXml = false;
 		}
 
-		var rawJson = FunkinFileSystem.getText(path);
-		if (rawJson == null) return null;
-		return cast Json.parse(rawJson);
+		var rawText = FunkinFileSystem.getText(finalPath);
+		if (rawText == null) return null;
+
+		if (isXml) {
+			var convertedJsonStr = Converters.parseCodenameChar(rawText, 'characters/' + character);
+			return cast Json.parse(convertedJsonStr);
+		} else {
+			return cast Json.parse(rawText);
+		}
 	}
 
 	public function loadSpeaker() {
@@ -358,6 +397,8 @@ class Character extends FlxSkewedSprite {
 		healthIcon = json.healthicon;
 		singDuration = json.sing_duration;
 		flipX = (json.flip_x == true);
+		betterOffsets = (json.betterOffsets == true);
+		playerOffsets = (json.isPlayer == true);
 
 		if (json.healthbar_colors != null && json.healthbar_colors.length > 2)
 			healthColorArray = json.healthbar_colors;
@@ -885,8 +926,11 @@ class Character extends FlxSkewedSprite {
 		return super.getScreenBounds(newRect, camera);
 	}
 
+	//better and player offsets for codename chars
+	public var betterOffsets:Bool = false;
+	public var playerOffsets:Bool = false;
 	public function isFlippedOffsets()
-		return (isPlayer != (originalFlipX == __baseFlipped)) != (flipX != __baseFlipped);
+		return (isPlayer != playerOffsets) != (flipX != __baseFlipped);
 
 	public override function draw()
 	{
@@ -897,7 +941,7 @@ class Character extends FlxSkewedSprite {
 			return;
 		}
 
-		if (isFlippedOffsets()) {
+		if (betterOffsets && isFlippedOffsets()) {
 			__reverseDrawProcedure = true;
 			flipX = !flipX;
 			scale.x *= -1;

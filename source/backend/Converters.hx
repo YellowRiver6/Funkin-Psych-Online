@@ -1,77 +1,80 @@
 package backend;
 
+import haxe.Json;
+import haxe.xml.Access;
+import objects.Character;
+
 class Converters {
-	// --- CNE CONVERTERS ---
-	/* Still in alpha
-	public static function parseCodenameChar(xmlData:Dynamic, isPlayer:Bool) {
-		var playerOffsets = (getAttribute(rawContent, "isPlayer") == 'true');
-		if(playerOffsets == null) playerOffsets = false;
-		var scale = getAttribute(rawContent, "scale");
-		if(scale == null) scale =" 1";
-		var holdTime = getAttribute(rawContent, "holdTime");
-		if(holdTime == null) holdTime = "4";
-		var camX = getAttribute(rawContent, "camx");
-		if(camX == null) camX = "0";
-		var camY = getAttribute(rawContent, "camy");
-		if(camY == null) camY = "0";
-		var icon = getAttribute(rawContent, "icon");
-		if(icon == null) icon = "face";
-		var gameOverChar = getAttribute(rawContent, "gameOverChar");
-	
-		var charJson = {
-			"animations": [],
-			"image": "characters/" + characterName, 
-			"scale": Std.parseFloat(scale),
-			"sing_duration": Std.parseFloat(holdTime),
-			"healthicon": icon,
-			"position": [0, 0],
-			"camera_position": [Std.parseFloat(camX), Std.parseFloat(camY)],
-			
-			"flip_x": !isPlayer, 
-			
-			"no_antialiasing": false,
-			"healthbar_colors": [161, 161, 161],
-			"dead_character": gameOverChar
+	/* --- CNE CONVERTERS --- */
+
+	/**
+	 * Converts a Codename Engine XML string to a Psych Engine JSON string.
+	 * * @param xmlString The raw XML string from the CNE character file.
+	 * @param imagePath The path to the character image (e.g., "characters/bfex").
+	 * @return A formatted JSON string for PsychEngine.
+	 */
+	public static function parseCodenameChar(xmlString:String, imagePath:String = "characters/my_character"):String {
+		// Parse the XML
+		var rawXml = Xml.parse(xmlString).firstElement();
+		var xml = new Access(rawXml);
+
+		var charFile:CharacterFile = {
+			animations: [],
+			image: imagePath,
+			scale: xml.has.scale ? Std.parseFloat(xml.att.scale) : 1.0,
+			sing_duration: xml.has.holdTime ? Std.parseFloat(xml.att.holdTime) : 4.0,
+			healthicon: xml.has.icon ? xml.att.icon : "face",
+			position: [
+				xml.has.x ? Std.parseFloat(xml.att.x) : 0.0,
+				xml.has.y ? Std.parseFloat(xml.att.y) : 0.0
+			],
+			camera_position: [
+				xml.has.camx ? Std.parseFloat(xml.att.camx) : 0.0,
+				xml.has.camy ? Std.parseFloat(xml.att.camy) : 0.0
+			],
+			flip_x: xml.has.flipX ? (xml.att.flipX == "true") : false,
+			no_antialiasing: xml.has.antialiasing ? (xml.att.antialiasing == "false") : false,
+			healthbar_colors: [161, 161, 161], // Default fallback color
+			betterOffsets: true, // CNE like offset swapping feature
+			isPlayer: xml.has.isPlayer ? (xml.att.isPlayer == "true") : false
 		};
-	
-		var animParts = rawContent.split("<anim");
-		animParts.shift();
-	
-		for (part in animParts) {
-			var endIdx = part.indexOf("/>");
-			if (endIdx == -1) continue;
-			var animData = part.substring(0, endIdx);
-			
-			var name = getAttribute(animData, "name");
-			var animPrefix = getAttribute(animData, "anim");
-			var xStr = getAttribute(animData, "x");
-			var yStr = getAttribute(animData, "y");
-			var fps = getAttribute(animData, "fps");
-			var loop = getAttribute(animData, "loop");
-	
-			var xVal = (xStr != null ? Std.parseFloat(xStr) : 0);
-			var yVal = (yStr != null ? Std.parseFloat(yStr) : 0);
-			if (isPlayer) {
-				xVal = Std.parseInt(xStr) * -1;
-			}
-	
-			if (name != null && animPrefix != null) {
-				//yVal = -yVal;
-	
-				charJson.animations.push({
-					"anim": name,
-					"name": animPrefix,
-					"fps": (fps != null ? Std.parseInt(fps) : 24),
-					"loop": (loop == "true"),
-					"indices": [],
-					"offsets": [xVal, yVal]
-				});
+
+		// Parse animations
+		if (xml.hasNode.anim) {
+			for (animNode in xml.nodes.anim) {
+				// Parse indices array (e.g., "[1, 2, 3]" -> [1, 2, 3])
+				var indicesArray:Array<Int> = [];
+				if (animNode.has.indices) {
+					var cleanString = StringTools.replace(animNode.att.indices, "[", "");
+					cleanString = StringTools.replace(cleanString, "]", "");
+					cleanString = StringTools.replace(cleanString, " ", ""); // Remove spaces
+					
+					if (cleanString.length > 0) {
+						var strIndices = cleanString.split(",");
+						for (i in strIndices) {
+							indicesArray.push(Std.parseInt(i));
+						}
+					}
+				}
+
+				var offsetX:Int = animNode.has.x ? Std.parseInt(animNode.att.x) : 0;
+				var offsetY:Int = animNode.has.y ? Std.parseInt(animNode.att.y) : 0;
+
+				var animData:AnimArray = {
+					anim: animNode.has.name ? animNode.att.name : "", // Psych 'anim' = CNE 'name'
+					name: animNode.has.anim ? animNode.att.anim : "", // Psych 'name' = CNE 'anim'
+					fps: animNode.has.fps ? Std.parseInt(animNode.att.fps) : 24,
+					loop: animNode.has.loop ? (animNode.att.loop == "true") : false,
+					indices: indicesArray,
+					offsets: [offsetX, offsetY]
+				};
+
+				charFile.animations.push(animData);
 			}
 		}
 
-		return Json.stringify(charJson, null, "\t");
+		return Json.stringify(charFile, "\t");
 	}
-	*/
 
 	// --- CONVERTION SETTINGS (`32, round, 5` is recommended) ---
 	public static var sectionSnapping:Int = 32;
@@ -82,7 +85,7 @@ class Converters {
 	/**
 	 * Converts CNE Chart and Meta Datas to PsychEngine JSON Format.
 	 */
-		public static function parseCodenameChart(chartData:Dynamic, metaData:Dynamic):Dynamic
+	public static function parseCodenameChart(chartData:Dynamic, metaData:Dynamic):Dynamic
 	{
 		var curCamera:Dynamic = 0;
 		var psychJson:Dynamic = {
