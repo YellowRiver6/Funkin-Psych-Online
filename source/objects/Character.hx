@@ -175,7 +175,6 @@ class Character extends FlxSkewedSprite {
 
 	public var positionArray:Array<Float> = [0, 0];
 	var ogPositionArray:Array<Float> = [0, 0];
-	var previousPositionArray:Array<Float> = [];
 	public var cameraPosition:Array<Float> = [0, 0];
 
 	// x offset index (for multiple characters)
@@ -394,10 +393,6 @@ class Character extends FlxSkewedSprite {
 		// positioning
 		if (json.position != null)
 			ogPositionArray = positionArray = json.position;
-		if (previousPositionArray != [] && previousPositionArray != null)
-			recalculateCharacterPos();
-
-		previousPositionArray = json.position;
 		cameraPosition = json.camera_position;
 
 		// data
@@ -477,22 +472,13 @@ class Character extends FlxSkewedSprite {
 		// trace('Loaded file to character ' + curCharacter);
 	}
 	
-	public function recalculateCharacterPos() {
-		if (PlayState.instance != null) {
-			x -= previousPositionArray[0] + ox * (isPlayer == PlayState.playsAsBF() ? 250 : -250);
-			y -= previousPositionArray[1];
-			x += positionArray[0] + ox * (isPlayer == PlayState.playsAsBF() ? 250 : -250);
-			y += positionArray[1];
-		}
-	}
-	
 	public function changeCharacter(character:String, ?charType:String) {
 		//Reset the variables
-		scale.x = 1; //this should fix
+		betterOffsets = false;
 		__baseFlipped = false;
 		playerOffsets = false;
-		betterOffsets = false;
 		flipX = false;
+		scale.x = 1;
 		animationsArray = [];
 		animOffsets = [];
 		curCharacter = character;
@@ -808,7 +794,7 @@ class Character extends FlxSkewedSprite {
 
 		if (betterOffsets) {
 			var daOffset = getAnimOffset(AnimName);
-			frameOffset.x = daOffset[0];
+			frameOffset.set(daOffset[0], daOffset[1]);
 			offset.set(positionArray[0] * (isPlayer != playerOffsets ? 1 : -1), daOffset[1]);
 		} else {
 			var daOffset = getAnimOffset(AnimName);
