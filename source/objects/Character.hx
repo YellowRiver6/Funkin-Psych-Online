@@ -141,7 +141,6 @@ class Character extends FlxSkewedSprite {
 	public var debugMode:Bool = false;
 
 	public var isPlayer:Bool = false;
-	public var isGlobalPlayer:Bool = false;
 	public var curCharacter:String = DEFAULT_CHARACTER;
 	public var isMissing:Bool = false;
 	public var resultsName:String = null;
@@ -305,9 +304,8 @@ class Character extends FlxSkewedSprite {
 		return speaker;
 	}
 
-	public function new(x:Float, y:Float, ?character:String = 'bf', ?isPlayer:Bool = false, ?isSkin:Bool = false, ?charType:String, ?isGlobalPlayer:Null<Bool>) {
+	public function new(x:Float, y:Float, ?character:String = 'bf', ?isPlayer:Bool = false, ?isSkin:Bool = false, ?charType:String) {
 		super(x, y);
-		if (isGlobalPlayer != null) this.isGlobalPlayer = isGlobalPlayer;
 
 		modDir = Mods.currentModDirectory;
 
@@ -475,11 +473,12 @@ class Character extends FlxSkewedSprite {
 	}
 	
 	public function changeCharacter(character:String, ?charType:String) {
+		//Reset the variables
+		__baseFlipped = false;
+		flipX = false;
 		animationsArray = [];
 		animOffsets = [];
 		curCharacter = character;
-		//Reset the variables
-		__baseFlipped = false;
 
 		switch (curCharacter) {
 			// case 'your character name in case you want to hardcode them instead':
@@ -504,7 +503,6 @@ class Character extends FlxSkewedSprite {
 
 		dance();
 
-		var prevFlipX = flipX;
 		if (isPlayer) {
 			flipX = !flipX;
 
@@ -943,7 +941,7 @@ class Character extends FlxSkewedSprite {
 	public var betterOffsets:Bool = false;
 	public var playerOffsets:Bool = false;
 	public function isFlippedOffsets()
-		return (isGlobalPlayer != playerOffsets) != (flipX != __baseFlipped);
+		return (isPlayer != playerOffsets) != (flipX != __baseFlipped);
 
 	public override function draw()
 	{
