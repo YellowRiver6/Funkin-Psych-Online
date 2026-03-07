@@ -478,10 +478,12 @@ class Character extends FlxSkewedSprite {
 	}
 	
 	public function recalculateCharacterPos() {
-		x -= previousPositionArray[0] + ox * (isPlayer == PlayState.instance.playsAsBF() ? 250 : -250);
-		y -= previousPositionArray[1];
-		x += positionArray[0] + ox * (isPlayer == PlayState.instance.playsAsBF() ? 250 : -250);
-		y += positionArray[1];
+		if (PlayState.instance != null) {
+			x -= previousPositionArray[0] + ox * (isPlayer == PlayState.instance.playsAsBF() ? 250 : -250);
+			y -= previousPositionArray[1];
+			x += positionArray[0] + ox * (isPlayer == PlayState.instance.playsAsBF() ? 250 : -250);
+			y += positionArray[1];
+		}
 	}
 	
 	public function changeCharacter(character:String, ?charType:String) {
