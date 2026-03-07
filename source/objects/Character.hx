@@ -494,7 +494,7 @@ class Character extends FlxSkewedSprite {
 
 		if(animOffsets.exists('singLEFTmiss') || animOffsets.exists('singDOWNmiss') || animOffsets.exists('singUPmiss') || animOffsets.exists('singRIGHTmiss')) hasMissAnimations = true;
 		recalculateDanceIdle();
-		if ((PlayState.playsAsBF() && isPlayer != playerOffsets || nPlayState.playsAsBF() && isPlayer == playerOffsets) && betterOffsets)
+		if ((PlayState.playsAsBF() && isPlayer != playerOffsets || PlayState.playsAsBF() && isPlayer == playerOffsets) && betterOffsets)
 			swapLeftRightAnimations();
 
 		dance();
