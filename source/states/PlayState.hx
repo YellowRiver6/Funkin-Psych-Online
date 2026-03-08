@@ -3450,6 +3450,34 @@ class PlayState extends MusicBeatState
 	// called by every event with the same name
 	function eventPushedUnique(event:EventNote) {
 		switch(event.event) {
+			case "Camera Movement":
+				curCameraTarget = event.value1;
+			//Codename Engine Support (you can't use these in the editor, just there for compatibility)
+			case 'Camera Flash':
+				//make the event work on PsychEngine
+				var splittedValue1 = event.value1.split(', ');
+				var splittedValue2 = event.value2.split(', ');
+				var flValue:Null<Float> = Std.parseFloat(splittedValue2[0]);
+				var stringToBool:Bool = splittedValue1[0] == 'true' ? true : false;
+				var getColor:Dynamic = CoolUtil.getColorFromDynamic(splittedValue1[1]); //I'm not sure, If color is wrong tell me
+
+				var camera:FlxCamera = splittedValue2[1] == "camHUD" ? camHUD : camGame;
+				if (stringToBool) // reversed
+					camera.fade(getColor, (Conductor.stepCrochet / 1000) * flValue, false, () -> {camera._fxFadeAlpha = 0;}, true);
+				else // Not Reversed
+					camera.flash(getColor, (Conductor.stepCrochet / 1000) * flValue, null, true);
+
+				/*
+				"Camera Flash" => [
+					{name: "Reversed?", type: TBool, defValue: false},
+					{name: "Color", type: TColorWheel, defValue: "#FFFFFF"},
+					{name: "Time (Steps)", type: TFloat(0.25, 9999, 0.25, 2), defValue: 4},
+					{name: "Camera", type: TDropDown(['camGame', 'camHUD']), defValue: "camHUD"}
+				]
+				*/
+			//Most important Event in the Codename Engine (Tested & It doesn't work for now)
+			case "HScript Call":
+				scripts.call(event.value1, event.value2.split(','));
 			case "Change Character":
 				var charType:Int = 0;
 				switch(event.value1.toLowerCase()) {
@@ -4909,32 +4937,6 @@ class PlayState extends MusicBeatState
 					moveCamera(value1 == '1');
 				else if (value1 == '2')
 					moveCamera(false, true);
-			//Codename Engine Support (you can't use these in the editor, just there for compatibility)
-			case 'Camera Flash':
-				//make the event work on PsychEngine
-				var splittedValue1 = value1.split(', ');
-				var splittedValue2 = value2.split(', ');
-				var flValue:Null<Float> = Std.parseFloat(splittedValue2[0]);
-				var stringToBool:Bool = splittedValue1[0] == 'true' ? true : false;
-				var getColor:Dynamic = CoolUtil.getColorFromDynamic(splittedValue1[1]); //I'm not sure, If color is wrong tell me
-
-				var camera:FlxCamera = splittedValue2[1] == "camHUD" ? camHUD : camGame;
-				if (stringToBool) // reversed
-					camera.fade(getColor, (Conductor.stepCrochet / 1000) * flValue, false, () -> {camera._fxFadeAlpha = 0;}, true);
-				else // Not Reversed
-					camera.flash(getColor, (Conductor.stepCrochet / 1000) * flValue, null, true);
-
-				/*
-				"Camera Flash" => [
-					{name: "Reversed?", type: TBool, defValue: false},
-					{name: "Color", type: TColorWheel, defValue: "#FFFFFF"},
-					{name: "Time (Steps)", type: TFloat(0.25, 9999, 0.25, 2), defValue: 4},
-					{name: "Camera", type: TDropDown(['camGame', 'camHUD']), defValue: "camHUD"}
-				]
-				*/
-			//Most important Event in the Codename Engine (Tested & It doesn't work for now)
-			case "HScript Call":
-				scripts.call(value1, value2.split(','));
 		}
 		
 		stagesFunc(function(stage:BaseStage) stage.eventCalled(eventName, value1, value2, flValue1, flValue2, strumTime));

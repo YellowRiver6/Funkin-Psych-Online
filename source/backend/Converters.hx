@@ -87,7 +87,7 @@ class Converters {
 	/**
 	 * Converts CNE Chart and Meta Datas to PsychEngine JSON Format.
 	 */
-	public static function parseCodenameChart(chartData:Dynamic, metaData:Dynamic):Dynamic
+	public static function parseCodenameChart(chartData:Dynamic, metaData:Dynamic, ?isEvent:Bool):Dynamic
 	{
 		var curCamera:Dynamic = 0;
 		var psychJson:Dynamic = {
@@ -185,6 +185,14 @@ class Converters {
 							mustHit = (charPosName == "boyfriend");
 						}
 						curCamera = strumId;
+						//omg it has own event now
+						if (isEvent) {
+							var psychEvent:Dynamic = ["Camera Movement", Std.string(strumId), ""];
+							if (eventsList.length <= 0 || Math.abs(eventsList[eventsList.length - 1][0] - event.time) > 0.1)
+								eventsList.push([event.time, [psychEvent]]);
+							else
+								eventsList[eventsList.length - 1][1].push(psychEvent);
+						}
 					case "BPM Change":
 						addSections(event.time);
 						curBPM = event.params[0];

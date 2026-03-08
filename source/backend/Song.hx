@@ -155,7 +155,11 @@ class Song
 
 		//check songs folder for cne charts
 		var chartsFolder:String = 'charts/${diffString}';
-		if (jsonInput.startsWith('events')) chartsFolder = "";
+		var isEvent:Bool = false;
+		if (jsonInput.startsWith('events')) {
+			chartsFolder = "";
+			isEvent = true;
+		}
 
 		var isCneExists:Bool = Paths.fileExists('songs/${songName}/${chartsFolder}.json', TEXT, false);
 
@@ -173,7 +177,7 @@ class Song
 		if (FunkinFileSystem.exists(moddyCneChartFile)) {
 			var chart:Dynamic = Json.parse(FunkinFileSystem.getText(moddyCneChartFile).trim());
 			var meta:Dynamic = Json.parse(FunkinFileSystem.getText(moddyCneMetaFile).trim());
-			rawJson = Converters.parseCodenameChart(chart, meta);
+			rawJson = Converters.parseCodenameChart(chart, meta, isEvent);
 		} else if (FunkinFileSystem.exists(moddyFile)) {
 			rawJson = FunkinFileSystem.getText(moddyFile).trim();
 		}
@@ -191,7 +195,7 @@ class Song
 			if (rawJson == null && cneChartFile == null) {
 				throw new haxe.Exception("Missing file: " + Paths.json(formattedFolder + '/' + formattedSong));
 			} else if (rawJson == null && cneChartFile != null) {
-				cneChartFile = Converters.parseCodenameChart(Json.parse(cneChartFile), Json.parse(cneMetaFile));
+				cneChartFile = Converters.parseCodenameChart(Json.parse(cneChartFile), Json.parse(cneMetaFile), isEvent);
 				rawJson = cneChartFile;
 			}
 
