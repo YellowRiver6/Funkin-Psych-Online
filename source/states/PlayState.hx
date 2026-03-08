@@ -1469,8 +1469,8 @@ class PlayState extends MusicBeatState
 			//maybe this can fix all problems lol
 			var event = EventManager.get(AmountEvent).recycle(4);
 			if (!scripts.event("onPreGenerateStrums", event).cancelled) {
-				createStrum(true, [dad], 0);
-				createStrum(false, [boyfriend], 4);
+				createStrum(true, [dad], true);
+				createStrum(false, [boyfriend], true);
 				scripts.event("onPostGenerateStrums", event);
 			}
 
