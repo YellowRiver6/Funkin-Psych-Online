@@ -253,7 +253,7 @@ class PlayState extends MusicBeatState
 	public var opponentVocals:FlxSound;
 	public var inst:FlxSound;
 
-	// dad (he's implemented)
+	// dad
 	@:isVar public var dad(default, set):Character;
 	private function set_dad(dad:Character):Character {
 		this.dad = dad;
@@ -262,7 +262,7 @@ class PlayState extends MusicBeatState
 		return dad;
 	}
 
-	// boyfriend (he's implemented too)
+	// boyfriend
 	@:isVar public var boyfriend(default, set):Character;
 	private function set_boyfriend(bf:Character):Character {
 		this.boyfriend = bf;
@@ -270,8 +270,15 @@ class PlayState extends MusicBeatState
 			strumLines.members[1].characters = [this.boyfriend];
 		return bf;
 	}
-	//gf (her strums not implemented yet)
-	public var gf:Null<Character> = null;
+
+	// girlfriend
+	@:isVar public var gf(default, set):Null<Character>;
+	private function set_gf(gf:Character):Null<Character> {
+		this.gf = gf;
+		if (strumLines != null && strumLines?.members[2] != null)
+			strumLines.members[2].characters = [this.gf];
+		return gf;
+	}
 
 	public var dummy:Character = null;
 	//its you
@@ -1471,6 +1478,7 @@ class PlayState extends MusicBeatState
 			if (!scripts.event("onPreGenerateStrums", event).cancelled) {
 				createStrum(true, [dad], true);
 				createStrum(false, [boyfriend], true);
+				createStrum(true, [gf], false);
 				scripts.event("onPostGenerateStrums", event);
 			}
 
@@ -3272,136 +3280,6 @@ class PlayState extends MusicBeatState
 			case "constant":
 				songSpeed = ClientPrefs.getGameplaySetting('scrollspeed');
 		}
-
-		/*
-		for (i => songNotes in dataNotes) {
-			var section = noteData[dataNotesSection[i]];
-			var daStrumTime:Float = songNotes[0];
-			if (daStrumTime > inst.length)
-				continue;
-
-			var rawNoteData:Int = Std.int(songNotes[1]);
-			var daNoteData:Int = Std.int(songNotes[1] % Note.maniaKeys);
-
-			if (rawNoteData < 0) // this should prevent most exe mods from crashing
-				continue;
-			var gottaHitNote:Bool = getMustPressFromRaw(section, songNotes);
-
-			var oldNote:Note;
-			if (unspawnNotes.length > 0)
-				oldNote = unspawnNotes[Std.int(unspawnNotes.length - 1)];
-			else
-				oldNote = null;
-
-			var strumIndex = Std.int(Math.floor(rawNoteData / Note.maniaKeys));
-			if (gottaHitNote && strumIndex == 0 && rawNoteData < Note.maniaKeys)
-				rawNoteData += Note.maniaKeys;
-
-			//A second check (fuck the mustPress system, Idk why they're not yetting 4-7 instead of 0-3 for player)
-			if (!gottaHitNote && strumIndex == 1)
-				rawNoteData -= Note.maniaKeys;
-
-			var swagNote:Note = new Note(daStrumTime, daNoteData, oldNote);
-			swagNote.mustPress = gottaHitNote;
-			swagNote.sustainLength = songNotes[2];
-			swagNote.gfNote = (section.gfSection && (songNotes[1] < Note.maniaKeys));
-			swagNote.noteType = songNotes[3];
-			swagNote.rawNoteData = rawNoteData;
-			if(!Std.isOfType(songNotes[3], String)) swagNote.noteType = ChartingState.noteTypeList[songNotes[3]]; //Backward compatibility + compatibility with Week 7 charts
-
-			if (noBadNotes && (swagNote.hitCausesMiss || swagNote.hitHealth < 0)) {
-				swagNote.destroy();
-				continue;
-			}
-
-			swagNote.scrollFactor.set();
-
-			var susLength:Float = swagNote.sustainLength;
-
-			susLength = susLength / Conductor.stepCrochet;
-
-			unspawnNotes.push(swagNote);
-
-			var floorSus:Int = Math.floor(susLength);
-			if(floorSus > 0) {
-				for (susNote in 0...floorSus+1)
-				{
-					oldNote = unspawnNotes[Std.int(unspawnNotes.length - 1)];
-
-					var sustainNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * susNote), daNoteData, oldNote, true);
-					sustainNote.rawNoteData = rawNoteData;
-					sustainNote.mustPress = gottaHitNote;
-					sustainNote.gfNote = (section.gfSection && (songNotes[1]<Note.maniaKeys));
-					sustainNote.noteType = swagNote.noteType;
-					sustainNote.scrollFactor.set();
-					swagNote.tail.push(sustainNote);
-					sustainNote.parent = swagNote;
-					unspawnNotes.push(sustainNote);
-					
-					sustainNote.correctionOffset = swagNote.height / 2;
-					if(!PlayState.isPixelStage)
-					{
-						if(oldNote.isSustainNote)
-						{
-							oldNote.scale.y *= Note.SUSTAIN_SIZE / oldNote.frameHeight;
-							oldNote.scale.y /= playbackRate;
-							oldNote.updateHitbox();
-						}
-
-						if(ClientPrefs.data.downScroll)
-							sustainNote.correctionOffset = 0;
-					}
-					else if(oldNote.isSustainNote)
-					{
-						oldNote.scale.y /= playbackRate;
-						oldNote.updateHitbox();
-					}
-
-					if (sustainNote.mustPress) sustainNote.followX += FlxG.width / 2; // general offset
-					else if(ClientPrefs.data.middleScroll)
-					{
-						sustainNote.followX += 310;
-						if(daNoteData > 1) //Up and Right
-						{
-							sustainNote.followX += FlxG.width / 2 + 25;
-						}
-					}
-				}
-			}
-
-			if (isPlayerNote(swagNote)) {
-				if (daStrumTime - lastStrumTime > 10)
-					playingNoteCount++;
-
-				// var noteDiff = (daStrumTime - lastStrumTime) / playbackRate / 1000;
-				// if (noteDiff < 1)
-				// 	playingTime += noteDiff;
-				// //if (noteDiff > 0)
-				// 	//playingTime += noteDiff / (noteDiff * noteDiff) / 1000;
-				// // else
-				// // 	playingTime += noteDiff * 0.1;
-
-				lastStrumTime = daStrumTime;
-			}
-
-			if (swagNote.mustPress)
-			{
-				swagNote.followX += FlxG.width / 2; // general offset
-			}
-			else if(ClientPrefs.data.middleScroll)
-			{
-				swagNote.followX += 310;
-				if(daNoteData > 1) //Up and Right
-				{
-					swagNote.followX += FlxG.width / 2 + 25;
-				}
-			}
-
-			if(!noteTypes.contains(swagNote.noteType)) {
-				noteTypes.push(swagNote.noteType);
-			}
-		}
-		*/
 
 		for (i => songNotes in dataNotes) {
 			var section = noteData[dataNotesSection[i]];

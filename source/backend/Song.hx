@@ -154,7 +154,10 @@ class Song
 			diffString == Difficulty.defaultDifficulty;
 
 		//check songs folder for cne charts
-		var isCneExists:Bool = Paths.fileExists('songs/${songName}/charts/${diffString}.json', TEXT, false);
+		var chartsFolder:String = "charts/";
+		if (jsonInput.startsWith('events')) chartsFolder = "";
+
+		var isCneExists:Bool = Paths.fileExists('songs/${songName}/${chartsFolder}${diffString}.json', TEXT, false);
 
 		var rawJson = null;
 
@@ -162,7 +165,7 @@ class Song
 		var formattedSong:String = Paths.formatToSongPath(jsonInput);
 		#if MODS_ALLOWED
 		var moddyFile:String = Paths.modsJson(formattedFolder + '/' + formattedSong);
-		var moddyCneChartFile:String = Paths.modFolders('songs/${songName}/charts/${diffString}.json');
+		var moddyCneChartFile:String = Paths.modFolders('songs/${songName}/${chartsFolder}${diffString}.json');
 		var moddyCneMetaFile:String = Paths.modFolders('songs/${songName}/meta-${diffString}.json');
 		if (!FunkinFileSystem.exists(moddyCneMetaFile))
 			moddyCneMetaFile = Paths.modFolders('songs/${songName}/meta.json');

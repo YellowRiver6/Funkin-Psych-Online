@@ -280,9 +280,9 @@ class Converters {
 					}
 				}
 
-				if (s >= 2) {
+				if (s >= 3) { //ignore gf strum, it's used in source now
 					var chars:Array<String> = [];
-					if (strum.characters != null && s >= 3)
+					if (strum.characters != null)
 						chars = strum.characters;
 
 					var strumLineData:Dynamic = {
