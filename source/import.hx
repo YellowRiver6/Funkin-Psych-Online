@@ -103,6 +103,7 @@ import flixel.system.FlxAssets.FlxShader;
 #else
 import shaders.flixel.system.FlxShader;
 #end
+import funkin.backend.scripting.DebugText;
 import haxe.ds.StringMap;
 import online.backend.Deflection;
 

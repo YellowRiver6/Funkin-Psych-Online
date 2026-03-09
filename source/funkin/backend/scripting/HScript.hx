@@ -134,7 +134,7 @@ class HScript extends Script {
 		}
 
 		trace("ERROR Caused in " + fn + err);
-		CoolUtil.showPopUp("ERROR Caused in " + fn + err, "HSCRIPT IMPROVED ERROR");
+		DebugText.addTextToDebug("HSCRIPT IMPROVED ERROR: ERROR Caused in " + fn + err, FlxColor.RED);
 	}
 
 	private function _warnHandler(error:Error) {
@@ -150,7 +150,7 @@ class HScript extends Script {
 		}
 
 		trace("WARN Caused in " + err);
-		CoolUtil.showPopUp("ERROR Caused in " + fn + err, "HSCRIPT IMPROVED WARN");
+		DebugText.addTextToDebug("HSCRIPT IMPROVED WARN: WARN Caused in " + fn + err, FlxColor.YELLOW);
 	}
 
 	public override function setParent(parent:Dynamic) {
