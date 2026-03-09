@@ -16,6 +16,11 @@ class DebugText {
 	public static var messages:Array<DebugMessage> = [];
 	private static var lastTime:Int = 0;
 
+	public static var baseWidth:Float = 1280;
+	public static var baseHeight:Float = 720;
+
+	public static var textHeight:Float = 16; 
+
 	public static function addTextToDebug(text:String, color:Int) {
 		try {
 			if (!ClientPrefs.isDebug()) {
@@ -23,31 +28,35 @@ class DebugText {
 			}
 		} catch(e:Dynamic) {}
 
-		#if LUA_ALLOWED
 		if (container == null) {
 			container = new Sprite();
 			Lib.current.stage.addChild(container); 
 			lastTime = Lib.getTimer();
+
+			Lib.current.stage.addEventListener(Event.RESIZE, onResize);
+			onResize(null);
+
 			container.addEventListener(Event.ENTER_FRAME, onUpdate);
 		}
 
 		var newText = new TextField();
-		newText.defaultTextFormat = new TextFormat("_sans", 16, color, true); 
+		newText.defaultTextFormat = new TextFormat("_sans", textHeight, color, true); 
 		newText.text = text;
 		newText.selectable = false;
 		newText.mouseEnabled = false;
 		newText.autoSize = LEFT;
-
+		
 		newText.x = 10;
-		newText.y = 10;
+		newText.y = 10; 
+
+		var unscaledHeight:Float = newText.height; 
 
 		for (msg in messages) {
-			msg.tf.y += newText.height + 2;
+			msg.tf.y += unscaledHeight + 2;
 		}
 
 		container.addChild(newText);
 		messages.push({ tf: newText, timeLeft: 6.0 });
-		#end
 	}
 
 	private static function onUpdate(e:Event) {
@@ -58,19 +67,28 @@ class DebugText {
 		var i:Int = messages.length - 1;
 		while (i >= 0) {
 			var msg = messages[i];
-
 			msg.timeLeft -= elapsed;
 			if(msg.timeLeft < 0) msg.timeLeft = 0;
+			if(msg.timeLeft < 1) msg.tf.alpha = msg.timeLeft;
 
-			if(msg.timeLeft < 1) {
-				msg.tf.alpha = msg.timeLeft;
-			}
-
-			if(msg.tf.alpha == 0 || msg.tf.y >= Lib.current.stage.stageHeight) {
+			if(msg.tf.alpha == 0 || msg.tf.y >= baseHeight) {
 				container.removeChild(msg.tf);
 				messages.splice(i, 1);
 			}
 			i--;
 		}
+	}
+
+	private static function onResize(e:Event) {
+		if (container == null) return;
+		var stageWidth = Lib.current.stage.stageWidth;
+		var stageHeight = Lib.current.stage.stageHeight;
+
+		var ratioX = stageWidth / baseWidth;
+		var ratioY = stageHeight / baseHeight;
+		var scale = Math.min(ratioX, ratioY);
+		container.scaleX = container.scaleY = scale;
+		container.x = (stageWidth - (baseWidth * scale)) / 2;
+		container.y = (stageHeight - (baseHeight * scale)) / 2;
 	}
 }
