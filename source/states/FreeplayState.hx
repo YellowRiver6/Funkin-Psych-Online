@@ -198,6 +198,9 @@ class FreeplayState extends MusicBeatState
 
 	override function create()
 	{
+		Paths.clearUnusedMemory();
+		Paths.clearStoredMemory();
+
 		instance = this;
 
 		prevPauseGame = FlxG.autoPause;

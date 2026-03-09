@@ -159,6 +159,7 @@ class Song
 		if (jsonInput.startsWith('events')) {
 			chartsFolder = 'events';
 			isEvent = true;
+			songName = PlayState.SONG.song;
 		}
 
 		var rawJson = null;

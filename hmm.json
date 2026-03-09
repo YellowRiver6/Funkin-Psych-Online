@@ -41,8 +41,8 @@
       "name": "hxcpp",
       "type": "git",
       "dir": null,
-      "ref": null,
-      "url": "https://github.com/ShadowEngineTeam/hxcpp"
+      "ref": "6546fa5c3ad1bac065f144745122ab5a6d4195ff",
+      "url": "https://github.com/FunkinCrew/hxcpp"
     },
     {
       "name": "tjson",
@@ -165,10 +165,8 @@
     },
     {
       "name": "mobile-controls",
-      "type": "git",
-      "dir": null,
-      "ref": "main",
-      "url": "https://github.com/Prohack101010/mobile-controls-dev"
+      "type": "haxelib",
+      "version": "1.0.0"
     },
     {
       "name": "hscript-improved",

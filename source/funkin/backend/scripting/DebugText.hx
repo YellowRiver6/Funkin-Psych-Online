@@ -9,7 +9,10 @@ import openfl.Lib;
 typedef DebugMessage = {
 	var tf:TextField;
 	var timeLeft:Float;
+	var baseText:String; // Keeps track of the text without the "(x2)" part
+	var count:Int; // Keeps track of how many times it was spammed
 }
+
 
 class DebugText {
 	public static var container:Sprite;
@@ -23,20 +26,27 @@ class DebugText {
 
 	public static function addTextToDebug(text:String, color:Int) {
 		try {
-			if (!ClientPrefs.isDebug()) {
+			if (!ClientPrefs.isDebug())
 				return;
-			}
 		} catch(e:Dynamic) {}
 
 		if (container == null) {
 			container = new Sprite();
 			Lib.current.stage.addChild(container); 
 			lastTime = Lib.getTimer();
-
 			Lib.current.stage.addEventListener(Event.RESIZE, onResize);
 			onResize(null);
-
 			container.addEventListener(Event.ENTER_FRAME, onUpdate);
+		}
+
+		for (msg in messages) {
+			if (msg.baseText == text) {
+				msg.count++; // Increase the spam counter
+				msg.tf.text = msg.baseText + " (x" + msg.count + ")"; // Update the screen text
+				msg.timeLeft = 6.0; // Reset the disappearance timer
+				msg.tf.alpha = 1.0; // Make it fully visible again if it was fading
+				return; // Stop the function here so it doesn't create a new line!
+			}
 		}
 
 		var newText = new TextField();
@@ -45,18 +55,20 @@ class DebugText {
 		newText.selectable = false;
 		newText.mouseEnabled = false;
 		newText.autoSize = LEFT;
-		
+
 		newText.x = 10;
 		newText.y = 10; 
 
 		var unscaledHeight:Float = newText.height; 
 
 		for (msg in messages) {
-			msg.tf.y += unscaledHeight + 2;
+			msg.tf.y += unscaledHeight + 2; 
 		}
 
 		container.addChild(newText);
-		messages.push({ tf: newText, timeLeft: 6.0 });
+
+		messages.push({ tf: newText, timeLeft: 6.0, baseText: text, count: 1 });
+		#end
 	}
 
 	private static function onUpdate(e:Event) {

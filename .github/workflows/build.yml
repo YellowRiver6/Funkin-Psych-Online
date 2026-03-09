@@ -48,6 +48,12 @@ jobs:
         if: startsWith(inputs.name, 'Linux')
         run: sudo apt install libvlc-dev libvlccore-dev
 
+      - name: Pre-hxcpp setup (NORMAL)
+        if: endsWith(inputs.name, 'NORMAL')
+        run: |
+          haxelib install hxcpp > /dev/null --quiet
+          haxelib run lime rebuild hxcpp
+
       - name: Restore cache for android builds
         if: endsWith(inputs.doCache, 'YES')
         uses: actions/cache@v4
