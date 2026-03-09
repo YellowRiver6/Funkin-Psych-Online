@@ -51,8 +51,9 @@ jobs:
       - name: Pre-hxcpp setup (NORMAL)
         if: endsWith(inputs.name, 'NORMAL')
         run: |
+          haxelib git lime https://github.com/ArkoseLabsOfficial/lime --quiet
           haxelib install hxcpp > /dev/null --quiet
-          haxelib run lime rebuild hxcpp
+          haxelib run lime rebuild hxcpp --quiet
 
       - name: Restore cache for android builds
         if: endsWith(inputs.doCache, 'YES')
