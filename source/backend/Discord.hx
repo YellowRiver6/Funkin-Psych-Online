@@ -21,7 +21,7 @@ import online.GameClient;
 class DiscordClient
 {
 	public static var isInitialized:Bool = false;
-	private inline static final _defaultID:String = "1185697129717583982";
+	private inline static final _defaultID:String = "1467593764250845428";
 	public static var clientID(default, set):String = _defaultID;
 
 	#if !android
