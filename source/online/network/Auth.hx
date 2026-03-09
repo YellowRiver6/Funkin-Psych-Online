@@ -21,18 +21,6 @@ class Auth {
     public static function load() {		
 		savePath = lime.system.System.applicationStorageDirectory + 'peo_auth.json';
 
-		//migrate old path
-		#if desktop
-		var legacyPath = Path.normalize(savePath).replace(
-			FlxG.stage.application.meta.get('company') + '/' + FlxG.stage.application.meta.get('file')
-			, 'ShadowMario/PsychEngine');
-		if (FileSystem.exists(legacyPath)) {
-			File.saveContent(savePath, File.getContent(legacyPath));
-			FileSystem.deleteFile(legacyPath);
-			trace('migrated auth data');
-		}
-		#end
-
 		if (!FunkinFileSystem.exists(savePath))
 			generateSave();
 

@@ -5016,6 +5016,13 @@ class PlayState extends MusicBeatState
 		setCamPosFromChar(strumChar, tX + posX, tY + posY);
 		curCameraTarget = strum;
 		callOnScripts('onCameraMove', [curCameraTarget]);
+		var curCameraChar = 'none';
+		switch(curCameraTarget) {
+			case 0: curCameraChar = 'dad';
+			case 1: curCameraChar = 'bf';
+			case 2: curCameraChar = 'gf';
+		}
+		callOnScripts('onMoveCamera', [curCameraChar]);
 	}
 
 	public function setCamPosFromChar(char:Character, x:Float, y:Float) {
@@ -5070,6 +5077,7 @@ class PlayState extends MusicBeatState
 				stage3D.setFollowCamera('gf');
 			curCameraTarget = 2;
 			callOnScripts('onMoveCamera', ['gf']);
+			callOnScripts('onCameraMove', [curCameraTarget]);
 			return;
 		}
 
@@ -5085,6 +5093,7 @@ class PlayState extends MusicBeatState
 				stage3D.setFollowCamera('dad');
 			curCameraTarget = 0;
 			callOnScripts('onMoveCamera', ['dad']);
+			callOnScripts('onCameraMove', [curCameraTarget]);
 		}
 		else
 		{
@@ -5109,6 +5118,7 @@ class PlayState extends MusicBeatState
 				stage3D.setFollowCamera('bf');
 			curCameraTarget = 1;
 			callOnScripts('onMoveCamera', ['boyfriend']);
+			callOnScripts('onCameraMove', [curCameraTarget]);
 		}
 	}
 
