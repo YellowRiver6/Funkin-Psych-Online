@@ -3450,34 +3450,6 @@ class PlayState extends MusicBeatState
 	// called by every event with the same name
 	function eventPushedUnique(event:EventNote) {
 		switch(event.event) {
-			case "Camera Movement":
-				curCameraTarget = Std.parseInt(event.value1);
-			//Codename Engine Support (you can't use these in the editor, just there for compatibility)
-			case 'Camera Flash':
-				//make the event work on PsychEngine
-				var splittedValue1 = event.value1.split(', ');
-				var splittedValue2 = event.value2.split(', ');
-				var flValue:Null<Float> = Std.parseFloat(splittedValue2[0]);
-				var stringToBool:Bool = splittedValue1[0] == 'true' ? true : false;
-				var getColor:Dynamic = CoolUtil.getColorFromDynamic(splittedValue1[1]); //I'm not sure, If color is wrong tell me
-
-				var camera:FlxCamera = splittedValue2[1] == "camHUD" ? camHUD : camGame;
-				if (stringToBool) // reversed
-					camera.fade(getColor, (Conductor.stepCrochet / 1000) * flValue, false, () -> {camera._fxFadeAlpha = 0;}, true);
-				else // Not Reversed
-					camera.flash(getColor, (Conductor.stepCrochet / 1000) * flValue, null, true);
-
-				/*
-				"Camera Flash" => [
-					{name: "Reversed?", type: TBool, defValue: false},
-					{name: "Color", type: TColorWheel, defValue: "#FFFFFF"},
-					{name: "Time (Steps)", type: TFloat(0.25, 9999, 0.25, 2), defValue: 4},
-					{name: "Camera", type: TDropDown(['camGame', 'camHUD']), defValue: "camHUD"}
-				]
-				*/
-			//Most important Event in the Codename Engine (Tested & It doesn't work for now)
-			case "HScript Call":
-				scripts.call(event.value1, event.value2.split(','));
 			case "Change Character":
 				var charType:Int = 0;
 				switch(event.value1.toLowerCase()) {
@@ -4564,6 +4536,29 @@ class PlayState extends MusicBeatState
 		}
 	}
 
+	//Make HScript Improved Functions Call-able from Normal HScript & Lua
+	public function hscriptImprovedCall(value1:String, value2:String) {
+		var scriptPacks:Array<ScriptPack> = [scripts, stateScripts];
+		var args:Array<String> = value2.split(',');
+
+		for (pack in scriptPacks) {
+			pack.call(value1, args);
+			//public functions
+			if (pack.publicVariables.exists(value1)) {
+				var func = pack.publicVariables.get(value1);
+				if (func != null && Reflect.isFunction(func))
+					Reflect.callMethod(null, func, args);
+			}
+		}
+
+		//static functions
+		if (Script.staticVariables.exists(value1)) {
+			var func = Script.staticVariables.get(value1);
+			if (func != null && Reflect.isFunction(func))
+				Reflect.callMethod(null, func, args);
+		}
+	}
+
 	public function triggerEvent(eventName:String, value1:String, value2:String, strumTime:Float) {
 		var flValue1:Null<Float> = Std.parseFloat(value1);
 		var flValue2:Null<Float> = Std.parseFloat(value2);
@@ -4571,6 +4566,35 @@ class PlayState extends MusicBeatState
 		if(Math.isNaN(flValue2)) flValue2 = null;
 
 		switch(eventName) {
+			case "Camera Movement":
+				curCameraTarget = Std.parseInt(value1);
+			//Codename Engine Support (you can't use these in the editor, just there for compatibility)
+			case 'Camera Flash':
+				//make the event work on PsychEngine
+				var splittedValue1 = value1.split(', ');
+				var splittedValue2 = value2.split(', ');
+				var flValue:Null<Float> = Std.parseFloat(splittedValue2[0]);
+				var stringToBool:Bool = splittedValue1[0] == 'true' ? true : false;
+				var getColor:Dynamic = CoolUtil.getColorFromDynamic(splittedValue1[1]); //I'm not sure, If color is wrong tell me
+
+				var camera:FlxCamera = splittedValue2[1] == "camHUD" ? camHUD : camGame;
+				if (stringToBool) // reversed
+					camera.fade(getColor, (Conductor.stepCrochet / 1000) * flValue, false, () -> {camera._fxFadeAlpha = 0;}, true);
+				else // Not Reversed
+					camera.flash(getColor, (Conductor.stepCrochet / 1000) * flValue, null, true);
+
+				/*
+				"Camera Flash" => [
+					{name: "Reversed?", type: TBool, defValue: false},
+					{name: "Color", type: TColorWheel, defValue: "#FFFFFF"},
+					{name: "Time (Steps)", type: TFloat(0.25, 9999, 0.25, 2), defValue: 4},
+					{name: "Camera", type: TDropDown(['camGame', 'camHUD']), defValue: "camHUD"}
+				]
+				*/
+			//Most important Event in the Codename Engine (Tested & It doesn't work for now)
+			case "HScript Call":
+				hscriptImprovedCall(value1, value2);
+
 			case 'Must Hit Camera':
 				var isFren = value1 == "gf";
 				var isDad = isFren ? (SONG.notes[curSection]?.mustHitSection ?? true) != true : value1 == "dad";

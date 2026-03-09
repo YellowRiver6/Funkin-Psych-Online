@@ -161,8 +161,6 @@ class Song
 			isEvent = true;
 		}
 
-		var isCneExists:Bool = Paths.fileExists('songs/${songName}/${chartsFolder}.json', TEXT, false);
-
 		var rawJson = null;
 
 		var formattedFolder:String = Paths.formatToSongPath(folder);
@@ -173,7 +171,7 @@ class Song
 		var moddyCneMetaFile:String = Paths.modFolders('songs/${songName}/meta-${diffString}.json');
 		if (!FunkinFileSystem.exists(moddyCneMetaFile))
 			moddyCneMetaFile = Paths.modFolders('songs/${songName}/meta.json');
-	
+
 		if (FunkinFileSystem.exists(moddyCneChartFile)) {
 			var chart:Dynamic = Json.parse(FunkinFileSystem.getText(moddyCneChartFile).trim());
 			var meta:Dynamic = Json.parse(FunkinFileSystem.getText(moddyCneMetaFile).trim());
@@ -185,7 +183,7 @@ class Song
 
 		if (rawJson == null) {
 			rawJson = FunkinFileSystem.getText(Paths.json(formattedFolder + '/' + formattedSong));
-			var cneChartFile = FunkinFileSystem.getText(Paths.getPath('songs/${songName}/charts/${diffString}.json', TEXT, null, true));
+			var cneChartFile = FunkinFileSystem.getText(Paths.getPath('songs/${songName}/${chartsFolder}.json', TEXT, null, true));
 			var cneMetaFile = Paths.getPath('songs/${songName}/meta-${diffString}.json', TEXT, null, true);
 			if (!FunkinFileSystem.exists(cneMetaFile))
 				cneMetaFile = Paths.getPath('songs/${songName}/meta.json', TEXT, null, true);
