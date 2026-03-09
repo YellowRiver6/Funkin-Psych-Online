@@ -19,7 +19,7 @@ class DebugText {
 	public static var baseWidth:Float = 1280;
 	public static var baseHeight:Float = 720;
 
-	public static var textHeight:Float = 16; 
+	public static var textHeight:Int = 16; 
 
 	public static function addTextToDebug(text:String, color:Int) {
 		try {
