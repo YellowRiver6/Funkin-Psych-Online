@@ -48,13 +48,6 @@ jobs:
         if: startsWith(inputs.name, 'Linux')
         run: sudo apt install libvlc-dev libvlccore-dev
 
-      - name: Pre-hxcpp setup (NORMAL)
-        if: endsWith(inputs.name, 'NORMAL')
-        run: |
-          haxelib git lime https://github.com/ArkoseLabsOfficial/lime --quiet
-          haxelib install hxcpp > /dev/null --quiet
-          haxelib run lime rebuild hxcpp --quiet
-
       - name: Restore cache for android builds
         if: endsWith(inputs.doCache, 'YES')
         uses: actions/cache@v4
@@ -87,6 +80,7 @@ jobs:
       - name: Install Libraries (NORMAL)
         if: endsWith(inputs.name, 'NORMAL')
         run: |
+          haxelib install hxcpp > /dev/null --quiet
           haxelib install hmm --quiet
           haxelib run hmm install --quiet
           haxelib remove funkin.vis --quiet
@@ -95,6 +89,7 @@ jobs:
       - name: Configure Android
         if: startsWith(inputs.name, 'Android')
         run: |
+          haxelib run lime rebuild hxcpp --quiet
           haxelib run lime config ANDROID_SDK $ANDROID_HOME
           haxelib run lime config ANDROID_NDK_ROOT $ANDROID_NDK_LATEST_HOME
           haxelib run lime config JAVA_HOME $JAVA_HOME_21_X64
