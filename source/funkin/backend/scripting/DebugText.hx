@@ -68,7 +68,6 @@ class DebugText {
 		container.addChild(newText);
 
 		messages.push({ tf: newText, timeLeft: 6.0, baseText: text, count: 1 });
-		#end
 	}
 
 	private static function onUpdate(e:Event) {
