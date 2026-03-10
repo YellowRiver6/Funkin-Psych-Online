@@ -80,7 +80,6 @@ jobs:
       - name: Install Libraries (NORMAL)
         if: endsWith(inputs.name, 'NORMAL')
         run: |
-          haxelib install hxcpp > /dev/null --quiet
           haxelib install hmm --quiet
           haxelib run hmm install --quiet
           haxelib remove funkin.vis --quiet
