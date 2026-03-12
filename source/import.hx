@@ -85,6 +85,7 @@ import flixel.sound.FlxSound;
 import flixel.system.FlxSound;
 #end
 import flixel.FlxG;
+import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxCamera;
 import flixel.util.FlxDestroyUtil;
