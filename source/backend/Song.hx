@@ -209,6 +209,7 @@ class Song
 			// LOL GOING THROUGH THE BULLSHIT TO CLEAN IDK WHATS STRANGE
 		}
 
+        trace("rawJson" + rawJson);
 		return rawJson;
 	}
 

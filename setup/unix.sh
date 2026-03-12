@@ -35,7 +35,7 @@ haxelib install tink_core 2.1.1 --quiet --global
 haxelib git hxvlc https://github.com/ShadowEngineTeam/hxvlc --quiet --global
 haxelib git yagp https://github.com/Snirozu/yagp master --quiet --global
 haxelib git funkin.vis https://github.com/FunkinCrew/funkVis 1966f8fbbbc509ed90d4b520f3c49c084fc92fd6 --quiet --global
-haxelib install mobile-controls --quiet --global
+haxelib git mobile-controls https://github.com/ArkoseLabsOfficial/mobile-controls-dev main --quiet
 haxelib git hscript-improved https://github.com/PsychExtendedThings/hscript-improved --quiet --global
 haxelib install tink_await 0.6.0 --quiet --global
 echo Finished!

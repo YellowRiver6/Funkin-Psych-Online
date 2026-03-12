@@ -4,26 +4,29 @@ import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.group.FlxGroup;
 import flixel.util.FlxDestroyUtil;
+import mobile.MobilePad;
+import mobile.Hitbox;
+import mobile.JoyStick;
+import flixel.FlxBasic;
+import flixel.group.FlxGroup; //fuck you FlxGroup.
 
 /**
  * A simple mobile manager for who doesn't want to create these manually
  * if you're making big projects or have a experience to how controls work, create the controls yourself
  */
-class MobileControlManager {
-	public var currentState:Dynamic;
-
+class MobileControlManager extends FlxGroup {
 	#if TOUCH_CONTROLS
-	public var mobilePad:FunkinMobilePad;
 	public var mobilePadCam:FlxCamera;
+	public var mobilePad:MobilePad;
 	public var joyStickCam:FlxCamera;
-	public var joyStick:FunkinJoyStick;
+	public var joyStick:JoyStick;
 	public var hitboxCam:FlxCamera;
-	public var hitbox:FunkinHitbox;
+	public var hitbox:Hitbox;
 	#end
 
-	public function new(state:Dynamic):Void
+	public function new():Void
 	{
-		this.currentState = state;
+		super();
 		#if TOUCH_CONTROLS
 		trace("MobileControlManager initialized.");
 		#else
@@ -31,20 +34,12 @@ class MobileControlManager {
 		#end
 	}
 
-	//for lua shit
-	public function makeMobilePad(DPad:String, Action:String)
+	public function addMobilePad(DPad:String, Action:String):Void
 	{
 		#if TOUCH_CONTROLS
 		if (mobilePad != null) removeMobilePad();
-		mobilePad = new FunkinMobilePad(DPad, Action, ClientPrefs.data.mobilePadAlpha);
-		#end
-	}
-
-	public function addMobilePad(DPad:String, Action:String)
-	{
-		#if TOUCH_CONTROLS
-		makeMobilePad(DPad, Action);
-		currentState.add(mobilePad);
+		mobilePad = new MobilePad(DPad, Action);
+		add(mobilePad);
 		#end
 	}
 
@@ -53,7 +48,7 @@ class MobileControlManager {
 		#if TOUCH_CONTROLS
 		if (mobilePad != null)
 		{
-			currentState.remove(mobilePad);
+			remove(mobilePad);
 			mobilePad = FlxDestroyUtil.destroy(mobilePad);
 		}
 
@@ -65,27 +60,22 @@ class MobileControlManager {
 		#end
 	}
 
-	public function addMobilePadCamera(defaultDrawTarget:Bool = false):Void
+	public function addMobilePadCamera():Void
 	{
 		#if TOUCH_CONTROLS
 		mobilePadCam = new FlxCamera();
 		mobilePadCam.bgColor.alpha = 0;
-		FlxG.cameras.add(mobilePadCam, defaultDrawTarget);
+		FlxG.cameras.add(mobilePadCam, false);
 		mobilePad.cameras = [mobilePadCam];
 		#end
 	}
 
-	public function makeHitbox(?mode:String, ?hints:Bool) {
+	public function addHitbox(Mode:String):Void
+	{
 		#if TOUCH_CONTROLS
 		if (hitbox != null) removeHitbox();
-		hitbox = new FunkinHitbox(mode, hints, ClientPrefs.data.hitboxAlpha);
-		#end
-	}
-
-	public function addHitbox(?mode:String, ?hints:Bool) {
-		#if TOUCH_CONTROLS
-		makeHitbox(mode, hints);
-		currentState.add(hitbox);
+		hitbox = new Hitbox(Mode);
+		add(hitbox);
 		#end
 	}
 
@@ -94,7 +84,7 @@ class MobileControlManager {
 		#if TOUCH_CONTROLS
 		if (hitbox != null)
 		{
-			currentState.remove(hitbox);
+			remove(hitbox);
 			hitbox = FlxDestroyUtil.destroy(hitbox);
 		}
 
@@ -106,30 +96,22 @@ class MobileControlManager {
 		#end
 	}
 
-	public function addHitboxCamera(defaultDrawTarget:Bool = false):Void
+	public function addHitboxCamera():Void
 	{
 		#if TOUCH_CONTROLS
 		hitboxCam = new FlxCamera();
 		hitboxCam.bgColor.alpha = 0;
-		FlxG.cameras.add(hitboxCam, defaultDrawTarget);
+		FlxG.cameras.add(hitboxCam, false);
 		hitbox.cameras = [hitboxCam];
 		#end
 	}
 
-	public function makeJoyStick(x:Float = 0, y:Float = 0, ?graphic:String, ?onMove:Float->Float->Float->String->Void, size:Float = 1):Void
+	public function addJoyStick(x:Float = 0, y:Float = 0, ?graphic:String, ?onMove:Float->Float->Float->String->Void):Void
 	{
 		#if TOUCH_CONTROLS
 		if (joyStick != null) removeJoyStick();
-		joyStick = new FunkinJoyStick(x, y, graphic, onMove);
-		joyStick.scale.set(size, size);
-		#end
-	}
-
-	public function addJoyStick(x:Float = 0, y:Float = 0, ?graphic:String, ?onMove:Float->Float->Float->String->Void, size:Float = 1):Void
-	{
-		#if TOUCH_CONTROLS
-		makeJoyStick(x, y, graphic, onMove, size);
-		currentState.add(joyStick);
+		joyStick = new JoyStick(x, y, graphic, onMove);
+		add(joyStick);
 		#end
 	}
 
@@ -138,7 +120,7 @@ class MobileControlManager {
 		#if TOUCH_CONTROLS
 		if (joyStick != null)
 		{
-			currentState.remove(joyStick);
+			remove(joyStick);
 			joyStick = FlxDestroyUtil.destroy(joyStick);
 		}
 
@@ -150,20 +132,21 @@ class MobileControlManager {
 		#end
 	}
 
-	public function addJoyStickCamera(defaultDrawTarget:Bool = false):Void {
+	public function addJoyStickCamera():Void {
 		#if TOUCH_CONTROLS
 		joyStickCam = new FlxCamera();
 		joyStickCam.bgColor.alpha = 0;
-		FlxG.cameras.add(joyStickCam, defaultDrawTarget);
+		FlxG.cameras.add(joyStickCam, false);
 		joyStick.cameras = [joyStickCam];
 		#end
 	}
 
-	public function destroy():Void {
-		#if TOUCH_CONTROLS
+	#if TOUCH_CONTROLS
+	override public function destroy():Void {
+		super.destroy();
 		removeMobilePad();
 		removeHitbox();
 		removeJoyStick();
-		#end
 	}
+	#end
 }

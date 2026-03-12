@@ -138,7 +138,7 @@ public class KizzyHelper extends Extension {
 
         Notification.MediaStyle style = new Notification.MediaStyle();
         style.setMediaSession(mediaSession.getSessionToken());
-        style.setShowActionsInCompactView();
+        style.setShowActionsInCompactView(0);
 
         int appIconResId = context.getApplicationInfo().icon;
 

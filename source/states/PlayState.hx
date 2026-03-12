@@ -300,6 +300,11 @@ class PlayState extends MusicBeatState
 	private static var prevCamFollow:FlxPoint;
 	private static var prevCamFollowPos:FlxObject;
 
+	/**
+	 * Current CNE Stage.
+	 */
+	public var stage:Stage;
+
 	public var strumLineNotes:StrumLine;
 	public var strumLines:FlxTypedGroup<StrumLine> = new FlxTypedGroup<StrumLine>(); //A variable for CNE mods
 	public var cpuStrums(get, null):StrumLine;
@@ -992,7 +997,12 @@ class PlayState extends MusicBeatState
 			curStage = swagStage;
 
 			stageData = StageData.getStageFile(curStage);
-			if (stageData == null) { // Stage couldn't be found, create a dummy stage for preventing a crash
+			if (stageData == null && FunkinFileSystem.exists(Paths.xml('stages/$curStage'))) {
+				trace("found lol");
+				stageData = StageData.dummy(); //for test
+				add(stage = new Stage(curStage));
+			}
+			else if (stageData == null) { // Stage couldn't be found, create a dummy stage for preventing a crash
 				stageData = StageData.dummy();
 			}
 

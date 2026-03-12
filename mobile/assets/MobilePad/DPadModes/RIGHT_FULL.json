@@ -2,30 +2,30 @@
   "buttons": [
     {
       "button": "buttonUp",
+      "buttonIDs": [],
       "graphic": "up",
-      "x": 1022,
-      "y": 306,
+      "position": [1022, 306],
       "color": "0xFF12FA05"
     },
     {
       "button": "buttonLeft",
+      "buttonIDs": [],
       "graphic": "left",
-      "x": 896,
-      "y": 411,
+      "position": [896, 411],
       "color": "0xFFC24B99"
     },
     {
       "button": "buttonRight",
+      "buttonIDs": [],
       "graphic": "right",
-      "x": 1148,
-      "y": 411,
+      "position": [1148, 411],
       "color": "0xFFF9393F"
     },
     {
       "button": "buttonDown",
+      "buttonIDs": [],
       "graphic": "down",
-      "x": 1022,
-      "y": 519,
+      "position": [1022, 519],
       "color": "0xFF00FFFF"
     }
   ]

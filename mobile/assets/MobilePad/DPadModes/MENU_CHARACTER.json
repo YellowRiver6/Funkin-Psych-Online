@@ -4,32 +4,28 @@
       "button": "buttonUp",
       "buttonIDs": ["UP"],
       "graphic": "up",
-      "x": 105,
-      "y": 0,
+      "position": [105, 0],
       "color": "0xFF12FA05"
     },
     {
       "button": "buttonLeft",
       "buttonIDs": ["LEFT"],
       "graphic": "left",
-      "x": 0,
-      "y": 95,
+      "position": [0, 95],
       "color": "0xFFC24B99"
     },
     {
       "button": "buttonRight",
       "buttonIDs": ["RIGHT"],
       "graphic": "right",
-      "x": 196,
-      "y": 95,
+      "position": [196, 95],
       "color": "0xFFF9393F"
     },
     {
       "button": "buttonDown",
       "buttonIDs": ["DOWN"],
       "graphic": "down",
-      "x": 98,
-      "y": 192,
+      "position": [98, 192],
       "color": "0xFF00FFFF"
     }
   ]

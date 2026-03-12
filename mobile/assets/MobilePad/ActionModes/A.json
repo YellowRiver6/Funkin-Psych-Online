@@ -4,8 +4,7 @@
       "button": "buttonA",
       "buttonIDs": ["A"],
       "graphic": "a",
-      "x": 1148,
-      "y": 585,
+      "position": [1148, 585],
       "color": "0xFF0000"
     }
   ]

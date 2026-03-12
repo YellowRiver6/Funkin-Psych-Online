@@ -66,12 +66,6 @@ class MusicBeatState extends FlxUIState
 		return false;
 		#end
 	}
-	#if !SCRIPTING_ALLOWED
-	public function new() {
-		super();
-		mobileManager = new MobileControlManager(this);
-	}
-	#end
 
 	override function destroy()
 	{
@@ -91,6 +85,9 @@ class MusicBeatState extends FlxUIState
 		camBeat = FlxG.camera;
 		var skip:Bool = FlxTransitionableState.skipNextTransOut;
 		#if MODS_ALLOWED Mods.updatedOnState = false; #end
+
+		mobileManager = new MobileControlManager();
+		add(mobileManager);
 
 		#if SCRIPTING_ALLOWED
 		loadScript();
@@ -306,7 +303,6 @@ class MusicBeatState extends FlxUIState
 
 	public function new(scriptsAllowed:Bool = true, ?scriptName:String) {
 		super();
-		mobileManager = new MobileControlManager(this);
 		if(lastStateName != (lastStateName = Type.getClassName(Type.getClass(this)))) {
 			lastScriptName = null;
 		}

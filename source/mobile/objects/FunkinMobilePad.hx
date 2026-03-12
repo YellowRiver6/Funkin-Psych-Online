@@ -41,7 +41,7 @@ class FunkinMobilePad extends MobilePad {
 		return button;
 	}
 
-	public function new(DPad:String, Action:String, globalAlpha:Float = 0.7) {
-		super(DPad, Action, globalAlpha);
+	public function new(DPad:String, Action:String) {
+		super(DPad, Action);
 	}
 }

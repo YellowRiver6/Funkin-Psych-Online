@@ -165,8 +165,10 @@
     },
     {
       "name": "mobile-controls",
-      "type": "haxelib",
-      "version": "1.0.0"
+      "type": "git",
+      "dir": null,
+      "ref": "main",
+      "url": "https://github.com/ArkoseLabsOfficial/mobile-controls-dev"
     },
     {
       "name": "hscript-improved",
