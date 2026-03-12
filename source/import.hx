@@ -104,6 +104,7 @@ import flixel.system.FlxAssets.FlxShader;
 import shaders.flixel.system.FlxShader;
 #end
 import funkin.backend.scripting.DebugText;
+import funkin.game.Stage;
 import haxe.ds.StringMap;
 import online.backend.Deflection;
 
