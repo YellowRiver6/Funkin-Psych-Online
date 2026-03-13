@@ -7,6 +7,7 @@ import flixel.FlxState;
 import haxe.xml.Access;
 import funkin.backend.system.interfaces.IBeatReceiver;
 import haxe.io.Path;
+import objects.Character;
 
 using StringTools;
 
