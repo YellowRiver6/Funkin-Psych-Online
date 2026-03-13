@@ -11,7 +11,7 @@ import flixel.math.FlxPoint;
 class FlxAnimate extends flxanimate.FlxAnimate {
 	static var rMatrix = new FlxMatrix();
 
-	override function drawLimb(limb:FlxFrame, _rMatrix:FlxMatrix, ?colorTransform:ColorTransform)
+	override function drawLimb(limb:FlxFrame, _rMatrix:FlxMatrix, ?colorTransform:ColorTransform, filterin:Bool = false, ?blendMode:BlendMode, ?scrollFactor:FlxPoint = null, cameras:Array<FlxCamera> = null))
 	{
 		if (alpha == 0 || colorTransform != null && (colorTransform.alphaMultiplier == 0 || colorTransform.alphaOffset == -255) || limb == null || limb.type == EMPTY)
 			return;

@@ -1,7 +1,6 @@
 package funkin.backend.utils;
 
 import funkin.backend.FunkinSprite;
-import funkin.backend.system.ErrorCode;
 import funkin.backend.FunkinSprite.XMLAnimType;
 import flixel.util.FlxColor;
 import haxe.xml.Access;

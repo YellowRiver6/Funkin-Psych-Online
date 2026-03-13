@@ -6,7 +6,6 @@ import funkin.backend.utils.XMLUtil.IXMLEvents;
 import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.addons.effects.FlxSkewedSprite;
 import haxe.io.Path;
-import funkin.backend.scripting.events.PlayAnimEvent.PlayAnimContext;
 import funkin.backend.system.interfaces.IOffsetCompatible;
 import flixel.math.FlxMatrix;
 import flixel.math.FlxRect;
