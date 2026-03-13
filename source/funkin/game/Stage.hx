@@ -61,7 +61,7 @@ class Stage extends FlxBasic implements IBeatReceiver {
 
 			var elems = [];
 			for(node in stageXML.elements) {
-				if (node.name == "high-memory" && /* !Options.lowMemoryMode */)
+				if (node.name == "high-memory" /* && !Options.lowMemoryMode */)
 					for(e in node.elements)
 						elems.push(e);
 				else
