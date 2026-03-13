@@ -30,7 +30,7 @@ class MobileConfig {
 		for (folder in folders) {
 			switch (folder[1]) {
 				case ACTION:
-					readDirectoryPart1(mobileFolderPath + folder, actionModes, ACTION);
+					readDirectoryPart1(mobileFolderPath + folder[0], actionModes, ACTION);
 					#if MODS_ALLOWED
 					for (folder in Mods.directoriesWithFile(Paths.getPreloadPath(), 'mobile/MobilePad/')) {
 						trace('called');
@@ -38,7 +38,7 @@ class MobileConfig {
 					}
 					#end
 				case DPAD:
-					readDirectoryPart1(mobileFolderPath + folder, dpadModes, DPAD);
+					readDirectoryPart1(mobileFolderPath + folder[0], dpadModes, DPAD);
 					#if MODS_ALLOWED
 					for (folder in Mods.directoriesWithFile(Paths.getPreloadPath(), 'mobile/MobilePad/')) {
 						trace('called');
@@ -46,7 +46,7 @@ class MobileConfig {
 					}
 					#end
 				case HITBOX:
-					readDirectoryPart1(mobileFolderPath + folder, hitboxModes, HITBOX);
+					readDirectoryPart1(mobileFolderPath + folder[0], hitboxModes, HITBOX);
 					#if MODS_ALLOWED
 					for (folder in Mods.directoriesWithFile(Paths.getPreloadPath(), 'mobile/Hitbox/')) {
 						trace('called');
