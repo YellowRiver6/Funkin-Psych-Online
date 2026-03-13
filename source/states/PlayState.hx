@@ -3155,7 +3155,7 @@ class PlayState extends MusicBeatState
 		noteData = songData.notes;
 
 		var file:String = Paths.json(songName + '/events' + songSuffix);
-		var fileCNE:Bool = Paths.getPath('songs/' + songName + '/events' + songSuffix + '.json', TEXT, null, true);
+		var fileCNE:String = Paths.getPath('songs/' + songName + '/events' + songSuffix + '.json', TEXT, null, true);
 		#if MODS_ALLOWED
 		if (FunkinFileSystem.exists(Paths.modsJson(songName + '/events' + songSuffix)) || FunkinFileSystem.exists(file) || FunkinFileSystem.exists(fileCNE)) {
 		#else
