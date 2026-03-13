@@ -2,6 +2,7 @@ package funkin.backend;
 
 import flixel.graphics.frames.FlxFramesCollection;
 import openfl.geom.ColorTransform;
+import openfl.display.BlendMode;
 import flixel.math.FlxMatrix;
 import flixel.math.FlxAngle;
 import flixel.math.FlxRect;
