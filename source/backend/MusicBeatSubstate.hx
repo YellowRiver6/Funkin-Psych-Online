@@ -197,7 +197,7 @@ class MusicBeatSubstate extends FlxSubState
 	public function new(scriptsAllowed:Bool = true, ?scriptName:String) {
 		super();
 		instance = this;
-		mobileManager = new MobileControlManager(this);
+		mobileManager = new MobileControlManager();
 		this.scriptName = scriptName;
 	}
 
@@ -226,7 +226,6 @@ class MusicBeatSubstate extends FlxSubState
 
 	override function create()
 	{
-		mobileManager = new MobileControlManager();
 		add(mobileManager);
 		loadScript();
 		super.create();

@@ -35,6 +35,13 @@ class MusicBeatState extends FlxUIState
 	{
 		return Controls.instance;
 	}
+	
+	#if !SCRIPTING_ALLOWED
+	function new() {
+		super();
+		mobileManager = new MobileControlManager();
+	}
+	#end
 
 	public var mobileManager:MobileControlManager;
 	//makes code less messy & easier to write
@@ -86,7 +93,6 @@ class MusicBeatState extends FlxUIState
 		var skip:Bool = FlxTransitionableState.skipNextTransOut;
 		#if MODS_ALLOWED Mods.updatedOnState = false; #end
 
-		mobileManager = new MobileControlManager();
 		add(mobileManager);
 
 		#if SCRIPTING_ALLOWED
@@ -303,6 +309,7 @@ class MusicBeatState extends FlxUIState
 
 	public function new(scriptsAllowed:Bool = true, ?scriptName:String) {
 		super();
+		mobileManager = new MobileControlManager();
 		if(lastStateName != (lastStateName = Type.getClassName(Type.getClass(this)))) {
 			lastScriptName = null;
 		}

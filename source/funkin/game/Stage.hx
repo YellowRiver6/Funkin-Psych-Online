@@ -9,6 +9,7 @@ import funkin.backend.system.interfaces.IBeatReceiver;
 import haxe.io.Path;
 import objects.Character;
 
+using backend.CoolUtil;
 using StringTools;
 
 class Stage extends FlxBasic implements IBeatReceiver {
@@ -36,7 +37,7 @@ class Stage extends FlxBasic implements IBeatReceiver {
 		try {
 			if (FunkinFileSystem.exists(stagePath)) stageXML = new Access(Xml.parse(FunkinFileSystem.getText(stagePath)).firstElement());
 		} catch(e) {
-			Logs.trace('Couldn\'t load stage "$stage": ${e.message}', ERROR);
+			DebugText.addTextToDebug('Couldn\'t load stage "$stage": ${e.message}', FlxColor.RED);
 		}
 
 		if (PlayState.instance != null) {
@@ -51,7 +52,7 @@ class Stage extends FlxBasic implements IBeatReceiver {
 				if(stageXML.has.startCamPosX && (parsed = Std.parseFloat(stageXML.att.startCamPosX)) != null) PlayState.instance.camFollow.x = parsed;
 				if(stageXML.has.startCamPosY && (parsed = Std.parseFloat(stageXML.att.startCamPosY)) != null) PlayState.instance.camFollow.y = parsed;
 				if(stageXML.has.zoom && (parsed = Std.parseFloat(stageXML.att.zoom)) != null) PlayState.instance.defaultCamZoom = parsed;
-				PlayState.instance.curStage = stageXML.has.name ? stageXML.att.name : stage;
+				PlayState.curStage = stageXML.has.name ? stageXML.att.name : stage;
 			}
 			if (stageXML.has.folder) {
 				spritesParentFolder = stageXML.att.folder;
@@ -60,7 +61,7 @@ class Stage extends FlxBasic implements IBeatReceiver {
 
 			var elems = [];
 			for(node in stageXML.elements) {
-				if (node.name == "high-memory" && !Options.lowMemoryMode)
+				if (node.name == "high-memory" && /* !Options.lowMemoryMode */)
 					for(e in node.elements)
 						elems.push(e);
 				else
@@ -80,7 +81,7 @@ class Stage extends FlxBasic implements IBeatReceiver {
 						var spr = XMLUtil.createSpriteFromXML(node, spritesParentFolder, LOOP);
 
 						if (!node.has.zoomfactor && PlayState.instance != null)
-							spr.initialZoom = PlayState.instance.defaultCamZoom;
+							//spr.initialZoom = PlayState.instance.defaultCamZoom;
 
 						stageSprites.set(spr.name, spr);
 						state.add(spr);
