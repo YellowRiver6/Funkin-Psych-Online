@@ -12,6 +12,8 @@ import flixel.math.FlxRect;
 import flixel.math.FlxPoint;
 import funkin.backend.system.interfaces.IBeatReceiver;
 import funkin.backend.FlxAnimate as FlxAnimateCNE;
+import funkin.backend.scripting.events.PlayAnimEvent;
+import funkin.backend.scripting.events.PlayAnimEvent.PlayAnimContext;
 
 enum abstract XMLAnimType(Int)
 {
