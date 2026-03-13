@@ -160,7 +160,6 @@ class Song
 			chartsFolder = 'events';
 			isEvent = true;
 			songName = PlayState.SONG.song;
-			trace("its event yeaaa");
 		}
 
 		var rawJson = null;
@@ -171,8 +170,6 @@ class Song
 		var moddyFile:String = Paths.modsJson(formattedFolder + '/' + formattedSong);
 		var moddyCneChartFile:String = Paths.modFolders('songs/${songName}/${chartsFolder}.json');
 		var moddyCneMetaFile:String = Paths.modFolders('songs/${songName}/meta-${diffString}.json');
-		trace("moddyCneChartFile: " + moddyCneChartFile);
-		trace("moddyCneMetaFile: " + moddyCneMetaFile);
 		if (!FunkinFileSystem.exists(moddyCneMetaFile))
 			moddyCneMetaFile = Paths.modFolders('songs/${songName}/meta.json');
 
@@ -180,7 +177,6 @@ class Song
 			var chart:Dynamic = Json.parse(FunkinFileSystem.getText(moddyCneChartFile).trim());
 			var meta:Dynamic = Json.parse(FunkinFileSystem.getText(moddyCneMetaFile).trim());
 			rawJson = Converters.parseCodenameChart(chart, meta, isEvent);
-			if (isEvent) trace("rawJson: " + rawJson);
 		} else if (FunkinFileSystem.exists(moddyFile)) {
 			rawJson = FunkinFileSystem.getText(moddyFile).trim();
 		}
@@ -210,7 +206,7 @@ class Song
 			// LOL GOING THROUGH THE BULLSHIT TO CLEAN IDK WHATS STRANGE
 		}
 
-        trace("rawJson" + rawJson);
+		//trace("rawJson" + rawJson);
 		return rawJson;
 	}
 

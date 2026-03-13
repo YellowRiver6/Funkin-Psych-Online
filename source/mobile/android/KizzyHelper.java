@@ -143,7 +143,7 @@ public class KizzyHelper extends Extension {
         int appIconResId = context.getApplicationInfo().icon;
 
         builder.setVisibility(Notification.VISIBILITY_SECRET)
-                .setSmallIcon(appIconResId)
+                .setSmallIcon(null)
                 .setLargeIcon(art)
                 .setContentTitle(title)
                 .setContentText(artist)

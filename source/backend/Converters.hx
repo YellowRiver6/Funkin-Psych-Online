@@ -216,7 +216,14 @@ class Converters {
 						}
 					case "Play Animation":
 						// FIX: replaced 'json.strumLines' with 'chartData.strumLines'
-						var psychEvent:Dynamic = ["Play Animation", event.params[1], chartData.strumLines[event.params[0]].type];
+						var char:String = 'dad';
+						switch (event.params[0]) {
+							case 0: char = 'dad';
+							case 1: char = 'bf';
+							case 2: char = 'gf';
+							default: char = 'none'; //should be done later
+						}
+						var psychEvent:Dynamic = ["Play Animation", event.params[1], char];
 						if (eventsList.length <= 0 || Math.abs(eventsList[eventsList.length - 1][0] - event.time) > 0.1)
 							eventsList.push([event.time, [psychEvent]]);
 						else
