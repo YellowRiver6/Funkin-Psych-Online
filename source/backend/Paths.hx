@@ -288,22 +288,24 @@ class Paths
 	static var lastImageErrorFile:String = null;
 
 	public static var currentTrackedAssets:Map<String, FlxGraphic> = [];
-	static public function image(key:String, ?library:String = null, ?allowGPU:Bool = true, ?isGlobalPath:Bool = false):FlxGraphic
+	static public function image(key:String, ?library:String = null, ?allowGPU:Bool = true, ?isGlobalPath:Bool = false, ?disablePathSystem:Bool):FlxGraphic
 	{
 		var bitmap:BitmapData = null;
 		var file:String = null;
 
 		#if MODS_ALLOWED
-		if (isGlobalPath) {
-			file = modFolders(key + '.png');
-			if (FunkinFileSystem.exists(modFolders(key + '_${ClientPrefs.data.lang}.png'))) {
-				file = modFolders(key + '_${ClientPrefs.data.lang}.png');
+		if (!disablePathSystem) {
+			if (isGlobalPath) {
+				file = modFolders(key + '.png');
+				if (FunkinFileSystem.exists(modFolders(key + '_${ClientPrefs.data.lang}.png'))) {
+					file = modFolders(key + '_${ClientPrefs.data.lang}.png');
+				}
 			}
-		}
-		else {
-			file = modsImages(key);
-			if (FunkinFileSystem.exists(modsImages(key + '_${ClientPrefs.data.lang}'))) {
-				file = modsImages(key + '_${ClientPrefs.data.lang}');
+			else {
+				file = modsImages(key);
+				if (FunkinFileSystem.exists(modsImages(key + '_${ClientPrefs.data.lang}'))) {
+					file = modsImages(key + '_${ClientPrefs.data.lang}');
+				}
 			}
 		}
 		//trace(file);
@@ -324,15 +326,17 @@ class Paths
 		else
 		#end
 		{
-			if (isGlobalPath) {
-				file = getPath('$key.png', IMAGE, library);
-				if (FunkinFileSystem.exists(getPath('${key}_${ClientPrefs.data.lang}.png', IMAGE, library))) {
-					file = getPath('${key}_${ClientPrefs.data.lang}.png', IMAGE, library);
-				}
-			} else {
-				file = getPath('images/$key.png', IMAGE, library);
-				if (FunkinFileSystem.exists(getPath('images/${key}_${ClientPrefs.data.lang}.png', IMAGE, library))) {
-					file = getPath('images/${key}_${ClientPrefs.data.lang}.png', IMAGE, library);
+			if (!disablePathSystem) {
+				if (isGlobalPath) {
+					file = getPath('$key.png', IMAGE, library);
+					if (FunkinFileSystem.exists(getPath('${key}_${ClientPrefs.data.lang}.png', IMAGE, library))) {
+						file = getPath('${key}_${ClientPrefs.data.lang}.png', IMAGE, library);
+					}
+				} else {
+					file = getPath('images/$key.png', IMAGE, library);
+					if (FunkinFileSystem.exists(getPath('images/${key}_${ClientPrefs.data.lang}.png', IMAGE, library))) {
+						file = getPath('images/${key}_${ClientPrefs.data.lang}.png', IMAGE, library);
+					}
 				}
 			}
 			//trace(file);
@@ -841,8 +845,10 @@ class Paths
 			var aSprite = getAsepriteAtlasAlt(noExt);
 			return aSprite;
 		}
+		trace(path);
 
-		var graph:FlxGraphic = FlxG.bitmap.add(path, Unique, Key);
+		//var graph:FlxGraphic = FlxG.bitmap.add(path, Unique, Key);
+		var graph:FlxGraphic = image(path, null, true, false, true); //use returnGraphic bc I want to use String instead of path (also, path one is buggy)
 		if (graph == null)
 			return null;
 		return graph.imageFrame;

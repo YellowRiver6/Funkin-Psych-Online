@@ -108,6 +108,8 @@ class FunkinSprite extends FlxSkewedSprite implements IBeatReceiver implements I
 			trace('Continue with atlas');
 			atlasPath = noExt;
 			animateAtlas = new FlxAnimateCNE(x, y, noExt);
+			if (animateAtlas == null) trace('animateAtlas is null');
+			else trace('animateAtlas is $animateAtlas');
 		}
 		else
 		{
