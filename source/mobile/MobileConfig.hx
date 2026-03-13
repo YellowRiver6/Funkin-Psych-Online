@@ -57,7 +57,7 @@ class MobileConfig {
 		}
 	}
 
-	static function readDirectoryPart1(folder:String, map:Dynamic, mode:ButtonsModes)
+	static function readDirectoryPart1(folder:String, map:Dynamic, mode:ButtonModes)
 	{
 		trace('' + folder);
 		folder = folder.contains(':') ? folder.split(':')[1] : folder;
