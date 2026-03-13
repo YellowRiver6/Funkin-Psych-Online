@@ -833,7 +833,7 @@ class Paths
 				cur++;
 			}
 			return finalFrames;
-		} else if (FunkinFileSystem.exists(getPath('images/$noExt.xml', null, true)))
+		} else if (FunkinFileSystem.exists('images/$noExt.xml'))
 			return getSparrowAtlas(path);
 		else if (FunkinFileSystem.exists('$noExt.txt'))
 			return getPackerAtlasAlt(noExt);
@@ -842,8 +842,7 @@ class Paths
 			return aSprite;
 		}
 
-		//var graph:FlxGraphic = FlxG.bitmap.add(path, Unique, Key);
-		var graph:FlxGraphic = image(path); //use returnGraphic bc I want to use String instead of path (also, path one is buggy)
+		var graph:FlxGraphic = FlxG.bitmap.add(path, Unique, Key);
 		if (graph == null)
 			return null;
 		return graph.imageFrame;
