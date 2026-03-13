@@ -292,6 +292,7 @@ class Paths
 	{
 		var bitmap:BitmapData = null;
 		var file:String = null;
+		if (disablePathSystem) file = key; //silly me.
 
 		#if MODS_ALLOWED
 		if (!disablePathSystem) {
@@ -790,14 +791,14 @@ class Paths
 	static public function imageAlt(key:String, ?library:String, checkForAtlas:Bool = false, ?ext:String) {
 		if (ext == null) ext = 'png';
 		if (checkForAtlas) {
-			var atlasPath = getPath('images/$key/spritemap.$ext', library, true);
-			var multiplePath = getPath('images/$key/1.$ext', library, true);
+			var atlasPath = getPath('images/$key/spritemap.$ext', IMAGE, library, true);
+			var multiplePath = getPath('images/$key/1.$ext', IMAGE, library, true);
 			if (atlasPath != null && #if MODS_ALLOWED FunkinFileSystem.exists(atlasPath) #else OpenFlAssets.exists(atlasPath) #end)
 				return atlasPath.substr(0, atlasPath.length - 14);
 			if (multiplePath != null && #if MODS_ALLOWED FunkinFileSystem.exists(multiplePath) #else OpenFlAssets.exists(multiplePath) #end)
 				return multiplePath.substr(0, multiplePath.length - 6);
 		}
-		return getPath('images/$key.$ext', library, true);
+		return getPath('images/$key.$ext', IMAGE, library, true);
 	}
 
 	public static function getFrames(key:String, assetsPath:Bool = false, ?library:String, ?ext:String = null) {
