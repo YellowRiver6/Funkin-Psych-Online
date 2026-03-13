@@ -160,6 +160,7 @@ class Song
 			chartsFolder = 'events';
 			isEvent = true;
 			songName = PlayState.SONG.song;
+			trace("its event yeaaa");
 		}
 
 		var rawJson = null;

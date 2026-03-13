@@ -993,7 +993,8 @@ class PlayState extends MusicBeatState
 			curStage = swagStage;
 
 			stageData = StageData.getStageFile(curStage);
-			if (stageData == null && FunkinFileSystem.exists(Paths.xml('stages/$curStage'))) {
+			var cneStageFile:String = getPath('data/stages/$curStage.xml', TEXT, null, true);
+			if (stageData == null && FunkinFileSystem.exists(cneStageFile)) {
 				trace("found lol");
 				stageData = StageData.dummy(); //for test
 				add(stage = new Stage(curStage));
@@ -3154,12 +3155,14 @@ class PlayState extends MusicBeatState
 		noteData = songData.notes;
 
 		var file:String = Paths.json(songName + '/events' + songSuffix);
+		var fileCNE:Bool = getPath('songs/' + songName + '/events' + songSuffix + '.json', TEXT, null, true);
 		#if MODS_ALLOWED
-		if (FunkinFileSystem.exists(Paths.modsJson(songName + '/events' + songSuffix)) || FunkinFileSystem.exists(file)) {
+		if (FunkinFileSystem.exists(Paths.modsJson(songName + '/events' + songSuffix)) || FunkinFileSystem.exists(file) || FunkinFileSystem.exists(fileCNE)) {
 		#else
-		if (OpenFlAssets.exists(file)) {
+		if (OpenFlAssets.exists(file) || OpenFlAssets.exists(fileCNE)) {
 		#end
 			var eventsData:Array<Dynamic> = Song.loadFromJson('events' + songSuffix, songName).events;
+			trace("eventsData: " + eventsData);
 			for (event in eventsData) //Event Notes
 				for (i in 0...event[1].length)
 					makeEvent(event, i);

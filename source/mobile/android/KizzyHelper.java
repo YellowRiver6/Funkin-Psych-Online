@@ -25,7 +25,7 @@ public class KizzyHelper extends Extension {
     private static NotificationManager notificationManager;
 
     private static final String CHANNEL_ID = "psych_silent_mode_v1"; 
-    private static final int NOTIFICATION_ID = 111;
+    private static final int NOTIFICATION_ID = 112; //I hate changing this shit everytime
     private static final String TAG = "KizzyHelper";
 
     public static void initialize() {
