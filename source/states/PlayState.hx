@@ -838,13 +838,9 @@ class PlayState extends MusicBeatState
 		#if TOUCH_CONTROLS
 		MobileConfig.init('MobileControls', CoolUtil.getSavePath(), 'assets/mobile/',
 			[
-				'MobilePad/DPadModes',
-				'MobilePad/ActionModes',
-				'Hitbox/HitboxModes',
-			], [
-				DPAD,
-				ACTION,
-				HITBOX
+				['MobilePad/DPadModes', ButtonModes.DPAD],
+				['MobilePad/ActionModes', ButtonModes.ACTION],
+				['Hitbox/HitboxModes', ButtonModes.HITBOX]
 			]
 		);
 		#end

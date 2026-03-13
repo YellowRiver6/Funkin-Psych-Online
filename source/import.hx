@@ -123,6 +123,7 @@ import backend.FunkinFileSystem;
 #if TOUCH_CONTROLS
 import mobile.ScreenUtil;
 import mobile.MobileConfig;
+import mobile.MobileConfig.ButtonModes;
 import mobile.MobileButton;
 import mobile.backend.StorageUtil;
 import mobile.substates.MobileExtraControl;
