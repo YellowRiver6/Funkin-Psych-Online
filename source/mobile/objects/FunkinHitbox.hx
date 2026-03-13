@@ -76,34 +76,34 @@ class FunkinHitbox extends Hitbox {
 				switch (location) {
 					case 'Top':
 						if (buttonData.topPosition != null) {
-							if (buttonData.topPosition[0] != null) buttonX = buttonData.topPosition[0];
-							if (buttonData.topPosition[1] != null) buttonY = buttonData.topPosition[1];
+							buttonX = buttonData.topPosition[0];
+							buttonY = buttonData.topPosition[1];
 						}
 						if (buttonData.topScale != null) {
-							if (buttonData.topScale[0] != null) buttonWidth = buttonData.topScale[0];
-							if (buttonData.topScale[1] != null) buttonHeight = buttonData.topScale[1];
+							buttonWidth = buttonData.topScale[0];
+							buttonHeight = buttonData.topScale[1];
 						}
 						if (buttonData.topColor != null) buttonColor = buttonData.topColor;
 						if (buttonData.topReturnKey != null) buttonReturn = buttonData.topReturnKey;
 					case 'Middle':
 						if (buttonData.middlePosition != null) {
-							if (buttonData.middlePosition[0] != null) buttonX = buttonData.middlePosition[0];
-							if (buttonData.middlePosition[1] != null) buttonY = buttonData.middlePosition[1];
+							buttonX = buttonData.middlePosition[0];
+							buttonY = buttonData.middlePosition[1];
 						}
 						if (buttonData.middleScale != null) {
-							if (buttonData.middleScale[0] != null) buttonWidth = buttonData.middleScale[0];
-							if (buttonData.middleScale[1] != null) buttonHeight = buttonData.middleScale[1];
+							buttonWidth = buttonData.middleScale[0];
+							buttonHeight = buttonData.middleScale[1];
 						}
 						if (buttonData.middleColor != null) buttonColor = buttonData.middleColor;
 						if (buttonData.middleReturnKey != null) buttonReturn = buttonData.middleReturnKey;
 					case 'Bottom':
 						if (buttonData.bottomPosition != null) {
-							if (buttonData.bottomPosition[0] != null) buttonX = buttonData.bottomPosition[0];
-							if (buttonData.bottomPosition[1] != null) buttonY = buttonData.bottomPosition[1];
+							buttonX = buttonData.bottomPosition[0];
+							buttonY = buttonData.bottomPosition[1];
 						}
 						if (buttonData.bottomScale != null) {
-							if (buttonData.bottomScale[0] != null) buttonWidth = buttonData.bottomScale[0];
-							if (buttonData.bottomScale[1] != null) buttonHeight = buttonData.bottomScale[1];
+							buttonWidth = buttonData.bottomScale[0];
+							buttonHeight = buttonData.bottomScale[1];
 						}
 						if (buttonData.bottomColor != null) buttonColor = buttonData.bottomColor;
 						if (buttonData.bottomReturnKey != null) buttonReturn = buttonData.bottomReturnKey;
