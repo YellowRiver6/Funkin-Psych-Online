@@ -33,7 +33,7 @@ class Stage extends FlxBasic implements IBeatReceiver {
 		if (state == null) state = FlxG.state;
 		this.state = state;
 
-		stagePath = getPath('data/stages/$stage.xml', TEXT, null, true);
+		stagePath = Paths.getPath('data/stages/$stage.xml', TEXT, null, true);
 		try {
 			if (FunkinFileSystem.exists(stagePath)) stageXML = new Access(Xml.parse(FunkinFileSystem.getText(stagePath)).firstElement());
 		} catch(e) {
