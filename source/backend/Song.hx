@@ -147,10 +147,10 @@ class Song
 	public static function loadRawSong(jsonInput:String, ?folder:String):String {
 		try {
 			var isEvent:Bool = jsonInput.startsWith('events');
+			var lastDashIndex = jsonInput.lastIndexOf('-');
+			var difficulty = jsonInput.substring(lastDashIndex + 1);
 			var songName = isEvent ? PlayState.SONG.song : jsonInput.substring(0, lastDashIndex);
 			var chartsFolder:String = isEvent ? 'events' : 'charts/${difficulty}';
-			var difficulty = jsonInput.substring(lastDashIndex + 1);
-			var lastDashIndex = jsonInput.lastIndexOf('-');
 
 			if (Paths.formatToSongPath(difficulty) == Paths.formatToSongPath(Difficulty.defaultDifficulty))
 				difficulty = Difficulty.defaultDifficulty; 
@@ -207,19 +207,7 @@ class Song
 
 		} catch(e:Dynamic) { 
 			trace('Error loading raw song: $e');
-			return {
-				events: [],
-				song: "",
-				notes: [],
-				bpm: 0,
-				needsVoices: true,
-				speed: 1,
-				player1: "",
-				player2: "",
-				gfVersion: "",
-				stage: "",
-				format: 'psych_legacy'
-			};
+			return null;
 		}
 	}
 
