@@ -702,13 +702,13 @@ class PlayState extends MusicBeatState
 		startCharacterPos(char, !isRight);
 		switch (tag) {
 			case "dad":
-				if (char.isCodenameChar) add(char);
+				if (char.codenameOffsets) add(char);
 				else dadGroup.add(char);
 			case "bf":
-				if (char.isCodenameChar) add(char);
+				if (char.codenameOffsets) add(char);
 				else boyfriendGroup.add(char);
 			case "gf":
-				if (char.isCodenameChar) add(char);
+				if (char.codenameOffsets) add(char);
 				else gfGroup.add(char);
 			default:
 				add(char);
@@ -1420,7 +1420,7 @@ class PlayState extends MusicBeatState
 				gf = new Character(0, 0, gfName, false, false, 'gf');
 				gf.loadSpeaker();
 				if (gf?.speaker != null) {
-					if (gf.speaker.isCodenameChar) add(gf.speaker);
+					if (gf.speaker.codenameOffsets) add(gf.speaker);
 					else gfGroup.add(gf.speaker);
 
 					if (gf.speaker is Character) {
@@ -1433,7 +1433,7 @@ class PlayState extends MusicBeatState
 
 				//looks fuckin ugly, why is it there from old fnf vanilla to psych lolol
 				// gfGroup.scrollFactor.set(0.95, 0.95);
-				if (gf.isCodenameChar) add(gf);
+				if (gf.codenameOffsets) add(gf);
 				else gfGroup.add(gf);
 
 				startCharacterScripts(gf.curCharacter);
@@ -2169,7 +2169,7 @@ class PlayState extends MusicBeatState
 							newBoyfriend.flipX = !newBoyfriend.flipX;
 						}
 
-						if (newBoyfriend.isCodenameChar) add(newBoyfriend);
+						if (newBoyfriend.codenameOffsets) add(newBoyfriend);
 						else boyfriendGroup.add(newBoyfriend);
 						startCharacterPos(newBoyfriend);
 						if (stage != null) stage.applyCharStuff(newBoyfriend, "boyfriend", 0);
@@ -2211,7 +2211,7 @@ class PlayState extends MusicBeatState
 							newDad.flipX = !newDad.flipX;
 						}
 
-						if (newDad.isCodenameChar) add(newDad);
+						if (newDad.codenameOffsets) add(newDad);
 						else dadGroup.add(newDad);
 						startCharacterPos(newDad, true);
 						if (stage != null) stage.applyCharStuff(newDad, "dad", 0);
@@ -2247,7 +2247,7 @@ class PlayState extends MusicBeatState
 				if (!gfMap.exists(newCharacter)) {
 					var newGf:Character = new Character(0, 0, newCharacter);
 					gfMap.set(newCharacter, newGf);
-					if (newGf.isCodenameChar) add(newGf);
+					if (newGf.codenameOffsets) add(newGf);
 					else gfGroup.add(newGf);
 					startCharacterPos(newGf);
 					if (stage != null) stage.applyCharStuff(newGf, "girlfriend", 0);
@@ -2293,7 +2293,7 @@ class PlayState extends MusicBeatState
 							if (!playsAsBF()) {
 								newBoyfriend.flipX = !newBoyfriend.flipX;
 							}
-							if (newBoyfriend.isCodenameChar) add(newBoyfriend);
+							if (newBoyfriend.codenameOffsets) add(newBoyfriend);
 							else boyfriendGroup.add(newBoyfriend);
 							startCharacterPos(newBoyfriend);
 							if (stage != null) stage.applyCharStuff(newBoyfriend, "boyfriend", 0);
@@ -2331,7 +2331,7 @@ class PlayState extends MusicBeatState
 							if (!playsAsBF()) {
 								newDad.flipX = !newDad.flipX;
 							}
-							if (newDad.isCodenameChar) add(newDad);
+							if (newDad.codenameOffsets) add(newDad);
 							else dadGroup.add(newDad);
 							startCharacterPos(newDad, true);
 							if (stage != null) stage.applyCharStuff(newDad, "dad", 0);
@@ -2352,7 +2352,7 @@ class PlayState extends MusicBeatState
 					var newGf:Character = new Character(0, 0, newCharacter);
 					// newGf.scrollFactor.set(0.95, 0.95);
 					gfMap.set(newCharacter, newGf);
-					if (newGf.isCodenameChar) add(newGf);
+					if (newGf.codenameOffsets) add(newGf);
 					else gfGroup.add(newGf);
 					startCharacterPos(newGf);
 					if (stage != null) stage.applyCharStuff(newGf, "girlfriend", 0);
