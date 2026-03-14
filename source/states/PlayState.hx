@@ -700,6 +700,7 @@ class PlayState extends MusicBeatState
 		}
 
 		startCharacterPos(char, !isRight);
+		if (stage != null) stage.applyCharStuff(char, isRight ? "boyfriend" : "dad", 0);
 		switch (tag) {
 			case "dad":
 				dadGroup.add(char);
@@ -1331,6 +1332,7 @@ class PlayState extends MusicBeatState
 				char.flipX = !char.flipX;
 			}
 			startCharacterPos(char, !isRight);
+			if (stage != null) stage.applyCharStuff(char, isRight ? "boyfriend" : "dad", 0);
 			(isRight ? boyfriendGroup : dadGroup).add(char);
 			startCharacterScripts(char.curCharacter, sid, isRight);
 
@@ -1416,10 +1418,13 @@ class PlayState extends MusicBeatState
 				if (gf?.speaker != null) {
 					gfGroup.add(gf.speaker);
 
-					if (gf.speaker is Character)
+					if (gf.speaker is Character) {
 						startCharacterPos(cast gf.speaker);
+						if (stage != null) stage.applyCharStuff(cast gf.speaker, "girlfriend", 0);
+					}
 				}
 				startCharacterPos(gf);
+				if (stage != null) stage.applyCharStuff(gf, "girlfriend", 0);
 
 				//looks fuckin ugly, why is it there from old fnf vanilla to psych lolol
 				// gfGroup.scrollFactor.set(0.95, 0.95);
@@ -2160,6 +2165,7 @@ class PlayState extends MusicBeatState
 
 						boyfriendGroup.add(newBoyfriend);
 						startCharacterPos(newBoyfriend);
+						if (stage != null) stage.applyCharStuff(newBoyfriend, "boyfriend", 0);
 						newBoyfriend.alpha = 0.00001;
 						startCharacterScripts(newBoyfriend.curCharacter, true);
 					}
@@ -2200,6 +2206,7 @@ class PlayState extends MusicBeatState
 
 						dadGroup.add(newDad);
 						startCharacterPos(newDad, true);
+						if (stage != null) stage.applyCharStuff(newDad, "dad", 0);
 						newDad.alpha = 0.00001;
 						startCharacterScripts(newDad.curCharacter, false);
 					}
@@ -2234,6 +2241,7 @@ class PlayState extends MusicBeatState
 					gfMap.set(newCharacter, newGf);
 					gfGroup.add(newGf);
 					startCharacterPos(newGf);
+					if (stage != null) stage.applyCharStuff(newGf, "girlfriend", 0);
 					newGf.alpha = 0.00001;
 					startCharacterScripts(newGf.curCharacter);
 				}
@@ -2278,6 +2286,7 @@ class PlayState extends MusicBeatState
 							}
 							boyfriendGroup.add(newBoyfriend);
 							startCharacterPos(newBoyfriend);
+							if (stage != null) stage.applyCharStuff(newBoyfriend, "boyfriend", 0);
 							newBoyfriend.alpha = 0.00001;
 							startCharacterScripts(newBoyfriend.curCharacter, sid, true);
 						}
@@ -2314,6 +2323,7 @@ class PlayState extends MusicBeatState
 							}
 							dadGroup.add(newDad);
 							startCharacterPos(newDad, true);
+							if (stage != null) stage.applyCharStuff(newDad, "dad", 0);
 							newDad.alpha = 0.00001;
 							startCharacterScripts(newDad.curCharacter, sid, false);
 						}
@@ -2333,6 +2343,7 @@ class PlayState extends MusicBeatState
 					gfMap.set(newCharacter, newGf);
 					gfGroup.add(newGf);
 					startCharacterPos(newGf);
+					if (stage != null) stage.applyCharStuff(newGf, "girlfriend", 0);
 					newGf.alpha = 0.00001;
 					startCharacterScripts(newGf.curCharacter);
 				}
@@ -4570,6 +4581,7 @@ class PlayState extends MusicBeatState
 		}
 	}
 
+	private var camEventUsed:Bool = false;
 	public function triggerEvent(eventName:String, value1:String, value2:String, strumTime:Float) {
 		var flValue1:Null<Float> = Std.parseFloat(value1);
 		var flValue2:Null<Float> = Std.parseFloat(value2);
@@ -4579,6 +4591,9 @@ class PlayState extends MusicBeatState
 		switch(eventName) {
 			case "Camera Movement":
 				curCameraTarget = Std.parseInt(value1);
+				//force the camera
+				if (Std.parseInt(value1) > -1) camEventUsed = true;
+				else camEventUsed = false;
 			//Codename Engine Support (you can't use these in the editor, just there for compatibility)
 			case 'Camera Flash':
 				//make the event work on PsychEngine
@@ -4989,7 +5004,7 @@ class PlayState extends MusicBeatState
 		if(SONG.notes[sec] == null) return;
 
 		if (SONG.notes[sec].targetCamera != null) {
-			newMoveCamera(SONG.notes[sec].targetCamera); //Will be main thing in the future
+			newMoveCamera(camEventUsed ? curCameraTarget : SONG.notes[sec].targetCamera); //Will be main thing in the future
 		}
 
 		if(prevMustHit != null && prevMustHit == SONG.notes[sec].mustHitSection) return;

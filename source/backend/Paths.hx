@@ -780,13 +780,13 @@ class Paths
 	public static var tempFramesCache:Map<String, FlxFramesCollection> = [];
 
 	inline static public function getSparrowAtlasAlt(key:String)
-		return FlxAtlasFrames.fromSparrow('$key.png', FunkinFileSystem.getText(key + '.xml'));
+		return FlxAtlasFrames.fromSparrow(image('$key.png', null, true, false, true), FunkinFileSystem.getText('$key.xml'));
 
 	inline static public function getPackerAtlasAlt(key:String)
-		return FlxAtlasFrames.fromSpriteSheetPacker('$key.png', '$key.txt');
+		return FlxAtlasFrames.fromSpriteSheetPacker(image('$key.png', null, true, false, true), FunkinFileSystem.getText('$key.txt'));
 
 	inline static public function getAsepriteAtlasAlt(key:String)
-		return FlxAtlasFrames.fromAseprite('$key.png', '$key.json');
+		return FlxAtlasFrames.fromAseprite(image('$key.png', null, true, false, true), FunkinFileSystem.getText('$key.json'));
 
 	static public function imageAlt(key:String, ?library:String, checkForAtlas:Bool = false, ?ext:String = "png") {
 		if (checkForAtlas) {
@@ -838,7 +838,7 @@ class Paths
 			}
 			return finalFrames;
 		} else if (FunkinFileSystem.exists('$noExt.xml'))
-			return getSparrowAtlasAlt(path);
+			return getSparrowAtlasAlt(noExt);
 		else if (FunkinFileSystem.exists('$noExt.txt'))
 			return getPackerAtlasAlt(noExt);
 		else if (FunkinFileSystem.exists('$noExt.json')) {
