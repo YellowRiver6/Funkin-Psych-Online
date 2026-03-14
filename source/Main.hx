@@ -113,6 +113,10 @@ class Main extends Sprite
 		#end
 		backend.CrashHandler.init();
 
+		#if ios
+		CoolUtil.showPopUp("trace 1", "none");
+		#end
+
 		if (stage != null)
 		{
 			init();
@@ -149,9 +153,21 @@ class Main extends Sprite
 		}
 		#end
 
+		#if ios
+		CoolUtil.showPopUp("trace 2", "none");
+		#end
+
 		CoolUtil.setDarkMode(true);
 
+		#if ios
+		CoolUtil.showPopUp("trace 3", "none");
+		#end
+
 		FunkinFileSystem.validateLimeCache();
+
+		#if ios
+		CoolUtil.showPopUp("trace 4", "none");
+		#end
 
 		#if lumod
 		Lumod.addons.push(online.backend.LuaModuleSwap.LumodModuleAddon);
@@ -169,17 +185,36 @@ class Main extends Sprite
 		Lumod.initializeLuaCallbacks = false;
 		#end
 
+		#if ios
+		CoolUtil.showPopUp("trace 5", "none");
+		#end
+
 		#if hl
 		sys.ssl.Socket.DEFAULT_VERIFY_CERT = false;
 		#end
 	
 		#if LUA_ALLOWED Lua.set_callbacks_function(cpp.Callable.fromStaticFunction(psychlua.CallbackHandler.call)); #end
+		#if ios
+		CoolUtil.showPopUp("trace 6", "none");
+		#end
 		Controls.instance = new Controls();
+		#if ios
+		CoolUtil.showPopUp("trace 7", "none");
+		#end
 		ClientPrefs.loadDefaultKeys();
+		#if ios
+		CoolUtil.showPopUp("trace 8", "none");
+		#end
 		addChild(new FlxGame(game.width, game.height, game.initialState, #if (flixel < "5.0.0") game.zoom, #end game.framerate, game.framerate, game.skipSplash, game.startFullscreen));
+		#if ios
+		CoolUtil.showPopUp("trace 9", "none");
+		#end
 
 		#if GLOBAL_SCRIPT
 		funkin.backend.scripting.HScript.GlobalScript.init();
+		#end
+		#if ios
+		CoolUtil.showPopUp("trace 10", "none");
 		#end
 
 		fpsVar = new FPS(10, 3, 0xFFFFFF);

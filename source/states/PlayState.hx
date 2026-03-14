@@ -3324,11 +3324,8 @@ class PlayState extends MusicBeatState
 			var daStrumTime:Float = songNotes[0];
 			if (daStrumTime > inst.length)
 				continue;
-
-			var rawNoteData:Int = Std.int(songNotes[1]);
 			var daNoteData:Int = Std.int(songNotes[1] % Note.maniaKeys);
-
-			if (rawNoteData < 0) // this should prevent most exe mods from crashing
+			if (songNotes[1] < 0 || songNotes[1] > Note.maniaKeys * 2 - 1) // this should prevent most exe mods from crashing
 				continue;
 
 			var strumLineID:Int = 0;

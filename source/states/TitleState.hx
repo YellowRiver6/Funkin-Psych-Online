@@ -75,38 +75,77 @@ class TitleState extends MusicBeatState
 
 	override public function create():Void
 	{
+		#if ios
+		CoolUtil.showPopUp("trace 11", "none");
+		#end
+
 		Paths.clearStoredMemory();
 		Paths.clearUnusedMemory();
+
+		#if ios
+		CoolUtil.showPopUp("trace 12", "none");
+		#end
 
 		#if LUA_ALLOWED
 		Mods.pushGlobalMods();
 		#end
 		Mods.loadTopMod();
 
+		#if ios
+		CoolUtil.showPopUp("trace 13", "none");
+		#end
+
 		FlxG.fixedTimestep = false;
 		FlxG.game.focusLostFramerate = 60;
 		FlxG.keys.preventDefaultKeys = [TAB];
 
+		#if ios
+		CoolUtil.showPopUp("trace 14", "none");
+		#end
+
 		curWacky = FlxG.random.getObject(getIntroTextShit());
+
+		#if ios
+		CoolUtil.showPopUp("trace 15", "none");
+		#end
 
 		super.create();
 
 		FlxG.save.bind('funkin', CoolUtil.getSavePath());
 		online.network.Auth.load();
 
+		#if ios
+		CoolUtil.showPopUp("trace 16", "none");
+		#end
+
 		ClientPrefs.loadPrefs();
 		#if ACHIEVEMENTS_ALLOWED Achievements.load(); #end
+		#if ios
+		CoolUtil.showPopUp("trace 17", "none");
+		#end
 
 		#if VIDEOS_ALLOWED
 		hxvlc.util.Handle.init(#if (hxvlc >= "1.8.0")  ['--no-lua'] #end);
+		#end
+
+		#if ios
+		CoolUtil.showPopUp("trace 18", "none");
 		#end
 
 		backend.NoteSkinData.reloadNoteSkins();
 
 		Highscore.load();
 
+		#if ios
+		CoolUtil.showPopUp("trace 19", "none");
+		#end
+
 		// IGNORE THIS!!!
 		titleJSON = Json.parse(Paths.getTextFromFile('images/gfDanceTitle.json'));
+
+		#if ios
+		CoolUtil.showPopUp("trace 20", "none");
+		#end
 
 		#if TITLE_SCREEN_EASTER_EGG
 		if (FlxG.save.data.psychDevsEasterEgg == null) FlxG.save.data.psychDevsEasterEgg = ''; //Crash prevention
