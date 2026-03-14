@@ -204,7 +204,7 @@ class Stage extends FlxBasic implements IBeatReceiver {
 			var scale = Std.parseFloat(node.getAtt("scale")).getDefault(charPos.scale.x);
 			charPos.scale.set(scale, scale);
 
-			if (node.has.charPos.y && name == "boyfriend")
+			if (node.has.y && name == "boyfriend")
 				charPos.y += 450;
 
 			if (node.has.scroll) {
