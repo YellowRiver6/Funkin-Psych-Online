@@ -281,7 +281,7 @@ class Character extends FlxSkewedSprite {
 		if (rawText == null) return null;
 
 		if (isXml) {
-			var convertedJsonStr = Converters.parseCodenameChar(rawText, 'characters/' + character);
+			var convertedJsonStr = Converters.parseCodenameChar(rawText, character);
 			return cast Json.parse(convertedJsonStr);
 		} else {
 			return cast Json.parse(rawText);
@@ -800,7 +800,7 @@ class Character extends FlxSkewedSprite {
 		} else if (betterOffsets) {
 			var daOffset = getAnimOffset(AnimName);
 			frameOffset.x = daOffset[0];
-			offset.set(positionArray[0] * (isPlayer != playerOffsets ? 1 : -1), daOffset[1]);
+			offset.set((positionArray[0] - daOffset[0]) * (isPlayer != playerOffsets ? 1 : -1), daOffset[1]);
 		} else {
 			var daOffset = getAnimOffset(AnimName);
 			if (daOffset != null)

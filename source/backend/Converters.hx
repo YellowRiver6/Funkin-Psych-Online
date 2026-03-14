@@ -10,21 +10,21 @@ class Converters {
 	/**
 	 * Converts a Codename Engine XML string to a Psych Engine JSON string.
 	 * @param xmlString The raw XML string from the CNE character file.
-	 * @param fallbackImagePath The path to the character image (e.g., "characters/taeyai-dream").
+	 * @param fallbackImagePath The path to the character image (e.g., "taeyai-dream").
 	 * @return A formatted JSON string for PsychEngine.
 	 */
-	public static function parseCodenameChar(xmlString:String, fallbackImagePath:String = "characters/my_character"):String {
+	public static function parseCodenameChar(xmlString:String, fallbackImagePath:String = "my_character"):String {
 		// Parse the XML
 		var rawXml = Xml.parse(xmlString).firstElement();
 		var xml = new Access(rawXml);
-		var finalImagePath:String = xml.has.sprite ? 'characters/' + xml.att.sprite : fallbackImagePath;
+		var finalImagePath:String = xml.has.sprite ? 'characters/' + xml.att.sprite : 'characters/' + fallbackImagePath;
 
 		var charFile:CharacterFile = {
 			animations: [],
 			image: finalImagePath,
 			scale: xml.has.scale ? Std.parseFloat(xml.att.scale) : 1.0,
 			sing_duration: xml.has.holdTime ? Std.parseFloat(xml.att.holdTime) : 4.0,
-			healthicon: xml.has.icon ? xml.att.icon : "face",
+			healthicon: xml.has.icon ? xml.att.icon : fallbackImagePath,
 			position: [
 				xml.has.x ? Std.parseFloat(xml.att.x) : 0.0,
 				xml.has.y ? Std.parseFloat(xml.att.y) : 0.0

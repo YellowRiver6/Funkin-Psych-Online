@@ -133,6 +133,7 @@ class DownloaderState extends MusicBeatState {
 		loadNextPage(true);
 
 		mobileManager.addMobilePad('LEFT_RIGHT', 'B');
+		mobileManager.addMobilePadCamera();
 	}
 
 	var _newPage:Int = 0;

@@ -17,10 +17,12 @@ For this you can head over to the [PsychEngine](https://shadowmario.github.io/ps
 
 ## Credits:
 * ArkoseLabs - Creator of PsychExtended & PsychExtended Online & Head Porter of PsychOnline Mobile.
-* SametGkTe - Creator of Psych Extended Online Turkiye & helper of Psych Extended Online.
 * Ethantobot - Tester & Helper of Psych Extended Online.
+* SametGkTe - Creator of Psych Extended Online Turkiye & helper of Psych Extended Online.
 
 ## Features
+* Codename Engine Character Support
+* Codename Engine Stage Support
 * Codename Engine Chart Support
 * Codename Engine Script Support (Not Fully)
 * Multi StrumLine Support

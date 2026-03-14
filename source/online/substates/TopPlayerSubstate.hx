@@ -59,6 +59,7 @@ class TopPlayerSubstate extends MusicBeatSubstate {
 		add(keysTxt);
 
 		mobileManager.addMobilePad('FULL', 'A_B');
+		mobileManager.addMobilePadCamera();
 		controls.isInSubstate = true;
     }
 
