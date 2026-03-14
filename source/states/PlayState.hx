@@ -3358,7 +3358,6 @@ class PlayState extends MusicBeatState
 			swagNote.sustainLength = songNotes[2];
 			swagNote.gfNote = (section.gfSection && (songNotes[1] < Note.maniaKeys));
 			swagNote.noteType = songNotes[3];
-			swagNote.rawNoteData = rawNoteData;
 			if(!Std.isOfType(songNotes[3], String)) swagNote.noteType = ChartingState.noteTypeList[songNotes[3]]; //Backward compatibility + compatibility with Week 7 charts
 
 			if (noBadNotes && (swagNote.hitCausesMiss || swagNote.hitHealth < 0)) {
@@ -3379,7 +3378,6 @@ class PlayState extends MusicBeatState
 					oldNote = unspawnNotes[Std.int(unspawnNotes.length - 1)];
 
 					var sustainNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * susNote), daNoteData, oldNote, true);
-					sustainNote.rawNoteData = rawNoteData;
 					sustainNote.strumLineID = strumLineID;
 					sustainNote.mustPress = !strumLines.members[strumLineID].cpu;
 					sustainNote.gfNote = (section.gfSection && (songNotes[1]<Note.maniaKeys));
@@ -6705,7 +6703,7 @@ class PlayState extends MusicBeatState
 		// 	}
 		// }
 		// Lib.application.window.resizable = true;
-		Lib.application.window.title = "Friday Night Funkin': Psych Online" + (states.TitleState.inDev ? ' [DEV]' : '');
+		Lib.application.window.title = "Friday Night Funkin': Psych Extended Online" + (states.TitleState.inDev ? ' [DEV]' : '');
 		#if DISCORD_ALLOWED DiscordClient.resetClientID(); #end
 	}
 
