@@ -37,8 +37,12 @@ class Converters {
 			no_antialiasing: xml.has.antialiasing ? (xml.att.antialiasing == "false") : false,
 			healthbar_colors: [161, 161, 161], // Default fallback color
 			betterOffsets: true, // CNE like offset swapping feature
+			codenameOffsets: false, // Fully CNE Offsetting for Codename Stages.
 			isPlayer: xml.has.isPlayer ? (xml.att.isPlayer == "true") : false
 		};
+		if (PlayState.instance != null && PlayState.instance.stage != null)
+			charFile.codenameOffsets = true;
+
 		if (xml.has.isPlayer && xml.att.isPlayer == "true") charFile.flip_x = !charFile.flip_x; //Player Flip Fix
 
 		// Parse animations

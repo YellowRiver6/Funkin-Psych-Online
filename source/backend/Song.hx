@@ -207,7 +207,22 @@ class Song
 
 		} catch(e:Dynamic) { 
 			trace('Error loading raw song: $e');
-			return null;
+			//this should fix no data problem.
+			return "
+				{
+				  "events": [],
+				  "song": "",
+				  "notes": [],
+				  "bpm": 0,
+				  "needsVoices": true,
+				  "speed": 1,
+				  "player1": "",
+				  "player2": "",
+				  "gfVersion": "",
+				  "stage": "",
+				  "format": "psych_legacy"
+				}
+			";
 		}
 	}
 

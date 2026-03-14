@@ -129,12 +129,14 @@ class Stage extends FlxBasic implements IBeatReceiver {
 						addCharPos(node.att.name, node);
 					case "ratings" | "combo":
 						if (PlayState.instance == null) continue;
+						/*
 						PlayState.instance.comboGroup.setPosition(
 							Std.parseFloat(node.getAtt("x")).getDefault(PlayState.instance.comboGroup.x),
 							Std.parseFloat(node.getAtt("y")).getDefault(PlayState.instance.comboGroup.y)
 						);
 						PlayState.instance.add(PlayState.instance.comboGroup);
 						PlayState.instance.comboGroup;
+						*/
 					default: null;
 				}
 

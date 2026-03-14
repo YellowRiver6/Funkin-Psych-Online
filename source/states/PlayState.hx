@@ -700,17 +700,20 @@ class PlayState extends MusicBeatState
 		}
 
 		startCharacterPos(char, !isRight);
-		if (stage != null) stage.applyCharStuff(char, isRight ? "boyfriend" : "dad", 0);
 		switch (tag) {
 			case "dad":
-				dadGroup.add(char);
+				if (char.isCodenameChar) add(char);
+				else dadGroup.add(char);
 			case "bf":
-				boyfriendGroup.add(char);
+				if (char.isCodenameChar) add(char);
+				else boyfriendGroup.add(char);
 			case "gf":
-				gfGroup.add(char);
+				if (char.isCodenameChar) add(char);
+				else gfGroup.add(char);
 			default:
 				add(char);
 		}
+		if (stage != null) stage.applyCharStuff(char, isRight ? "boyfriend" : "dad", 0);
 
 		startCharacterScripts(char.curCharacter, null, isRight);
 
@@ -1332,11 +1335,12 @@ class PlayState extends MusicBeatState
 				char.flipX = !char.flipX;
 			}
 			startCharacterPos(char, !isRight);
-			if (stage != null) stage.applyCharStuff(char, isRight ? "boyfriend" : "dad", 0);
 			(isRight ? boyfriendGroup : dadGroup).add(char);
 			startCharacterScripts(char.curCharacter, sid, isRight);
 
 			Mods.currentModDirectory = oldModDir;
+
+			if (stage != null) stage.applyCharStuff(char, isRight ? "boyfriend" : "dad", 0);
 
 			return char;
 		}
@@ -1416,7 +1420,8 @@ class PlayState extends MusicBeatState
 				gf = new Character(0, 0, gfName, false, false, 'gf');
 				gf.loadSpeaker();
 				if (gf?.speaker != null) {
-					gfGroup.add(gf.speaker);
+					if (gf.speaker.isCodenameChar) add(gf.speaker);
+					else gfGroup.add(gf.speaker);
 
 					if (gf.speaker is Character) {
 						startCharacterPos(cast gf.speaker);
@@ -1428,7 +1433,8 @@ class PlayState extends MusicBeatState
 
 				//looks fuckin ugly, why is it there from old fnf vanilla to psych lolol
 				// gfGroup.scrollFactor.set(0.95, 0.95);
-				gfGroup.add(gf);
+				if (gf.isCodenameChar) add(gf);
+				else gfGroup.add(gf);
 
 				startCharacterScripts(gf.curCharacter);
 			}
@@ -2163,7 +2169,8 @@ class PlayState extends MusicBeatState
 							newBoyfriend.flipX = !newBoyfriend.flipX;
 						}
 
-						boyfriendGroup.add(newBoyfriend);
+						if (newBoyfriend.isCodenameChar) add(newBoyfriend);
+						else boyfriendGroup.add(newBoyfriend);
 						startCharacterPos(newBoyfriend);
 						if (stage != null) stage.applyCharStuff(newBoyfriend, "boyfriend", 0);
 						newBoyfriend.alpha = 0.00001;
@@ -2204,7 +2211,8 @@ class PlayState extends MusicBeatState
 							newDad.flipX = !newDad.flipX;
 						}
 
-						dadGroup.add(newDad);
+						if (newDad.isCodenameChar) add(newDad);
+						else dadGroup.add(newDad);
 						startCharacterPos(newDad, true);
 						if (stage != null) stage.applyCharStuff(newDad, "dad", 0);
 						newDad.alpha = 0.00001;
@@ -2239,7 +2247,8 @@ class PlayState extends MusicBeatState
 				if (!gfMap.exists(newCharacter)) {
 					var newGf:Character = new Character(0, 0, newCharacter);
 					gfMap.set(newCharacter, newGf);
-					gfGroup.add(newGf);
+					if (newGf.isCodenameChar) add(newGf);
+					else gfGroup.add(newGf);
 					startCharacterPos(newGf);
 					if (stage != null) stage.applyCharStuff(newGf, "girlfriend", 0);
 					newGf.alpha = 0.00001;
@@ -2284,7 +2293,8 @@ class PlayState extends MusicBeatState
 							if (!playsAsBF()) {
 								newBoyfriend.flipX = !newBoyfriend.flipX;
 							}
-							boyfriendGroup.add(newBoyfriend);
+							if (newBoyfriend.isCodenameChar) add(newBoyfriend);
+							else boyfriendGroup.add(newBoyfriend);
 							startCharacterPos(newBoyfriend);
 							if (stage != null) stage.applyCharStuff(newBoyfriend, "boyfriend", 0);
 							newBoyfriend.alpha = 0.00001;
@@ -2321,7 +2331,8 @@ class PlayState extends MusicBeatState
 							if (!playsAsBF()) {
 								newDad.flipX = !newDad.flipX;
 							}
-							dadGroup.add(newDad);
+							if (newDad.isCodenameChar) add(newDad);
+							else dadGroup.add(newDad);
 							startCharacterPos(newDad, true);
 							if (stage != null) stage.applyCharStuff(newDad, "dad", 0);
 							newDad.alpha = 0.00001;
@@ -2341,7 +2352,8 @@ class PlayState extends MusicBeatState
 					var newGf:Character = new Character(0, 0, newCharacter);
 					// newGf.scrollFactor.set(0.95, 0.95);
 					gfMap.set(newCharacter, newGf);
-					gfGroup.add(newGf);
+					if (newGf.isCodenameChar) add(newGf);
+					else gfGroup.add(newGf);
 					startCharacterPos(newGf);
 					if (stage != null) stage.applyCharStuff(newGf, "girlfriend", 0);
 					newGf.alpha = 0.00001;

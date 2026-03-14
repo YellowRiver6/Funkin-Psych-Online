@@ -36,6 +36,7 @@ typedef CharacterFile = {
 	var no_antialiasing:Bool;
 	var healthbar_colors:Array<Int>;
 	@:optional var betterOffsets:Bool;
+	@:optional var codenameOffsets:Bool;
 	@:optional var isPlayer:Bool;
 	@:optional var vocals_file:String;
 	@:optional var dead_character:Null<String>;
@@ -400,6 +401,7 @@ class Character extends FlxSkewedSprite {
 		singDuration = json.sing_duration;
 		flipX = (json.flip_x == true);
 		betterOffsets = (json.betterOffsets == true);
+		codenameOffsets = (json.codenameOffsets == true);
 		playerOffsets = (json.isPlayer == true);
 
 		if (json.healthbar_colors != null && json.healthbar_colors.length > 2)
@@ -494,7 +496,7 @@ class Character extends FlxSkewedSprite {
 
 		if(animOffsets.exists('singLEFTmiss') || animOffsets.exists('singDOWNmiss') || animOffsets.exists('singUPmiss') || animOffsets.exists('singRIGHTmiss')) hasMissAnimations = true;
 		recalculateDanceIdle();
-		if ((PlayState.playsAsBF() && isPlayer != playerOffsets || !PlayState.playsAsBF() && isPlayer == playerOffsets) && betterOffsets)
+		if ((PlayState.playsAsBF() && isPlayer != playerOffsets || !PlayState.playsAsBF() && isPlayer == playerOffsets) && (betterOffsets || codenameOffsets))
 			swapLeftRightAnimations();
 
 		dance();
@@ -791,7 +793,11 @@ class Character extends FlxSkewedSprite {
 			animation.play(AnimName, Force, Reversed, Frame);
 		}
 
-		if (betterOffsets) {
+		if (codenameOffsets) {
+			var daOffset = getAnimOffset(AnimName);
+			frameOffset.set(daOffset[0], daOffset[1]);
+			offset.set(positionArray[0] * (isPlayer != playerOffsets ? 1 : -1), -positionArray[0]);
+		} else if (betterOffsets) {
 			var daOffset = getAnimOffset(AnimName);
 			frameOffset.x = daOffset[0];
 			offset.set(positionArray[0] * (isPlayer != playerOffsets ? 1 : -1), daOffset[1]);
@@ -940,6 +946,7 @@ class Character extends FlxSkewedSprite {
 
 	//better offset system for loading codename chars
 	public var betterOffsets:Bool = false;
+	public var codenameOffsets:Bool = false;
 	public var playerOffsets:Bool = false;
 	public function isFlippedOffsets()
 		return (isPlayer != playerOffsets) != (flipX != __baseFlipped);
@@ -953,7 +960,7 @@ class Character extends FlxSkewedSprite {
 			return;
 		}
 
-		if (betterOffsets && isFlippedOffsets()) {
+		if ((betterOffsets || codenameOffsets) && isFlippedOffsets()) {
 			__reverseDrawProcedure = true;
 			flipX = !flipX;
 			scale.x *= -1;
