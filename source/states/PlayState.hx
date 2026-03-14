@@ -1420,8 +1420,8 @@ class PlayState extends MusicBeatState
 				gf = new Character(0, 0, gfName, false, false, 'gf');
 				gf.loadSpeaker();
 				if (gf?.speaker != null) {
-					if (gf.speaker.codenameOffsets) add(gf.speaker);
-					else gfGroup.add(gf.speaker);
+					/* if (gf.speaker.codenameOffsets) add(gf.speaker);
+					else */ gfGroup.add(gf.speaker);
 
 					if (gf.speaker is Character) {
 						startCharacterPos(cast gf.speaker);
