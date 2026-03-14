@@ -3157,9 +3157,9 @@ class PlayState extends MusicBeatState
 		var file:String = Paths.json(songName + '/events' + songSuffix);
 		var fileCNE:String = Paths.getPath('songs/' + songName + '/events' + songSuffix + '.json', TEXT, null, true);
 		#if MODS_ALLOWED
-		if (FunkinFileSystem.exists(Paths.modsJson(songName + '/events' + songSuffix)) || FunkinFileSystem.exists(file) /* || FunkinFileSystem.exists(fileCNE) */) {
+		if (FunkinFileSystem.exists(Paths.modsJson(songName + '/events' + songSuffix)) || FunkinFileSystem.exists(file) || !FunkinFileSystem.exists(file) && FunkinFileSystem.exists(fileCNE)) {
 		#else
-		if (OpenFlAssets.exists(file) /* || OpenFlAssets.exists(fileCNE) */) {
+		if (OpenFlAssets.exists(file) || !OpenFlAssets.exists(file) && OpenFlAssets.exists(fileCNE)) {
 		#end
 			var eventsData:Array<Dynamic> = Song.loadFromJson('events' + songSuffix, songName).events;
 			trace("eventsData: " + eventsData);

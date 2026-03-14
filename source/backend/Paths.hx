@@ -780,7 +780,7 @@ class Paths
 	public static var tempFramesCache:Map<String, FlxFramesCollection> = [];
 
 	inline static public function getSparrowAtlasAlt(key:String)
-		return FlxAtlasFrames.fromSparrow('$key.png', File.getContent(key + '.xml'));
+		return FlxAtlasFrames.fromSparrow('$key.png', FunkinFileSystem.getText(key + '.xml'));
 
 	inline static public function getPackerAtlasAlt(key:String)
 		return FlxAtlasFrames.fromSpriteSheetPacker('$key.png', '$key.txt');
@@ -790,7 +790,7 @@ class Paths
 
 	static public function imageAlt(key:String, ?library:String, checkForAtlas:Bool = false, ?ext:String = "png") {
 		if (checkForAtlas) {
-			var atlasPath = getPath('images/$key/spritemap.$ext', IMAGE, library, true);
+			var atlasPath = getPath('images/$key/spritemap1.$ext', IMAGE, library, true);
 			var multiplePath = getPath('images/$key/1.$ext', IMAGE, library, true);
 			if (atlasPath != null && #if MODS_ALLOWED FunkinFileSystem.exists(atlasPath) #else OpenFlAssets.exists(atlasPath) #end)
 				return atlasPath.substr(0, atlasPath.length - 14);
@@ -837,7 +837,7 @@ class Paths
 				cur++;
 			}
 			return finalFrames;
-		} else if (FunkinFileSystem.exists('images/$noExt.xml'))
+		} else if (FunkinFileSystem.exists('$noExt.xml'))
 			return getSparrowAtlasAlt(path);
 		else if (FunkinFileSystem.exists('$noExt.txt'))
 			return getPackerAtlasAlt(noExt);
@@ -845,7 +845,6 @@ class Paths
 			var aSprite = getAsepriteAtlasAlt(noExt);
 			return aSprite;
 		}
-		trace(path);
 
 		//var graph:FlxGraphic = FlxG.bitmap.add(path, Unique, Key);
 		var graph:FlxGraphic = image(path, null, true, false, true); //use returnGraphic bc I want to use String instead of path (also, path one is buggy)

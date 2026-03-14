@@ -103,12 +103,12 @@ class FunkinSprite extends FlxSkewedSprite implements IBeatReceiver implements I
 	public function loadSprite(path:String, Unique:Bool = false, Key:String = null)
 	{
 		var noExt = Path.withoutExtension(path);
-		trace(noExt);
-		if (FunkinFileSystem.exists('$noExt/Animation.json'))
+		if (Paths.fileExists('images/$noExt/Animation.json', TEXT))
 		{
 			trace('Continue with atlas');
 			atlasPath = noExt;
-			animateAtlas = new FlxAnimateCNE(x, y, noExt);
+			animateAtlas = new FlxAnimateCNE(x, y);
+			Paths.loadAnimateAtlas(animateAtlas, noExt); //Load Atlas (I hate using this but I don't have better solution)
 			if (animateAtlas == null) trace('animateAtlas is null');
 			else trace('animateAtlas is $animateAtlas');
 		}
