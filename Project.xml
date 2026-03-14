@@ -274,6 +274,10 @@
 	<java path="source/mobile/android/" if="android" />
 	<java path="mobile/android/" if="android" />
 
+	<!-- Category Type for Apple Systems -->
+	<config:ios category_type="public.app-category.music-games" />
+	<config:mac category_type="public.app-category.music-games" />
+
 	<section unless="ANGLE_BUILD">
 		<haxedef name="lime_use_old_deltatime" />
 		<haxedef name="lime_disable_motion_sensors" />

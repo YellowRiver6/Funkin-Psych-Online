@@ -788,8 +788,7 @@ class Paths
 	inline static public function getAsepriteAtlasAlt(key:String)
 		return FlxAtlasFrames.fromAseprite('$key.png', '$key.json');
 
-	static public function imageAlt(key:String, ?library:String, checkForAtlas:Bool = false, ?ext:String) {
-		if (ext == null) ext = 'png';
+	static public function imageAlt(key:String, ?library:String, checkForAtlas:Bool = false, ?ext:String = "png") {
 		if (checkForAtlas) {
 			var atlasPath = getPath('images/$key/spritemap.$ext', IMAGE, library, true);
 			var multiplePath = getPath('images/$key/1.$ext', IMAGE, library, true);
@@ -839,7 +838,7 @@ class Paths
 			}
 			return finalFrames;
 		} else if (FunkinFileSystem.exists('images/$noExt.xml'))
-			return getSparrowAtlas(path);
+			return getSparrowAtlasAlt(path);
 		else if (FunkinFileSystem.exists('$noExt.txt'))
 			return getPackerAtlasAlt(noExt);
 		else if (FunkinFileSystem.exists('$noExt.json')) {

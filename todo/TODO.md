@@ -1,5 +1,4 @@
 - Add ASTC and BPTC
-- Add CNE Stage Support
 - Finish the Language System (I'll kill you Samet)
 - Add 3v3 Support for Playing with Psych Online Players
 - Make MacOS & Linux Builds
@@ -11,6 +10,6 @@
 - Add Multiple Strumlines to Chart Editor
 - Add backwards lua compability
 - Rewrite the Mobile Controls Library(?)
-- Switch Hscript-Improved to HScript-Iris-Improved(?)
+- Switch HScript-Improved to HScript-Iris-Improved(?)
 - Add HScript Improved Compability to HScript Iris Improved(?)
 - Refactor/Redo Scriptable States Support(?)
