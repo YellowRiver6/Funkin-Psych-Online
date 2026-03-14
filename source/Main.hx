@@ -119,11 +119,23 @@ class Main extends Sprite
 
 		if (stage != null)
 		{
+			#if ios
+			CoolUtil.showPopUp("trace -1", "none");
+			#end
 			init();
+			#if ios
+			CoolUtil.showPopUp("trace -4", "none");
+			#end
 		}
 		else
 		{
+			#if ios
+			CoolUtil.showPopUp("trace -2", "none");
+			#end
 			addEventListener(Event.ADDED_TO_STAGE, init);
+			#if ios
+			CoolUtil.showPopUp("trace -3", "none");
+			#end
 		}
 	}
 
