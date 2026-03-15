@@ -19,8 +19,8 @@
     {
       "name": "flixel",
       "type": "git",
-      "ref": "peo-mobile",
-      "url": "https://github.com/ArkoseLabsOfficial/flixel-peo"
+      "ref": "main",
+      "url": "https://github.com/Prohack101010/flixel-5.8.0-fixed"
     },
     {
       "name": "flixel-addons",
