@@ -97,9 +97,9 @@ class GameOverSubstate extends MusicBeatSubstate
 
 		Conductor.songPosition = 0;
 
-		Main.view3D.onDebug = (v) -> {
-			this.active = !v;
-		};
+		// Main.view3D.onDebug = (v) -> {
+		// 	this.active = !v;
+		// };
 
 		var retryChar:String = null;
 		if (boyfriend.curCharacter.startsWith('pico') && boyfriend.curCharacter != 'pico-explosion-dead' && boyfriend.curCharacter != 'pico-blazin') {
@@ -110,24 +110,26 @@ class GameOverSubstate extends MusicBeatSubstate
 			if (!boyfriend.curCharacter.contains('-nene') && !boyfriend.curCharacter.contains('-pixel')) {
 				retryChar = 'pico-retry-button';
 	
-				var neneKill = new FlxSprite(boyfriend.x - 450, boyfriend.y - 250);
-				if (boyfriend.curCharacter.startsWith('pico-christmas')) {
-					neneKill.frames = Paths.getSparrowAtlas('characters/neneChristmas/neneChristmasKnife');
-					neneKill.animation.addByPrefix('idle', 'knife toss xmas', 24, false);
+				if (PlayState.instance.gf != null) {
+					var neneKill = new FlxSprite(boyfriend.x - 450, boyfriend.y - 250);
+					if (boyfriend.curCharacter.startsWith('pico-christmas')) {
+						neneKill.frames = Paths.getSparrowAtlas('characters/neneChristmas/neneChristmasKnife');
+						neneKill.animation.addByPrefix('idle', 'knife toss xmas', 24, false);
+					}
+					else {
+						neneKill.frames = Paths.getSparrowAtlas('characters/NeneKnifeToss');
+						neneKill.animation.addByPrefix('idle', 'knife toss', 24, false);
+					}
+					neneKill.animation.finishCallback = _ -> {
+						FlxTween.tween(neneKill, {alpha: 0}, 0.5, {ease: FlxEase.quadOut});
+					};
+					neneKill.animation.play('idle');
+					neneKill.setPosition(
+						PlayState.instance.gf.getScreenPosition().x + PlayState.instance.gf.positionArray[0],
+						PlayState.instance.gf.getScreenPosition().y + PlayState.instance.gf.positionArray[1]
+					);
+					add(neneKill);
 				}
-				else {
-					neneKill.frames = Paths.getSparrowAtlas('characters/NeneKnifeToss');
-					neneKill.animation.addByPrefix('idle', 'knife toss', 24, false);
-				}
-				neneKill.animation.finishCallback = _ -> {
-					FlxTween.tween(neneKill, {alpha: 0}, 0.5, {ease: FlxEase.quadOut});
-				};
-				neneKill.animation.play('idle');
-				neneKill.setPosition(
-					PlayState.instance.gf.getScreenPosition().x + PlayState.instance.gf.positionArray[0],
-					PlayState.instance.gf.getScreenPosition().y + PlayState.instance.gf.positionArray[1]
-				);
-				add(neneKill);
 			}
 
 			if (boyfriend.curCharacter == 'pico-pixel-dead') {
@@ -135,21 +137,23 @@ class GameOverSubstate extends MusicBeatSubstate
 				loopSoundName = 'gameOver-pixel-pico';
 				endSoundName = 'gameOverEnd-pixel-pico';
 
-				var neneKill = new FlxSprite(boyfriend.x - 450, boyfriend.y - 250);
-				neneKill.frames = Paths.getSparrowAtlas('characters/nenePixelKnifeToss');
-				neneKill.animation.addByPrefix('idle', 'knifetosscolor', 24, false);
-				neneKill.animation.finishCallback = _ -> {
-					FlxTween.tween(neneKill, {alpha: 0}, 0.5, {ease: FlxEase.quadOut});
-				};
-				neneKill.animation.play('idle');
-				neneKill.setPosition(
-					PlayState.instance.gf.getScreenPosition().x + PlayState.instance.gf.positionArray[0] - 100,
-					PlayState.instance.gf.getScreenPosition().y + PlayState.instance.gf.positionArray[1] - 200
-				);
-				neneKill.antialiasing = false;
-				neneKill.scale.set(6, 6);
-				neneKill.updateHitbox();
-				add(neneKill);
+				if (PlayState.instance.gf != null) {
+					var neneKill = new FlxSprite(boyfriend.x - 450, boyfriend.y - 250);
+					neneKill.frames = Paths.getSparrowAtlas('characters/nenePixelKnifeToss');
+					neneKill.animation.addByPrefix('idle', 'knifetosscolor', 24, false);
+					neneKill.animation.finishCallback = _ -> {
+						FlxTween.tween(neneKill, {alpha: 0}, 0.5, {ease: FlxEase.quadOut});
+					};
+					neneKill.animation.play('idle');
+					neneKill.setPosition(
+						PlayState.instance.gf.getScreenPosition().x + PlayState.instance.gf.positionArray[0] - 100,
+						PlayState.instance.gf.getScreenPosition().y + PlayState.instance.gf.positionArray[1] - 200
+					);
+					neneKill.antialiasing = false;
+					neneKill.scale.set(6, 6);
+					neneKill.updateHitbox();
+					add(neneKill);
+				}
 			}
 		}
 

@@ -124,7 +124,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 
 	function registerMessages() {
 		if (GameClient.getPlayerSelf() == null) {
-			GameClient.leaveRoom('Self not in the room.');
+			GameClient.leaveRoom('Self not in the room (registerMessages).');
 			return;
 		}
 
@@ -181,8 +181,13 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 					if (value) {
 						var sond = FlxG.sound.play(Paths.sound('confirmMenu'), 0.5);
 						sond.pitch = 1.5;
+
+						final lobbyChar = characters.get(sid);
+						if (lobbyChar == null)
+							return;
+						lobbyChar.character.playAnim('ready', true);
 					}
-					else {
+					else if (!GameClient.room.state.isStarted) {
 						var sond = FlxG.sound.play(Paths.sound('cancelMenu'));
 						sond.pitch = 1.5;
 					}
@@ -298,8 +303,10 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 	override function create() {
 		super.create();
 
+		#if windows
 		if (!Lib.application.window.resizable)
 			Lib.application.window.resizable = true;
+		#end
 
 		#if DISCORD_ALLOWED
 		DiscordClient.changePresence("In the Lobby", null, null, false);
@@ -589,12 +596,26 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 
 	var updateTimer = 1.0;
 
-	override function update(elapsed:Float) {
+    override function update(elapsed:Float) {
+		if (GameClient.getPlayerSelf() == null) {
+			if (FlxG.keys.justPressed.ESCAPE) {
+				GameClient.leaveRoom('Self not in the room (update).');
+			}
+			return;
+		}
+
 		super.update(elapsed);
 
 		#if TOUCH_CONTROLS
 		mobileManager.mobilePad.getButton('buttonLeft').visible = mobileManager.mobilePad.getButton('buttonRight').visible = mobileManager.mobilePad.getButton('buttonUp').visible = mobileManager.mobilePad.getButton('buttonDown').visible = mobileManager.mobilePad.getButton('buttonT').visible = mobileManager.mobilePad.getButton('buttonM').visible = mobileButtonPressed('Y');
 		#end
+
+		if (GameClient.getPlayerSelf() == null) {
+			if (FlxG.keys.justPressed.ESCAPE) {
+				GameClient.leaveRoom('Self not in the room (update).');
+			}
+			return;
+		}
 
 		if (FlxG.keys.justPressed.F11) {
 			GameClient.reconnect();
@@ -607,10 +628,6 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 			lmLoad();
 		}
 		#end
-		
-		if (GameClient.getPlayerSelf() == null) {
-			return;
-		}
 
 		if (lastFocused != (chatBox.focused && chatBox.typeText.text.length > 0)) {
 			if (!lastFocused) // is now typing
@@ -1070,21 +1087,26 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 	static function playMusic(value:Bool) {
 		FreeplayState.destroyFreeplayVocals();
 		if (value) {
-			Mods.currentModDirectory = GameClient.room.state.modDir;
-			Difficulty.list = CoolUtil.asta(GameClient.room.state.diffList);
-			PlayState.loadSong(GameClient.room.state.song, GameClient.room.state.folder);
+			try {
+				Mods.currentModDirectory = GameClient.room.state.modDir;
+				Difficulty.list = CoolUtil.asta(GameClient.room.state.diffList);
+				PlayState.loadSong(GameClient.room.state.song, GameClient.room.state.folder);
 
-			var diff = Difficulty.getString(GameClient.room.state.diff);
-			var trackSuffix = diff == "Erect" || diff == "Nightmare" ? "-erect" : "";
+				var diff = Difficulty.getString(GameClient.room.state.diff);
+				var trackSuffix = diff == "Erect" || diff == "Nightmare" ? "-erect" : "";
 
-			FlxG.sound.playMusic(Paths.inst(PlayState.SONG.song, trackSuffix), 0.5);
-			Conductor.mapBPMChanges(PlayState.SONG);
-			Conductor.bpm = PlayState.SONG.bpm;
+				FlxG.sound.playMusic(Paths.inst(PlayState.SONG.song, trackSuffix), 0.5);
+				Conductor.mapBPMChanges(PlayState.SONG);
+				Conductor.bpm = PlayState.SONG.bpm;
+				return;
+			}
+			catch (exc) {
+				trace(exc);
+			}
 		}
-		else {
-			states.TitleState.playFreakyMusic(0.5);
-			Conductor.bpm = 102;
-		}
+		
+		states.TitleState.playFreakyMusic(0.5);
+		Conductor.bpm = 102;
 	}
 
 	public function getCharacterSelf() {
@@ -1230,6 +1252,9 @@ class LobbyCharacter extends FlxTypedGroup<FlxSprite> {
 	}
 
 	public function danceLogic(?curBeat:Null<Int>) {
+		if (player.isReady)
+			return;
+		
 		if (character != null && character.animation.curAnim != null) {
 			if (curBeat != null) {
 				if (curBeat % character.danceEveryNumBeats == 0 && !character.animation.curAnim.name.startsWith('sing'))

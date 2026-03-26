@@ -129,8 +129,13 @@ class ChatBox extends FlxTypedSpriteGroup<FlxSprite> {
 		var invalidCount:Float = 0;
 		for (mod in Mods.getModDirectories()) {
 			var url = OnlineMods.getModURL(mod);
-			if (url == null || !(url.startsWith('https://') || url.startsWith('http://')))
+			if (OnlineMods.checkInvalidURL(url))
 				invalidCount++;
+
+			if (StringTools.startsWith(url, "https://drive.google.com/drive/folders/")) {
+				addMessage("Mod Issue for: " + mod + ": Can't download GDrive folders!");
+				return;
+			}
 		}
 
 		if (invalidCount > 0) {
@@ -172,6 +177,8 @@ class ChatBox extends FlxTypedSpriteGroup<FlxSprite> {
 		focused = false; // initial update
 
 		y = FlxG.height - height;
+		
+		update(0);
     }
 
 	override function destroy() {

@@ -209,7 +209,11 @@ class OnlineOptionsState extends MusicBeatState {
 							}
 						}));
 					}
-				}));
+				}
+				catch (exc) {
+					Alert.alert("Couldn't register!", ShitUtil.prettyError(exc));
+				}
+			}));
 			registerOption.y = section.y + 70;
 			registerOption.screenCenter(X);
 			registerOption.ID = i++;
@@ -220,6 +224,7 @@ class OnlineOptionsState extends MusicBeatState {
 			var loginOption:InputOption;
 			items.add(loginOption = new InputOption("Login to the Network",
 				"Input your email address here and wait for your One-Time Login Code!", ["me@example.org"], (mail, _) -> {
+				try {
 					if (FunkinNetwork.requestLogin(mail)) {
 						openSubState(new VerifyCodeSubstate(code -> {
 							if (FunkinNetwork.requestLogin(mail, code)) {
@@ -228,7 +233,11 @@ class OnlineOptionsState extends MusicBeatState {
 							}
 						}));
 					}
-				}));
+				}
+				catch (exc) {
+					Alert.alert("Couldn't login!", ShitUtil.prettyError(exc));
+				}
+			}));
 			loginOption.y = registerOption.y + registerOption.height + 50;
 			loginOption.screenCenter(X);
 			loginOption.ID = i++;

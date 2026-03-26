@@ -822,7 +822,7 @@ class FlxSprite extends FlxObject
 		if (dirty) // rarely
 			calcFrame(useFramePixels);
 
-		for (camera in cameras)
+		for (camera in getCamerasLegacy())
 		{
 			if (!camera.visible || !camera.exists || !isOnScreen(camera))
 				continue;
@@ -1289,7 +1289,7 @@ class FlxSprite extends FlxObject
 	{
 		if (point == null)
 			point = FlxPoint.get();
-		return point.set(x + frameWidth * 0.5, y + frameHeight * 0.5);
+		return point.set(x + frameWidth * 0.5 * scale.x, y + frameHeight * 0.5 * scale.y);
 	}
 
 	/**

@@ -66,7 +66,7 @@ class Main extends Sprite
 	public static var updateVersion:String = '';
 	public static var repoHost:String = '';
 
-	public static var view3D:online.away.View3DHandler;
+	// public static var view3D:online.away.View3DHandler;
 
 	// You can pretty much ignore everything from here on - your code should go in your states.
 
@@ -87,13 +87,13 @@ class Main extends Sprite
 		}
 		#end
 		
-		Lib.current.addChild(view3D = new online.away.View3DHandler());
+		// Lib.current.addChild(view3D = new online.away.View3DHandler());
 		Lib.current.addChild(new online.gui.Alert());
 		Lib.current.addChild(new online.gui.LoadingScreen());
 		
 		var daMain = new Main();
 		Lib.current.addChild(daMain);
-		Lib.current.setChildIndex(daMain, Lib.current.getChildIndex(view3D) + 1);
+		Lib.current.setChildIndex(daMain, 0);
 		Lib.current.addChild(new online.gui.sidebar.SideUI());
 	}
 
@@ -458,7 +458,7 @@ class Main extends Sprite
 			daError += "\n" + cast(exc, Exception).stack.toString() + "\n";
 		alertMsg += daError;
 		alertMsg += "\n\nCommit: " + GIT_COMMIT + "\n";
-		alertMsg += "\n\nVersion: " + PSYCH_ONLINE_VERSION + (TitleState.mustUpdate ? ' (OUTDATED)' : '') + "\n";
+		alertMsg += "Version: " + PSYCH_ONLINE_VERSION + (TitleState.mustUpdate ? ' (OUTDATED)' : '') + "\n";
 
 		Sys.println(alertMsg);
 

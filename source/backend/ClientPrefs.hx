@@ -142,6 +142,7 @@ import states.TitleState;
 	public var camShakes:Bool = true;
 	public var camAngles:Bool = true;
 	public var camMovement:Bool = true;
+	public var favSkins:Array<String> = []; //format: 'charactername-originfolder'
 
 	public function new()
 	{
@@ -557,7 +558,11 @@ class ClientPrefs {
 			for (name => value in savedMap)
 				data.gameplaySettings.set(name, value);
 		}
-		
+
+		//init possibly null data files
+		data.favSongs ??= [];
+		data.hiddenSongs ??= [];
+	
 		// flixel automatically saves your volume!
 		if(FlxG.save.data.volume != null)
 			FlxG.sound.volume = FlxG.save.data.volume;

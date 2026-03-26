@@ -381,7 +381,7 @@ class FlxGraphic implements IFlxDestroyable
 	var _useCount(get, set):Int;
 	inline function get__useCount() return useCount;
 	inline function set__useCount(value:Int) return useCount = value;
-	
+
 	function set_useCount(Value:Int):Int
 	{
 		/*
@@ -483,7 +483,7 @@ class FlxGraphic implements IFlxDestroyable
 		key = null;
 		assetsKey = null;
 		assetsClass = null;
-		imageFrame = null; // no need to dispose _imageFrame since it exists in imageFrames
+		imageFrame = FlxDestroyUtil.destroy(imageFrame);
 
 		if (frameCollections == null) // no need to destroy frame collections if it's already null
 			return;
@@ -508,8 +508,11 @@ class FlxGraphic implements IFlxDestroyable
 	{
 		if (collection.type != null)
 		{
-			var collections:Array<Dynamic> = getFramesCollections(collection.type);
-			collections.push(collection);
+			final collections = getFramesCollections(collection.type);
+			if (collections.contains(collection))
+				FlxG.log.warn('Attempting to add already added collection');
+			else
+				collections.push(collection);
 		}
 	}
 
@@ -609,7 +612,7 @@ class FlxGraphic implements IFlxDestroyable
 	function get_imageFrame():FlxImageFrame
 	{
 		if (imageFrame == null)
-			imageFrame = FlxImageFrame.fromRectangle(this, FlxRect.get(0, 0, bitmap.width, bitmap.height));
+			imageFrame = FlxImageFrame.fromRectangle(this);
 
 		return imageFrame;
 	}

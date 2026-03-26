@@ -1,5 +1,7 @@
 package states;
 
+import online.mods.OnlineMods;
+import substates.PromptSubState;
 import online.network.FunkinNetwork;
 import objects.Note;
 import online.util.ShitUtil;
@@ -38,6 +40,8 @@ import backend.Highscore;
 import backend.Song;
 import openfl.media.Sound;
 import flixel.system.FlxAssets.FlxGraphicAsset;
+import openfl.display.BitmapData;
+import openfl.utils.Future;
 
 import lime.utils.Assets;
 import openfl.utils.Assets as OpenFlAssets;
@@ -56,7 +60,7 @@ class FreeplayState extends MusicBeatState
 {
 	public static var instance:FreeplayState;
 	public var songs:Array<SongMetadata> = [];
-	public var songsIcons:Array<HealthIcon> = [];
+	public var songsIcons:Map<Int, HealthIcon> = new Map();
 
 	var selector:FlxText;
 	public static var curSelected:Int = 0; 
@@ -90,7 +94,7 @@ class FreeplayState extends MusicBeatState
 	private var curPlaying:Bool = false;
 
 	private var initSongs:Array<SongMetadata> = [];
-	private var initSongIcons:Array<HealthIcon> = [];
+	// private var initSongIcons:Array<HealthIcon> = [];
 
 	public static final GROUPS:Array<String> = ['Default', 'Alphabetically', 'Modpack', 'Character Mix'];
 
@@ -381,16 +385,16 @@ class FreeplayState extends MusicBeatState
 			// songText.visible = songText.active = songText.isMenuItem = false;
 
 			Mods.currentModDirectory = initSongs[i].folder;
-			var icon = ClientPrefs.data.disableFreeplayIcons ? null : new HealthIcon(initSongs[i].songCharacter);
-			if (icon != null) {
-				// icon.sprTracker = cast(songText);
-				// icon.visible = icon.active = false;
-				icon.scrollFactor.set(1, 1);
-			}
+			// var icon = ClientPrefs.data.disableFreeplayIcons ? null : new HealthIcon(initSongs[i].songCharacter);
+			// if (icon != null) {
+			// 	// icon.sprTracker = cast(songText);
+			// 	// icon.visible = icon.active = false;
+			// 	icon.scrollFactor.set(1, 1);
+			// }
 			if (!modList.contains(Mods.currentModDirectory)) {
 				modList.push(Mods.currentModDirectory);
 			}
-			initSongIcons.push(icon);
+			// initSongIcons.push(icon);
 		}
 		trace(haxe.Timer.stamp() - stamp);
 		WeekData.setDirectoryFromWeek();
@@ -863,8 +867,15 @@ class FreeplayState extends MusicBeatState
 	var holdTime:Float = 0;
 	var doSongReset:Bool = false;
 	var resetTotalHeld:Float = 0;
+	var futureIcon:Future<BitmapData> = null;
+	var futureIndex:Int = -1;
+	var futureQueue:Array<Int> = [];
+	var futureIconPath:String = null;
+
 	override function update(elapsed:Float)
 	{
+		super.update(elapsed);
+
 		Conductor.songPosition = FlxG.sound.music.time;
 
 		for (v in [vocals, opponentVocals]) {
@@ -911,7 +922,7 @@ class FreeplayState extends MusicBeatState
 
 		if ((chatBox != null && chatBox.focused) || searchInputWait || transToPlayState) {
 			updateTexts(elapsed);
-			super.update(elapsed);
+			// super.update(elapsed);
 			return;
 		}
 
@@ -1053,22 +1064,24 @@ class FreeplayState extends MusicBeatState
 						search();
 						updateGroupTitle();
 						return true;
-					}, (i, leText) -> {
+					});
+					selState.iconCallback = (i) -> {
 						if (searchGroup == MIX) {
 							Mods.currentModDirectory = charsWeeksLoaded.get(searchGroupVList[i]);
 							var charaData:CharacterFile = Character.getCharacterFile(searchGroupVList[i]);
 							var iconName = charaData?.healthicon;
 							if (iconName != null) {
-								var icon = new HealthIcon(iconName, false);
-								icon.sprTracker = leText;
-								icon.scrollFactor.set(1, 1);
+								final path = HealthIcon.findIconPath(iconName);
 								Mods.loadTopMod();
-								return icon;
+								return {
+									path: path,
+									mod: charsWeeksLoaded.get(searchGroupVList[i])
+								};
 							}
-							Mods.loadTopMod();
 						}
+						Mods.loadTopMod();
 						return null;
-					});
+					};
 					selState.groups = FreeplayState.GROUPS;
 					selState.curGroup = FreeplayState.GROUPS.indexOf(ClientPrefs.data.groupSongsBy);
 					selState.groupCallback = i -> {
@@ -1163,36 +1176,53 @@ class FreeplayState extends MusicBeatState
 							var songLowercase:String = Paths.formatToSongPath(getSongName());
 							var poop:String = Highscore.formatSong(songLowercase, curDifficulty);
 
-							persistentUpdate = false;
 							updateMod();
 							trace('Song mod directory: "${Mods.currentModDirectory}"');
-							try {
-								final data:Array<Dynamic> = [
-									songLowercase,
-									poop,
-									curDifficulty,
-									Md5.encode(Song.loadRawSong(poop, songLowercase)),
-									Mods.currentModDirectory,
-									online.mods.OnlineMods.getModURL(Mods.currentModDirectory),
-									Difficulty.list
-								];
-								trace(data);
-								GameClient.send("setSong", data);
-							}
-							catch (e:Dynamic) {
-								trace('ERROR! $e');
+							final modUrl:String = online.mods.OnlineMods.getModURL(Mods.currentModDirectory);
 
-								var errorStr:String = e.toString();
-								if (errorStr.startsWith('[file_contents,assets/data/'))
-									errorStr = 'Missing file: ' + errorStr.substring(27, errorStr.length - 1); // Missing chart
-								missingText.text = 'ERROR WHILE LOADING CHART:\n$errorStr';
-								missingText.screenCenter(Y);
-								missingText.visible = true;
-								missingTextBG.visible = true;
-								FlxG.sound.play(Paths.sound('cancelMenu'));
+							persistentUpdate = false;
 
-								updateTexts(elapsed);
+							function sendSong() {
+								try {
+									final data:Array<Dynamic> = [
+										songLowercase,
+										poop,
+										curDifficulty,
+										Md5.encode(Song.loadRawSong(poop, songLowercase)),
+										Mods.currentModDirectory,
+										modUrl,
+										Difficulty.list
+									];
+									trace(data);
+									GameClient.send("setSong", data);
+								}
+								catch (e:Dynamic) {
+									trace('ERROR! $e');
+
+									var errorStr:String = e.toString();
+									if (errorStr.startsWith('[file_contents,assets/data/'))
+										errorStr = 'Missing file: ' + errorStr.substring(27, errorStr.length - 1); // Missing chart
+									missingText.text = 'ERROR WHILE LOADING CHART:\n$errorStr';
+									missingText.screenCenter(Y);
+									missingText.visible = true;
+									missingTextBG.visible = true;
+									FlxG.sound.play(Paths.sound('cancelMenu'));
+
+									updateTexts(elapsed);
+								}
 							}
+
+							if (Mods.currentModDirectory.length > 0 && OnlineMods.checkInvalidURL(modUrl))
+								openSubState(new PromptSubState('This mod doesn\'t have a valid URL!', 'Do you want to proceed?', onYes -> {
+									if (!onYes) {
+										persistentUpdate = true;
+										return;
+									}
+
+									sendSong();
+								}));
+							else
+								sendSong();
 						}
 						else {
 							enterSong();
@@ -1237,21 +1267,23 @@ class FreeplayState extends MusicBeatState
 						openSubState(new ResetScoreSubState(getSongName(), curDifficulty, songs[curSelected].songCharacter));
 						FlxG.sound.play(Paths.sound('scrollMenu'));
 					case 4:
-						if (selectedScore == -1) {
-							FlxG.openURL(FunkinNetwork.client.getURL("/song/" + 
-								StringTools.urlEncode(filterCharacters(PlayState.SONG.song)
-								+ "-"
-								+ filterCharacters(Difficulty.getString(curDifficulty))
-								+ "-"
-								+ filterCharacters(Md5.encode(PlayState.RAW_SONG)))
-								+ "?strum="
-								+ (ClientPrefs.getGameplaySetting('opponentplay') ? 1 : 2)
-								+ (Leaderboard.categories[curCategory] != null ? "&category=" + Leaderboard.categories[curCategory] : '')
-							));
-						}
-						else if (!GameClient.isConnected()) {
-							if (top != null && top[selectedScore] != null)
-								playReplay(Leaderboard.fetchReplay(top[selectedScore].id), top[selectedScore].id);
+						if (PlayState.SONG != null) {
+							if (selectedScore == -1) {
+								FlxG.openURL(FunkinNetwork.client.getURL("/song/" + 
+									StringTools.urlEncode(filterCharacters(PlayState.SONG.song)
+									+ "-"
+									+ filterCharacters(Difficulty.getString(curDifficulty))
+									+ "-"
+									+ filterCharacters(Md5.encode(PlayState.RAW_SONG)))
+									+ "?strum="
+									+ (ClientPrefs.getGameplaySetting('opponentplay') ? 1 : 2)
+									+ (Leaderboard.categories[curCategory] != null ? "&category=" + Leaderboard.categories[curCategory] : '')
+								));
+							}
+							else if (!GameClient.isConnected()) {
+								if (top != null && top[selectedScore] != null)
+									playReplay(Leaderboard.fetchReplay(top[selectedScore].id), top[selectedScore].id);
+							}
 						}
 				}
 			}
@@ -1344,6 +1376,34 @@ class FreeplayState extends MusicBeatState
 		}
 
 		updateTexts(elapsed);
+
+		if (futureIcon != null) {
+			if (futureIcon.isComplete || futureIcon.isError) {
+				if (!futureIcon.isError && futureIcon.value != null) {
+					var icon = new HealthIcon(null, false);
+					icon.loadIcon(Paths.bitmapToGraphic(futureIconPath, futureIcon.value));
+					icon.scrollFactor.set(1, 1);
+					songsIcons.set(futureIndex, icon);
+					changeSelection(0, false);
+				}
+				futureIcon = null;
+			}
+		}
+		else if (futureQueue.length > 0) {
+			futureIndex = futureQueue.shift();
+
+			if (!ClientPrefs.data.disableFreeplayIcons) {
+				if (songs[futureIndex] != null) {
+					var iconPath = 'icons/icon-face';
+					online.util.ShitUtil.tempSwitchMod(songs[futureIndex].folder, () -> {
+						iconPath = HealthIcon.findIconPath(songs[futureIndex].songCharacter);
+					});
+					futureIcon = Paths.asyncBitmap(iconPath, null, songs[futureIndex].folder);
+					futureIconPath = iconPath;
+				}
+			}
+		}
+
 		if (mobileButtonPressed('Z') || FlxG.keys.pressed.SHIFT && !selected) {
 			itemsCameraZoom = FlxMath.lerp(itemsCameraZoom, 0.65, elapsed * 10);
 			itemsCameraScrollX = FlxMath.lerp(itemsCameraScrollX, 150, elapsed * 10);
@@ -1357,7 +1417,6 @@ class FreeplayState extends MusicBeatState
 		itemsCamera.x = -itemsCameraScrollX;
 		if (selected)
 			leaderboardTimer += elapsed;
-		super.update(elapsed);
 	}
 
 	var itemsCameraZoom:Float = 1;
@@ -1786,7 +1845,7 @@ class FreeplayState extends MusicBeatState
 
 	function getRenderedIcon(songsIndex:Int) {
 		// return renderIcons.members[songsIndex - curSelected + centerOfRenders];
-		return songsIcons[songsIndex];
+		return songsIcons.get(songsIndex);
 	}
 
 	function changeSelection(change:Int = 0, playSound:Bool = true)
@@ -1875,10 +1934,13 @@ class FreeplayState extends MusicBeatState
 			renderSongs.add(obj);
 		}
 
+		futureQueue = [];
+
 		// var _debTxt = [];
 		for (i => obj in renderSongs.members) {
 			// _debTxt[i] = (cast (obj, Scrollable)).text;
-			var meta = songs[curSelected + i - centerOfRenders];
+			obj.ID = curSelected + i - centerOfRenders;
+			var meta = songs[obj.ID];
 
 			if (meta == null) {
 				obj.visible = false;
@@ -1900,10 +1962,14 @@ class FreeplayState extends MusicBeatState
 			songText.targetY = i - centerOfRenders + curSelected;
 			// songText.snapToPosition();
 
-			var songIcon = songsIcons[curSelected + i - centerOfRenders];
+			var songIcon = songsIcons.get(obj.ID);
 			if (songIcon != null) {
 				songIcon.sprTracker = cast(songText);
+				songIcon.snapToTracker();
 				renderIcons.add(songIcon);
+			}
+			else if (!songsIcons.exists(obj.ID) && futureIndex != obj.ID) {
+				futureQueue.push(obj.ID);
 			}
 
 			var isFavorited = ClientPrefs.data.favSongs.contains(meta.songName + '-' + meta.folder);
@@ -1966,6 +2032,12 @@ class FreeplayState extends MusicBeatState
 		}
 
 		updateSelectSelection();
+		
+		updateTexts(0);
+
+		for (heart in renderHearts) {
+			heart.update(0);
+		}
 	}
 
 	inline private function _updateSongLastDifficulty()
@@ -2236,7 +2308,7 @@ class FreeplayState extends MusicBeatState
 		// grpHearts.killMembers();
 		// _lastVisibles = [];
 		songs = [];
-		songsIcons = [];
+		songsIcons.clear();
 
 		updateOverCharts(searchGroup == MIX ? searchGroupVList[searchGroupValue] : (ClientPrefs.data.currentSkin != null ? ClientPrefs.data.currentSkin[0] : null));
 
@@ -2289,7 +2361,8 @@ class FreeplayState extends MusicBeatState
 				// 	arr[1].visible = arr[1].active = false;
 				// 	grpIcons.add(arr[1]); // icon
 				// }
-				songsIcons.push(initSongIcons[songI]);
+				// if (initSongIcons[songI] != null)
+				// 	songsIcons.push(initSongIcons[songI]);
 				songs.push(song);
 
 				// if (isFavorited) {
@@ -2326,10 +2399,10 @@ class FreeplayState extends MusicBeatState
 				return opHistory[opHistory.length - 1];
 			});
 
-			var gsi = 0;
-			songsIcons.sort(function(x:HealthIcon, y:HealthIcon):Int {
-				return opHistory[gsi++];
-			});
+			// var gsi = 0;
+			// songsIcons.sort(function(x:HealthIcon, y:HealthIcon):Int {
+			// 	return opHistory[gsi++];
+			// });
 
 			// var gsi = 0;
 			// grpSongs.sort(function(o:Int, x:FlxSprite, y:FlxSprite):Int {
@@ -2365,7 +2438,6 @@ class FreeplayState extends MusicBeatState
 		}
 
 		changeSelection();
-		updateTexts();
 	}
 	
 	var searchInputWait:Bool = false;

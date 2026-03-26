@@ -49,6 +49,10 @@ class OnlineMods {
 		File.saveContent(Paths.mods(mod + "/mod_url.txt"), url);
 	}
 
+	public static function checkInvalidURL(url:Null<String>) {
+		return url == null || !(url.startsWith('https://') || url.startsWith('http://'));
+	}
+
 	public static function downloadMod(url:String, manual:Bool, ?onSuccess:String->Void) {
 		if (!manual && ClientPrefs.data.disableAutoDownloads)
 			return;
@@ -445,22 +449,18 @@ class OnlineMods {
 				catch (exc) {}
 			});
 
-			FileUtils.readAndSave(Paths.mods(modName + "/weeks/auto_gen_week_" + modName + ".json"), text -> {
-				var data:WeekFile = WeekData.createWeekFile();
-				data.hideStoryMode = true;
-				data.difficulties = diffsToAdd.join(", ");
-				data.songs = [];
-
-				for (song in songsToAdd) {
-					data.songs.push([
-						song,
-						'bf',
-						[146, 113, 253]
-					]);
-				}
-
-				return Json.stringify(data);
-			});
+			var data:WeekFile = WeekData.createWeekFile();
+			data.hideStoryMode = true;
+			data.difficulties = diffsToAdd.join(", ");
+			data.songs = [];
+			for (song in songsToAdd) {
+				data.songs.push([
+					song,
+					'bf',
+					[146, 113, 253]
+				]);
+			}
+			File.saveContent(Paths.mods(modName + "/weeks/auto_gen_week_" + modName + ".json"), Json.stringify(data));
 		}
 
 		if (!FunkinFileSystem.exists(Paths.mods(modName + '/pack.json')))
