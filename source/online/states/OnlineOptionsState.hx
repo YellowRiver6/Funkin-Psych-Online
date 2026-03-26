@@ -179,6 +179,7 @@ class OnlineOptionsState extends MusicBeatState {
 			var registerOption:InputOption;
 			items.add(registerOption = new InputOption("Register to the Network",
 					"Join the Psych Online Network and submit your song replays\nto the leaderboards!", ["Username", "Email"], (text, input) -> {
+					try {
 					if (input == 0) {
 						registerOption.inputs[0].hasFocus = false;
 						registerOption.inputs[1].hasFocus = true;
