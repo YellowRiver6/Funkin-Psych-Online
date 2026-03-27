@@ -69,7 +69,7 @@ class TopPlayerSubstate extends MusicBeatSubstate {
 		topShit.clearRows();
 		topShit.selectRow(curSelected = (curSelected < 0 ? curSelected : 0));
 
-		categoryTxt.text = '< ${Leaderboard.categoryTitles[curCategory]} >';
+		categoryTxt.text = Language.getText('< ${Leaderboard.categoryTitles[curCategory]} >');
 		categoryTxt.screenCenter(X);
 
 		keysTxt.text = '< ${curKeys}k >';

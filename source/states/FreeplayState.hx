@@ -126,11 +126,11 @@ class FreeplayState extends MusicBeatState
 	var selectedScore(default, set):Int = -1;
 	function set_selectedScore(v) {
 		if (v == -1 && selectedItem == 4) {
-			infoText.text = "LEFT or RIGHT to Switch Time / ACCEPT to view this leaderboard in browser";
+			infoText.text = Language.getText("LEFT or RIGHT to Switch Time / ACCEPT to view this leaderboard in browser");
 			topCategory.alpha = 1;
 		}
 		else {
-			infoText.text = "LEFT or RIGHT to Flip Pages / ACCEPT to view Player's replay of this song";
+			infoText.text = Language.getText("LEFT or RIGHT to Flip Pages / ACCEPT to view Player's replay of this song");
 			topCategory.alpha = 0.6;
 		}
 
@@ -474,7 +474,7 @@ class FreeplayState extends MusicBeatState
 		topTitle.cameras = [itemsCamera];
 		add(topTitle);
 
-		topCategory.text = '< ${Leaderboard.categoryTitles[curCategory]} >';
+		topCategory.text = Language.getText('< ${Leaderboard.categoryTitles[curCategory]} >');
 		topCategory.setScale(0.4);
 		topCategory.visible = false;
 		topCategory.cameras = [itemsCamera];
@@ -1354,7 +1354,7 @@ class FreeplayState extends MusicBeatState
 						curCategory--;
 						if (curCategory < 0)
 							curCategory = Leaderboard.categories.length - 1;
-						topCategory.text = '< ${Leaderboard.categoryTitles[curCategory]} >';
+						topCategory.text = Language.getText('< ${Leaderboard.categoryTitles[curCategory]} >');
 					}
 					
 					leaderboardTimer = 0;
@@ -1367,7 +1367,7 @@ class FreeplayState extends MusicBeatState
 						curCategory++;
 						if (curCategory >= Leaderboard.categories.length)
 							curCategory = 0;
-						topCategory.text = '< ${Leaderboard.categoryTitles[curCategory]} >';
+						topCategory.text = Language.getText('< ${Leaderboard.categoryTitles[curCategory]} >');
 					}
 
 					leaderboardTimer = 0;
@@ -1619,7 +1619,7 @@ class FreeplayState extends MusicBeatState
 				topCategory.alpha = 0.6;
 				topLoading.alpha = 0.6;
 			case 1:
-				infoText.text = "ACCEPT to open Gameplay Modifers Menu";
+				infoText.text = Language.getText("ACCEPT to open Gameplay Modifers Menu");
 
 				itemsCamera.follow(modifiersSelect, null, 0.15);
 				itemsCamera.targetOffset.y += 200;
@@ -1633,7 +1633,7 @@ class FreeplayState extends MusicBeatState
 				topCategory.alpha = 0.6;
 				topLoading.alpha = 0.6;
 			case 2:
-				infoText.text = "ACCEPT to load a Replay data file";
+				infoText.text = Language.getText("ACCEPT to load a Replay data file");
 				
 				itemsCamera.follow(replaysSelect, null, 0.15);
 				itemsCamera.targetOffset.y += 200;
@@ -1647,7 +1647,7 @@ class FreeplayState extends MusicBeatState
 				topCategory.alpha = 0.6;
 				topLoading.alpha = 0.6;
 			case 3:
-				infoText.text = "ACCEPT to reset Score and Accuracy of this Song";
+				infoText.text = Language.getText("ACCEPT to reset Score and Accuracy of this Song");
 
 				itemsCamera.follow(resetSelect, null, 0.15);
 				itemsCamera.targetOffset.y += 200;
@@ -1661,7 +1661,7 @@ class FreeplayState extends MusicBeatState
 				topCategory.alpha = 0.6;
 				topLoading.alpha = 0.6;
 			case 4:
-				infoText.text = "LEFT or RIGHT to Flip Pages / ACCEPT to view Player's replay of this song";
+				infoText.text = Language.getText("LEFT or RIGHT to Flip Pages / ACCEPT to view Player's replay of this song");
 
 				itemsCamera.follow(topShit.background, null, 0.15);
 				itemsCamera.targetOffset.y -= 120 + topTitle.height;
@@ -1680,7 +1680,7 @@ class FreeplayState extends MusicBeatState
 		}
 
 		if (selected)
-			infoText.text += " / BACK to return to Songs";
+			infoText.text += Language.getText(" / BACK to return to Songs");
 
 		if (GameClient.isConnected()) {
 			replaysSelect.alpha -= 0.4;
