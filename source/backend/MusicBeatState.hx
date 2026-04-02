@@ -7,7 +7,9 @@ import flixel.FlxState;
 #if SCRIPTING_ALLOWED
 import funkin.backend.scripting.HScript;
 #end
+import funkin.backend.scripting.JScript;
 
+@:autoBuild(jaxe.JaxeOverride.build())
 class MusicBeatState extends FlxUIState
 {
 	public var variables:Map<String, Dynamic> = new Map<String, Dynamic>();
@@ -98,6 +100,9 @@ class MusicBeatState extends FlxUIState
 		#if SCRIPTING_ALLOWED
 		loadScript();
 		#end
+		var className = Type.getClassName(Type.getClass(this));
+		var scriptName = className.substr(className.lastIndexOf(".")+1);
+		var script = new JScript(Paths.modFolders('data/states/$scriptName.java'), this);
 
 		super.create();
 
