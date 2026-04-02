@@ -10,11 +10,13 @@ class JaxeOverride {
 		var newFields:Array<Field> = [];
 
 		for (field in fields) {
+			if (field.name.indexOf("__") == 0 || field.name == "hget" || field.name == "hset") continue; // Skip certain fields to get HScript Improved and Jaxe at the same time.
+
 			switch (field.kind) {
 				case FFun(f):
 					var name = field.name;
 
-					if (field.access.indexOf(AOverride) != -1) {
+					if (field.access.indexOf(AOverride) != -1 && field.access.indexOf(AInline) == -1 && field.access.indexOf(APrivate) == -1) {
 						var superName = "super_" + name;
 						var scriptedName = "scripted_" + name;
 						var args = f.args;
@@ -73,9 +75,9 @@ class JaxeOverride {
 							$i{scriptedName}($a{callArgs});
 						};
 					}
-					else if (field.access.indexOf(AStatic) == -1 && name != "new") {
+					else if (field.access.indexOf(AStatic) == -1 && field.access.indexOf(AInline) == -1 && name != "new") {
 						if (field.access.indexOf(ADynamic) == -1) field.access.push(ADynamic);
-						if (field.access.indexOf(APublic) == -1) field.access.push(APublic);
+						//if (field.access.indexOf(APublic) == -1) field.access.push(APublic);
 					}
 				default:
 			}
