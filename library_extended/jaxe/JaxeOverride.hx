@@ -74,6 +74,7 @@ class JaxeOverride {
 						}
 
 						var patchedBody = (f.expr != null) ? patchSuperCalls(f.expr) : macro {};
+						var parentHasSuperAnchor = hasFieldInParents(superName);
 
 						newFields.push({
 							name: superName,
@@ -81,7 +82,11 @@ class JaxeOverride {
 							kind: FFun({
 								args: args,
 								ret: f.ret,
-								expr: macro super.$name($a{callArgs})
+								expr: if (parentHasSuperAnchor) {
+									macro $i{superName}($a{callArgs});
+								} else {
+									macro super.$name($a{callArgs});
+								}
 							}),
 							pos: field.pos
 						});
