@@ -7,7 +7,8 @@ import haxe.macro.ExprTools;
 class JaxeOverride {
 	//ignore classes for preventing issues.
 	public static var ignoredClasses:Array<String> = [
-		"options.BaseOptionsMenu"
+		"options.BaseOptionsMenu",
+		"states.PlayState"
 	];
 
 	public static function build():Array<Field> {
