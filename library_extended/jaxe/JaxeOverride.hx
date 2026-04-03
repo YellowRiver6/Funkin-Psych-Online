@@ -5,9 +5,21 @@ import haxe.macro.Expr;
 import haxe.macro.ExprTools;
 
 class JaxeOverride {
+	//ignore classes for preventing issues.
+	public static var ignoredClasses:Array<String> = [
+		"options.BaseOptionsMenu"
+	];
+
 	public static function build():Array<Field> {
 		var fields = Context.getBuildFields();
 		var localClass = Context.getLocalClass().get();
+		var fullClassName = localClass.pack.join(".") + "." + localClass.name;
+
+		for (ignored in ignoredClasses) {
+			if (fullClassName == ignored || localClass.name == ignored) {
+				return fields;
+			}
+		}
 		var newFields:Array<Field> = [];
 
 		// Check if any parent function in the class.
