@@ -8,7 +8,8 @@ class JaxeOverride {
 	//ignore classes for preventing issues.
 	public static var ignoredClasses:Array<String> = [
 		"options.BaseOptionsMenu",
-		"states.PlayState"
+		"states.PlayState",
+		"states.FreeplayState"
 	];
 
 	public static function build():Array<Field> {
