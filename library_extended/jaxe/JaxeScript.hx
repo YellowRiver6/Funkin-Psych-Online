@@ -41,28 +41,25 @@ class JaxeScript {
 	}
 
 	/**
-	 * Runs the script. If the script contains a class matching the filename, 
-	 * it creates an instance of it and returns the native Haxe object.
+	 * Runs the script. Optional arguments will be passed to the constructor.
 	 */
-	public function run():Dynamic {
+	public function run(args:Array<Dynamic> = null):Dynamic {
+		if (args == null) args = [];
 		try {
 			ast = parser.parseString(sourceCode, scriptName);
 			interp.execute(ast);
 
 			var targetClassName = scriptName;
-			if (targetClassName.indexOf(".") != -1) {
-				targetClassName = targetClassName.split(".")[0];
-			}
+			if (targetClassName.indexOf("/") != -1) targetClassName = targetClassName.split("/").pop();
+			if (targetClassName.indexOf("\\") != -1) targetClassName = targetClassName.split("\\").pop();
+			if (targetClassName.indexOf(".") != -1) targetClassName = targetClassName.split(".")[0];
 
 			if (interp.scriptClasses.exists(targetClassName)) {
-				// Instantiate the class and return the native object
-				var mainInstance = interp.expr(ENew(targetClassName, [], []));
-				interp.extendedObject = mainInstance; 
-				return mainInstance; 
+				return interp.instantiateClass(targetClassName, args);
 			} else {
-				if (interp.locals.exists(targetClassName)) interp.call(targetClassName, []);
-				else if (interp.locals.exists("new")) interp.call("new", []);
-				else if (interp.locals.exists("main")) interp.call("main", []);
+				if (interp.locals.exists(targetClassName)) interp.call(targetClassName, args);
+				else if (interp.locals.exists("new")) interp.call("new", args);
+				else if (interp.locals.exists("main")) interp.call("main", args);
 				return this;
 			}
 		} catch (e:Dynamic) {
@@ -73,24 +70,16 @@ class JaxeScript {
 
 	#if sys
 	/**
-	 * Reads a file, parses the script, instantiates its main class, and returns it.
-	 * Allows seamless switching to scripted classes directly from Haxe.
+	 * Allows seamless switching to scripted classes directly from Haxe and passes arguments.
 	 */
-	public static function loadClass(filePath:String):Dynamic {
+	public static function loadClass(filePath:String, args:Array<Dynamic> = null):Dynamic {
 		if (!sys.FileSystem.exists(filePath)) {
 			handleError('Script file not found: $filePath', 0, 0, null, filePath);
 			return null;
 		}
-		
 		var content = sys.io.File.getContent(filePath);
-		var fileName = filePath;
-		
-		// Extract just the filename (e.g. "MyGameMenu.java" from "assets/scripts/MyGameMenu.java")
-		if (fileName.indexOf("/") != -1) fileName = fileName.split("/").pop();
-		if (fileName.indexOf("\\") != -1) fileName = fileName.split("\\").pop();
-		
-		var script = new JaxeScript(content, fileName);
-		return script.run();
+		var script = new JaxeScript(content, filePath);
+		return script.run(args);
 	}
 	#end
 

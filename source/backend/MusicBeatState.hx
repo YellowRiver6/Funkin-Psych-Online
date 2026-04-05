@@ -10,6 +10,7 @@ import funkin.backend.scripting.HScript;
 import funkin.backend.scripting.JScript;
 
 @:build(jaxe.JaxeOverride.build())
+@:autoBuild(jaxe.JaxeOverride.build())
 class MusicBeatState extends FlxUIState
 {
 	public var variables:Map<String, Dynamic> = new Map<String, Dynamic>();

@@ -20,6 +20,7 @@ enum JaxeExpr {
 	ETry(tryBlock:JaxeExpr, catchVar:String, catchBlock:JaxeExpr);
 	EBreak;
 	EContinue;
+	EReturn(expr:JaxeExpr);
 	EArrayDecl(exprs:Array<JaxeExpr>);
 	EArrayAccess(target:JaxeExpr, index:JaxeExpr);
 	ENew(cls:String, typeParams:Array<String>, args:Array<JaxeExpr>);

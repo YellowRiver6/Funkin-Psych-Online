@@ -1,7 +1,6 @@
 package jaxe;
 
 import jaxe.JaxeExpr;
-import jaxe.JaxeScript;
 import Std;
 
 class JaxeParser {
@@ -223,13 +222,19 @@ class JaxeParser {
 				JaxeScript.handleError("Expected 'catch' after 'try'", lastLine, lastCol, null, "Parser");
 				return null;
 			}
-			consume("(");
-			readTypePath();
-			var catchVar = readIdent();
-			consume(")");
+			consume("("); readTypePath(); var catchVar = readIdent(); consume(")");
 			return ETry(tryBlock, catchVar, parseFullExpr());
 		} else if (id == "break") { consume(";"); return EBreak;
 		} else if (id == "continue") { consume(";"); return EContinue;
+
+		// Return Node parsing
+		} else if (id == "return") {
+			var retExpr = null;
+			skipWhitespace();
+			if (peek() != ";") retExpr = parseExpr();
+			if (peek() == ";") consume(";");
+			return EReturn(retExpr);
+
 		} else if (id == "package") {
 			var pack = readIdent(); while (peek() == ".") { consume("."); pack += "." + readIdent(); }
 			consume(";"); return EPackage(pack);
