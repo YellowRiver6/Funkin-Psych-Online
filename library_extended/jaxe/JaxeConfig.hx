@@ -12,6 +12,6 @@ class JaxeConfig {
 	
 	// Prevent users from extending specific security/core classes
 	public static var DISALLOW_OVERRIDE_CLASSES:Array<String> = [
-		// "flixel.FlxGame" // Example
+		"states.PlayState"
 	];
 }
