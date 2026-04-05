@@ -281,7 +281,7 @@ class MusicBeatSubstate extends FlxSubState
 		return defaultVal;
 	}
 
-	public function event<T:CancellableEvent>(name:String, event:T):T {
+	public function event(name:String, event:CancellableEvent):CancellableEvent {
 		#if SCRIPTING_ALLOWED
 		if(stateScripts != null)
 			stateScripts.call(name, [event]);
