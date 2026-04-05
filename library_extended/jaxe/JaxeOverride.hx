@@ -6,6 +6,8 @@ import haxe.macro.ExprTools;
 import haxe.macro.ComplexTypeTools;
 import jaxe.JaxeConfig;
 
+using StringTools;
+
 class JaxeOverride {
 	public static function build():Array<Field> {
 		var fields = Context.getBuildFields();
@@ -13,7 +15,7 @@ class JaxeOverride {
 		var fullClassName = localClass.pack.join(".") + "." + localClass.name;
 
 		for (ignored in JaxeConfig.DISALLOW_OVERRIDE_CLASSES) {
-			if (fullClassName == ignored || localClass.name == ignored) return fields;
+			if (fullClassName.startsWith(ignored) || localClass.name.startsWith(ignored)) return fields;
 		}
 
 		var newFields:Array<Field> = [];
