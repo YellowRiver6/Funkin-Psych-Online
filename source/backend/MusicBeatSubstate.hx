@@ -7,7 +7,6 @@ import funkin.backend.scripting.HScript;
 #end
 import funkin.backend.scripting.JScript;
 
-@:build(jaxe.JaxeOverride.build())
 @:autoBuild(jaxe.JaxeOverride.build())
 class MusicBeatSubstate extends FlxSubState
 {
