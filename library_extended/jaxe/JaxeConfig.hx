@@ -14,6 +14,7 @@ class JaxeConfig {
 	public static var DISALLOW_OVERRIDE_CLASSES:Array<String> = [
 		"states.PlayState",
 		"online",
+		"online.states.DownloaderState",
 		"states.MainMenuState", //this has lumod too
 	];
 }
