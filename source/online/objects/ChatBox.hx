@@ -278,9 +278,7 @@ class ChatBox extends FlxTypedSpriteGroup<FlxSprite> {
 
 		alpha = targetAlpha;
 
-		try {
-			typeText.hasFocus = focused;
-		} catch(e:Dynamic) { trace(e); }
+		typeText.hasFocus = focused;
     }
 
 	function parseCommand(text:String) {

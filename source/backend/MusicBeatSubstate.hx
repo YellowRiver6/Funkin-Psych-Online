@@ -5,9 +5,7 @@ import flixel.FlxSubState;
 #if SCRIPTING_ALLOWED
 import funkin.backend.scripting.HScript;
 #end
-import funkin.backend.scripting.JScript;
 
-@:autoBuild(jaxe.JaxeOverride.build())
 class MusicBeatSubstate extends FlxSubState
 {
 	public static var instance:MusicBeatSubstate;
@@ -230,9 +228,6 @@ class MusicBeatSubstate extends FlxSubState
 	{
 		add(mobileManager);
 		loadScript();
-		var className = Type.getClassName(Type.getClass(this));
-		var scriptName = className.substr(className.lastIndexOf(".")+1);
-		var script = new JScript(Paths.modFolders('data/substates/$scriptName.java'), this);
 		super.create();
 	}
 	#end
