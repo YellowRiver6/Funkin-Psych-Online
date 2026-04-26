@@ -653,8 +653,17 @@ class PlayState extends MusicBeatState
 			case 2:
 				tag = "gf";
 		}
+		var charPosName:String = "penci zorno";
+		switch(type) {
+			case 0: charPosName = "dad";
+			case 1: charPosName = "boyfriend";
+			case 2: charPosName = "girlfriend";
+		}
 
-		char = new Character(startX, startY, charName, playsAsBF() == isRight, false);
+		if (stage != null)
+			char = new Character(startX, startY, charName, stage.isCharFlipped(charPosName, type == 1), false);
+		else
+			char = new Character(startX, startY, charName, playsAsBF() == isRight, false);
 
 		if (char.loadFailed) {
 			for (suffix in (isRight ? online.states.SkinsState.RIGHT_SUFFIX : online.states.SkinsState.LEFT_SUFFIX)) {
@@ -699,16 +708,19 @@ class PlayState extends MusicBeatState
 			char.flipX = !char.flipX;
 		}
 
-		startCharacterPos(char, !isRight);
+		if (stage == null) startCharacterPos(char, !isRight);
 		switch (tag) {
 			case "dad":
-				if (char.codenameOffsets) add(char);
+				trace("added dad and stage is " + (stage != null ? "found" : "not found"));
+				if (stage != null) add(char);
 				else dadGroup.add(char);
 			case "bf":
-				if (char.codenameOffsets) add(char);
+				trace("added bf and stage is " + (stage != null ? "found" : "not found"));
+				if (stage != null) add(char);
 				else boyfriendGroup.add(char);
 			case "gf":
-				if (char.codenameOffsets) add(char);
+				trace("added gf and stage is " + (stage != null ? "found" : "not found"));
+				if (stage != null) add(char);
 				else gfGroup.add(char);
 			default:
 				add(char);
@@ -841,7 +853,6 @@ class PlayState extends MusicBeatState
 		Paths.clearStoredMemory();
 
 		//Load Mobile Shit (Makes Testing The Hitboxes Easier)
-		#if TOUCH_CONTROLS
 		MobileConfig.init('MobileControls', CoolUtil.getSavePath(), 'assets/mobile/',
 			[
 				['MobilePad/DPadModes', ButtonModes.DPAD],
@@ -849,7 +860,6 @@ class PlayState extends MusicBeatState
 				['Hitbox/HitboxModes', ButtonModes.HITBOX]
 			]
 		);
-		#end
 
 		// var gameCam:FlxCamera = FlxG.camera;
 		camGame = new FlxCamera();
@@ -1336,7 +1346,7 @@ class PlayState extends MusicBeatState
 			if (!playsAsBF()) {
 				char.flipX = !char.flipX;
 			}
-			startCharacterPos(char, !isRight);
+			if (stage == null) startCharacterPos(char, !isRight);
 			(isRight ? boyfriendGroup : dadGroup).add(char);
 			startCharacterScripts(char.curCharacter, sid, isRight);
 
@@ -1426,11 +1436,11 @@ class PlayState extends MusicBeatState
 					else */ gfGroup.add(gf.speaker);
 
 					if (gf.speaker is Character) {
-						startCharacterPos(cast gf.speaker);
+						if (stage == null) startCharacterPos(cast gf.speaker);
 						if (stage != null) stage.applyCharStuff(cast gf.speaker, "girlfriend", 0);
 					}
 				}
-				startCharacterPos(gf);
+				if (stage == null) startCharacterPos(gf);
 				if (stage != null) stage.applyCharStuff(gf, "girlfriend", 0);
 
 				//looks fuckin ugly, why is it there from old fnf vanilla to psych lolol
@@ -1510,8 +1520,13 @@ class PlayState extends MusicBeatState
 							case 0: chars.push(dad);
 							case 1: chars.push(boyfriend);
 							case 2: chars.push(gf);
-						}
+						}						
 						var strum = createStrum(strumData.cpu, chars, strumData.visible);
+						if (stage != null) {
+							stage.applyCharStuff(dad, "dad", 0);
+							stage.applyCharStuff(boyfriend, "boyfriend", 0);
+							stage.applyCharStuff(gf, "girlfriend", 0);
+						}
 					}
 				} else {
 					createStrum(true, [dad], true);
@@ -2173,7 +2188,7 @@ class PlayState extends MusicBeatState
 
 						if (newBoyfriend.codenameOffsets) add(newBoyfriend);
 						else boyfriendGroup.add(newBoyfriend);
-						startCharacterPos(newBoyfriend);
+						if (stage == null) startCharacterPos(newBoyfriend);
 						if (stage != null) stage.applyCharStuff(newBoyfriend, "boyfriend", 0);
 						newBoyfriend.alpha = 0.00001;
 						startCharacterScripts(newBoyfriend.curCharacter, true);
@@ -2215,7 +2230,7 @@ class PlayState extends MusicBeatState
 
 						if (newDad.codenameOffsets) add(newDad);
 						else dadGroup.add(newDad);
-						startCharacterPos(newDad, true);
+						if (stage == null) startCharacterPos(newDad, true);
 						if (stage != null) stage.applyCharStuff(newDad, "dad", 0);
 						newDad.alpha = 0.00001;
 						startCharacterScripts(newDad.curCharacter, false);
@@ -2251,7 +2266,7 @@ class PlayState extends MusicBeatState
 					gfMap.set(newCharacter, newGf);
 					if (newGf.codenameOffsets) add(newGf);
 					else gfGroup.add(newGf);
-					startCharacterPos(newGf);
+					if (stage == null) startCharacterPos(newGf);
 					if (stage != null) stage.applyCharStuff(newGf, "girlfriend", 0);
 					newGf.alpha = 0.00001;
 					startCharacterScripts(newGf.curCharacter);
@@ -2297,7 +2312,7 @@ class PlayState extends MusicBeatState
 							}
 							if (newBoyfriend.codenameOffsets) add(newBoyfriend);
 							else boyfriendGroup.add(newBoyfriend);
-							startCharacterPos(newBoyfriend);
+							if (stage == null) startCharacterPos(newBoyfriend);
 							if (stage != null) stage.applyCharStuff(newBoyfriend, "boyfriend", 0);
 							newBoyfriend.alpha = 0.00001;
 							startCharacterScripts(newBoyfriend.curCharacter, sid, true);
@@ -2335,7 +2350,7 @@ class PlayState extends MusicBeatState
 							}
 							if (newDad.codenameOffsets) add(newDad);
 							else dadGroup.add(newDad);
-							startCharacterPos(newDad, true);
+							if (stage == null) startCharacterPos(newDad, true);
 							if (stage != null) stage.applyCharStuff(newDad, "dad", 0);
 							newDad.alpha = 0.00001;
 							startCharacterScripts(newDad.curCharacter, sid, false);
@@ -2356,7 +2371,7 @@ class PlayState extends MusicBeatState
 					gfMap.set(newCharacter, newGf);
 					if (newGf.codenameOffsets) add(newGf);
 					else gfGroup.add(newGf);
-					startCharacterPos(newGf);
+					if (stage == null) startCharacterPos(newGf);
 					if (stage != null) stage.applyCharStuff(newGf, "girlfriend", 0);
 					newGf.alpha = 0.00001;
 					startCharacterScripts(newGf.curCharacter);
@@ -2690,9 +2705,7 @@ class PlayState extends MusicBeatState
 
 		seenCutscene = true;
 		inCutscene = false;
-		#if TOUCH_CONTROLS
 		if (replayData == null && !cpuControlled) mobileManager.hitbox.visible = true;
-		#end
 		var ret:Dynamic = callOnScripts('onStartCountdown', null, true);
 		if(ret != FunkinLua.Function_Stop) {
 			if (!canStart) {
@@ -3616,12 +3629,10 @@ class PlayState extends MusicBeatState
 		}
 
 		super.closeSubState();
-		#if TOUCH_CONTROLS
 		if (GameClient.isConnected()) {
 			if (mobileManager?.hitbox != null) mobileManager.hitbox.visible = true;
 			if (mobileManager?.mobilePad != null) mobileManager.mobilePad.visible = true;
 		}
-		#end
 
 		effectMusic(FlxG.sound.music, true);
 		effectMusic(vocals, true);
@@ -4355,12 +4366,10 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-		#if TOUCH_CONTROLS
 		if (GameClient.isConnected()) {
 			if (mobileManager?.hitbox != null) mobileManager.hitbox.visible = false;
 			if (mobileManager?.mobilePad != null) mobileManager.mobilePad.visible = false;
 		}
-		#end
 		openSubState(new PauseSubState(self.getScreenPosition().x, self.getScreenPosition().y));
 		//}
 
@@ -4371,9 +4380,7 @@ class PlayState extends MusicBeatState
 
 	function pause() {
 		if (!ClientPrefs.data.oldCameraSystem) FlxG.camera.followLerp = 0;
-		#if TOUCH_CONTROLS
 		mobileManager.mobilePad.visible = persistentUpdate = false;
-		#end
 		persistentDraw = true;
 		paused = true;
 
@@ -4388,7 +4395,7 @@ class PlayState extends MusicBeatState
 		if (forcePause)
 			return;
 
-		#if TOUCH_CONTROLS mobileManager.mobilePad.visible = true; #end
+		mobileManager.mobilePad.visible = true;
 		if (FlxG.sound.music != null && !startingSong) {
 			resyncVocals();
 		}
@@ -4596,6 +4603,7 @@ class PlayState extends MusicBeatState
 	}
 
 	private var camEventUsed:Bool = false;
+	public var eventsTween:Map<String, FlxTween> = [];
 	public function triggerEvent(eventName:String, value1:String, value2:String, strumTime:Float) {
 		var flValue1:Null<Float> = Std.parseFloat(value1);
 		var flValue2:Null<Float> = Std.parseFloat(value2);
@@ -4608,6 +4616,54 @@ class PlayState extends MusicBeatState
 				//force the camera
 				if (Std.parseInt(value1) > -1) camEventUsed = true;
 				else camEventUsed = false;
+			case "Camera Position":
+				// 1. Clear previous movement
+				var tween = eventsTween.get("cameraMovement");
+				if (tween != null) {
+					if (tween.onComplete != null) tween.onComplete(tween);
+					tween.cancel();
+				}
+
+				// 2. Combine the two split strings back into one list of parameters
+				var v1:Array<String> = value1.split(', ');
+				var v2:Array<String> = value2.split(', ');
+				
+				// Helper to get params easily (casting strings to correct types)
+				var pX:Float = Std.parseFloat(v1[0]);
+				var pY:Float = Std.parseFloat(v1[1]);
+				var pSmooth:Bool = (v1[2] == "true");
+				var pDuration:Float = (v1[3] != null) ? Std.parseFloat(v1[3]) : 4.0;
+				
+				var pEase:String = (v2[0] != null) ? v2[0] : "linear";
+				var pEaseParam:String = (v2[1] != null) ? v2[1] : ""; // Used for eases like backIn
+				var pIsOffset:Bool = (v2[2] == "true");
+
+				// 3. Execution Logic
+				curCameraTarget = -1; // Force manual override
+				
+				var targetX:Float = pIsOffset ? (camFollow.x + pX) : pX;
+				var targetY:Float = pIsOffset ? (camFollow.y + pY) : pY;
+				
+				camFollow.setPosition(targetX, targetY);
+
+				if (!pSmooth) {
+					FlxG.camera.snapToTarget();
+				} 
+				else if (pEase != "CLASSIC") {
+					var oldFollow = FlxG.camera.followEnabled;
+					FlxG.camera.followEnabled = false;
+
+					eventsTween.set("cameraMovement", FlxTween.tween(FlxG.camera.scroll, {
+						x: camFollow.x - FlxG.camera.width * 0.5, 
+						y: camFollow.y - FlxG.camera.height * 0.5
+					}, (Conductor.stepCrochet / 1000) * pDuration, {
+						ease: CoolUtil.flxeaseFromString(pEase, pEaseParam),
+						onComplete: function(twn:FlxTween) {
+							FlxG.camera.followEnabled = oldFollow;
+							eventsTween.remove("cameraMovement");
+						}
+					}));
+				}
 			//Codename Engine Support (you can't use these in the editor, just there for compatibility)
 			case 'Camera Flash':
 				//make the event work on PsychEngine
@@ -5201,7 +5257,7 @@ class PlayState extends MusicBeatState
 	public function endSong()
 	{
 		#if HSC_ALLOWED if (scripts.event("onSongEnd", new CancellableEvent()).cancelled) return false; #end
-		#if TOUCH_CONTROLS mobileManager.hitbox.visible = false; #end
+		mobileManager.hitbox.visible = false;
 
 		if (!canEndSongOnline && GameClient.isConnected()) {
 			GameClient.send("updateSongFP", Math.ffloor(songPoints));
@@ -6098,10 +6154,9 @@ class PlayState extends MusicBeatState
 		return -1;
 	}
 
-	#if TOUCH_CONTROLS
 	inline private function onButtonPress(button:MobileButton, ids:Array<String>, unique:Int):Void
 	{
-		if (ids.filter(id -> id.startsWith("NOTE")).length > 0 || ids.filter(id -> id.startsWith(Note.maniaKeys + "K_NOTE")).length > 0)
+		if (controls.mobileControls && ids.filter(id -> id.startsWith("NOTE")).length > 0 || ids.filter(id -> id.startsWith(Note.maniaKeys + "K_NOTE")).length > 0)
 		{
 			var buttonCode:Int = (unique == -1 ? 0 : unique);
 
@@ -6113,7 +6168,7 @@ class PlayState extends MusicBeatState
 
 	inline private function onButtonRelease(button:MobileButton, ids:Array<String>, unique:Int):Void
 	{
-		if (ids.filter(id -> id.startsWith("NOTE")).length > 0 || ids.filter(id -> id.startsWith(Note.maniaKeys + "K_NOTE")).length > 0)
+		if (controls.mobileControls && ids.filter(id -> id.startsWith("NOTE")).length > 0 || ids.filter(id -> id.startsWith(Note.maniaKeys + "K_NOTE")).length > 0)
 		{
 			var buttonCode:Int = (unique == -1 ? 0 : unique);
 
@@ -6122,7 +6177,6 @@ class PlayState extends MusicBeatState
 			callOnScripts('onButtonRelease', [buttonCode]);
 		}
 	}
-	#end
 
 	// Hold notes
 	@:unreflective
@@ -6662,10 +6716,8 @@ class PlayState extends MusicBeatState
 		#end
 
 		//destroy manager
-		#if TOUCH_CONTROLS
 		for (managerName => manager in customManagers)
 			manager[0].destroy();
-		#end
 
 		stagesFunc(function(stage:BaseStage) stage.destroy());
 
@@ -7945,7 +7997,6 @@ class PlayState extends MusicBeatState
 		return camGame.scroll.y = value - FlxG.height / 2;
 	}
 
-	#if TOUCH_CONTROLS
 	public var customManagers:Map<String, Array<Dynamic>> = [];
 	public var lastGettedManager:MobileControlManager;
 	public var lastGettedManagerName:String;
@@ -7962,8 +8013,7 @@ class PlayState extends MusicBeatState
 	}
 
 	public function createNewManager(name:String, keyDetectionAllowed:Bool) {
-		var mobileManagerNew = new MobileControlManager();
-		add(mobileManagerNew);
+		var mobileManagerNew = new MobileControlManager(this);
 		var managerShit:Array<Dynamic> = [mobileManagerNew, keyDetectionAllowed];
 		customManagers.set(name, managerShit);
 		if(!variables.exists(name))
@@ -7975,28 +8025,23 @@ class PlayState extends MusicBeatState
 		if(!variables.exists(name + '_joyStick'))
 			variables.set(name + '_joyStick', mobileManagerNew.joyStick);
 	}
-	#end
 
 	public static function checkMPadPress(buttonName:String, type = 'justPressed', ?managerName:String) {
-		#if TOUCH_CONTROLS
 		var manager = checkManager(managerName);
 
 		var button:MobileButton = null;
 		if (manager.mobilePad != null) button = manager.mobilePad.getButton(buttonName);
 		if (button != null) return Reflect.getProperty(button, type);
-		#end
 		return false;
 	}
 
 	//for lua shit
 	public static function checkHBoxPress(button:String, type = 'justPressed', ?managerName:String) {
-		#if TOUCH_CONTROLS
 		var manager = checkManager(managerName);
 
 		var buttonObject:MobileButton = null;
 		if (manager.hitbox != null) buttonObject = manager.hitbox.getButton(button);
 		if (buttonObject != null) return Reflect.getProperty(buttonObject, type);
-		#end
 		return false;
 	}
 
@@ -8009,7 +8054,6 @@ class PlayState extends MusicBeatState
 
 	public function addPlayStateHitbox(?mode:String, ?makeInvinsibleFirst:Bool, ?hints:Null<Bool>)
 	{
-		#if TOUCH_CONTROLS
 		if (hints == null)
 			hints = ClientPrefs.data.hitboxHint;
 
@@ -8018,11 +8062,9 @@ class PlayState extends MusicBeatState
 		if (replayData == null && !cpuControlled) connectControlToNotes(null, 'hitbox');
 		if (makeInvinsibleFirst) mobileManager.hitbox.visible = false;
 		addHitboxDeadZone(null, ['buttonT', 'buttonC', 'buttonP']);
-		#end
 	}
 
 	public function addHitboxDeadZone(?managerName:String, deadZoneButtons:Array<String>) {
-		#if TOUCH_CONTROLS
 		var manager = checkManager(managerName);
 		manager?.hitbox.forEachAlive((button) ->
 		{
@@ -8031,11 +8073,9 @@ class PlayState extends MusicBeatState
 					button.deadZones.push(manager.mobilePad?.getButton(deadButton));
 			}
 		});
-		#end
 	}
 
 	public function connectControlToNotes(?managerName:String, ?control:String) {
-		#if TOUCH_CONTROLS
 		var manager = checkManager(managerName);
 		var currentControl:MobileButton;
 
@@ -8051,18 +8091,15 @@ class PlayState extends MusicBeatState
 				mobileManager.hitbox?.onButtonDown?.add((button:MobileButton, ids:Array<String>, unique:Int) -> replayRecorder?.recordKeyMobileC(Conductor?.songPosition, ids, 0));
 				mobileManager.hitbox?.onButtonUp?.add((button:MobileButton, ids:Array<String>, unique:Int) -> replayRecorder?.recordKeyMobileC(Conductor?.songPosition, ids, 1));
 		}
-		#end
 	}
 
 	public function removePlayStateHitbox()
 	{
-		#if TOUCH_CONTROLS
 		mobileManager?.hitbox?.forEachAlive((button) ->
 		{
 			button.deadZones = [];
 		});
 		mobileManager?.removeHitbox();
-		#end
 	}
 }
 

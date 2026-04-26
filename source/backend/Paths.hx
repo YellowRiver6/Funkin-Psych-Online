@@ -750,9 +750,7 @@ class Paths
 				var fullNewFilePath = Path.join([dirToSearch,file]);
 				if (FileSystem.isDirectory(fullNewFilePath))
 					continue;
-				trace("Current file: " + file + ", looking for " + fileName);
 				if (file.toLowerCase() == fileName.toLowerCase()) {
-					trace("Filename is real! It's " + file);
 					return fullNewFilePath;
 				}
 			}

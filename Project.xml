@@ -119,13 +119,9 @@
 	<assets path='art/run-server.bat' rename='run-server.bat' if="windows" />
 
 	<!-- || Mobile Defines || -->
-	<define name="TOUCH_CONTROLS" if="mobile" />
 	<!-- Crash Handler Shit (Idk what it does, If you ask me it doesn't do anything) -->
 	<define name="CRASH_HANDLER" if="desktop || mobile" />
-	<section if="TOUCH_CONTROLS">
-		<assets path="mobile/assets"                  rename="assets/mobile"/>
-		<assets path="mobile/storageModes.txt"      rename="mobile/storageModes.txt"/>
-	</section>
+	<assets path="mobile/storageModes.txt" if="mobile"/>
 
 	<!-- _______________________________ Libraries ______________________________ -->
 
