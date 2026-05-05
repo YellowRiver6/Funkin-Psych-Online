@@ -67,9 +67,15 @@ class CharacterCameraPoint extends FlxBasePoint {
     override function get_x():Float {
         if (PlayState.instance != null) {
             switch (charType) {
-                case 'bf': return PlayState.instance.boyfriendCameraOffset[0];
-                case 'gf': return PlayState.instance.girlfriendCameraOffset[0];
-                case 'dad': return PlayState.instance.opponentCameraOffset[0];
+                case 'bf':
+                    if (!PlayState.instance.boyfriend.codenameOffsets)
+                        return PlayState.instance.boyfriendCameraOffset[0];
+                case 'gf':
+                    if (!PlayState.instance.gf.codenameOffsets)
+                        return PlayState.instance.girlfriendCameraOffset[0];
+                case 'dad':
+                    if (!PlayState.instance.dad.codenameOffsets)
+                        return PlayState.instance.opponentCameraOffset[0];
             }
         }
         return super.get_x();
@@ -78,9 +84,15 @@ class CharacterCameraPoint extends FlxBasePoint {
     override function set_x(Value:Float):Float {
         if (PlayState.instance != null) {
             switch (charType) {
-                case 'bf': PlayState.instance.boyfriendCameraOffset[0] = Value;
-                case 'gf': PlayState.instance.girlfriendCameraOffset[0] = Value;
-                case 'dad': PlayState.instance.opponentCameraOffset[0] = Value;
+                case 'bf':
+                    if (PlayState.instance.boyfriend != null && !PlayState.instance.boyfriend.codenameOffsets)
+                        PlayState.instance.boyfriendCameraOffset[0] = Value;
+                case 'gf':
+                    if (PlayState.instance.gf != null && !PlayState.instance.gf.codenameOffsets)
+                        PlayState.instance.girlfriendCameraOffset[0] = Value;
+                case 'dad':
+                    if (PlayState.instance.dad != null && !PlayState.instance.dad.codenameOffsets)
+                        PlayState.instance.opponentCameraOffset[0] = Value;
             }
         }
         return super.set_x(Value);
@@ -89,9 +101,15 @@ class CharacterCameraPoint extends FlxBasePoint {
     override function get_y():Float {
         if (PlayState.instance != null) {
             switch (charType) {
-                case 'bf': return PlayState.instance.boyfriendCameraOffset[1];
-                case 'gf': return PlayState.instance.girlfriendCameraOffset[1];
-                case 'dad': return PlayState.instance.opponentCameraOffset[1];
+                case 'bf':
+                    if (!PlayState.instance.boyfriend.codenameOffsets)
+                        return PlayState.instance.boyfriendCameraOffset[1];
+                case 'gf':
+                    if (!PlayState.instance.gf?.codenameOffsets)
+                        return PlayState.instance.girlfriendCameraOffset[1];
+                case 'dad':
+                    if (!PlayState.instance.dad.codenameOffsets)
+                        return PlayState.instance.opponentCameraOffset[1];
             }
         }
         return super.get_y();
@@ -100,9 +118,15 @@ class CharacterCameraPoint extends FlxBasePoint {
     override function set_y(Value:Float):Float {
         if (PlayState.instance != null) {
             switch (charType) {
-                case 'bf': PlayState.instance.boyfriendCameraOffset[1] = Value;
-                case 'gf': PlayState.instance.girlfriendCameraOffset[1] = Value;
-                case 'dad': PlayState.instance.opponentCameraOffset[1] = Value;
+                case 'bf':
+                    if (PlayState.instance.boyfriend != null && !PlayState.instance.boyfriend.codenameOffsets)
+                        PlayState.instance.boyfriendCameraOffset[1] = Value;
+                case 'gf':
+                    if (PlayState.instance.gf != null && !PlayState.instance.gf.codenameOffsets)
+                        PlayState.instance.girlfriendCameraOffset[1] = Value;
+                case 'dad':
+                    if (PlayState.instance.dad != null && !PlayState.instance.dad.codenameOffsets)
+                        PlayState.instance.opponentCameraOffset[1] = Value;
             }
         }
         return super.set_y(Value);
@@ -112,10 +136,21 @@ class CharacterCameraPoint extends FlxBasePoint {
 class Character extends FlxSkewedSprite {
     public var globalOffset:FlxPoint = FlxPoint.get(0, 0);
     public var extraOffset:FlxPoint = FlxPoint.get(0, 0);
+    public var lastHit:Float = Math.NEGATIVE_INFINITY;
     public var ghostDraw:Bool = false;
 
     @:noCompletion var __swappedLeftRightAnims:Bool = false;
     @:noCompletion var __reverseTrailProcedure:Bool = false;
+
+    public inline function getCameraPosition() {
+		var midpoint:FlxPoint = getMidpoint();
+		var event = EventManager.get(PointEvent).recycle(
+			midpoint.x + (isPlayer ? -100 : 150) + globalOffset.x + cameraOffset.x,
+			midpoint.y - 100 + globalOffset.y + cameraOffset.y);
+
+		midpoint.put();
+		return new FlxPoint(event.x, event.y);
+	}
 
     public dynamic function beforeTrailCache() {
         if (codenameOffsets && isFlippedOffsets()) {
@@ -444,6 +479,7 @@ class Character extends FlxSkewedSprite {
             globalOffset.set(positionArray[0], positionArray[1]);
         }
         cameraPosition = json.camera_position;
+        cameraOffset.set(cameraPosition[0], cameraPosition[1]);
 
         healthIcon = json.healthicon;
         singDuration = json.sing_duration;
@@ -637,7 +673,12 @@ class Character extends FlxSkewedSprite {
             else if (PlayState.isCharacterPlayer(this) || GameClient.isConnected())
                 holdTimer = 0;
 
-            if (!noHoldBullshit && holdTimer >= Conductor.stepCrochet * (0.0011 / (FlxG.sound.music != null ? FlxG.sound.music.pitch : 1)) * singDuration) {
+            if (!noHoldBullshit && lastHit + (Conductor.stepCrochet * singDuration) < Conductor.songPosition && codenameOffsets)
+            {
+                dance();
+                holdTimer = 0;
+            }
+            if (!noHoldBullshit && holdTimer >= Conductor.stepCrochet * (0.0011 / (FlxG.sound.music != null ? FlxG.sound.music.pitch : 1)) * singDuration && !codenameOffsets) {
                 dance();
                 holdTimer = 0;
             }
@@ -724,6 +765,9 @@ class Character extends FlxSkewedSprite {
 
         if (animSuffix != null)
             AnimName += animSuffix;
+
+        if (AnimName.contains("sing") || AnimName.contains("miss"))
+            lastHit = Conductor.songPosition;
 
         if(colorTransform != null && colorTransformWasChanged) {
             colorTransform.redMultiplier = colorTransformBefore[0];

@@ -5090,76 +5090,104 @@ class PlayState extends MusicBeatState
 	var cameraTwnX:FlxTween;
 	var cameraTwnY:FlxTween;
 	public function newMoveCamera(strum:Int = 0, ?tX:Float, ?tY:Float)
-	{
-		var strumChar = dad; //focus dad if nothing is found.
-		if (strumLines != null) {
-			if (strumLines.members[strum] != null) {
-				if (strumLines.members[strum].characters[0] != null)
-					strumChar = strumLines.members[strum].characters[0];
-			}
-		}
+    {
+        var strumChar = dad; //focus dad if nothing is found.
+        if (strumLines != null) {
+            if (strumLines.members[strum] != null) {
+                if (strumLines.members[strum].characters[0] != null)
+                    strumChar = strumLines.members[strum].characters[0];
+            }
+        }
 
-		var posX = strumChar.getMidpoint().x;
-		var posY = strumChar.getMidpoint().y;
-		if (strum == 0) {
-			posX += 150;
-			posY -= 100;
-		} else if (strum == 1) {
-			posX -= 100;
-			posY -= 100;
-		}
+        var posX = strumChar.getMidpoint().x;
+        var posY = strumChar.getMidpoint().y;
+        if (strum == 0) {
+            posX += 150;
+            posY -= 100;
+        } else if (strum == 1) {
+            posX -= 100;
+            posY -= 100;
+        }
 
-		setCamPosFromChar(strumChar, tX + posX, tY + posY);
-		curCameraTarget = strum;
-		callOnScripts('onCameraMove', [curCameraTarget]);
-		var curCameraChar = 'none';
-		switch(curCameraTarget) {
-			case 0: curCameraChar = 'dad';
-			case 1: curCameraChar = 'bf';
-			case 2: curCameraChar = 'gf';
-		}
-		callOnScripts('onMoveCamera', [curCameraChar]);
-	}
+        curCameraTarget = strum;
 
-	public function setCamPosFromChar(char:Character, x:Float, y:Float) {
-		if (char != null) {
-			//get these from character
-			var camOffsetOG:FlxPoint = char.cameraOffset;
-			var camPos:Array<Float> = char.cameraPosition;
+        setCamPosFromChar(strumChar, tX + posX, tY + posY);
 
-			if (ClientPrefs.data.oldCameraSystem) camFollow.set(x, y);
-			else camFollow.setPosition(x, y);
+        if (strumChar != null && strumChar.codenameOffsets == true)
+        {
+            if (generatedMusic && strumLines.members[curCameraTarget] != null)
+            {
+                var pos = FlxPoint.get();
+                var r = 0;
+                for(c in strumLines.members[curCameraTarget].characters) {
+                    if (c == null || !c.visible) continue;
+                    var cpos = c.getCameraPosition();
+                    pos.x += cpos.x;
+                    pos.y += cpos.y;
+                    r++;
+                    //cpos.put();
+                }
+                if (r > 0) {
+                    pos.x /= r;
+                    pos.y /= r;
 
-			if (char == boyfriend) camFollow.x -= camPos[0] + camOffsetOG.x;
-			else camFollow.x += camPos[0] + camOffsetOG.x;
+                    var event = scripts.event("onCameraMove", EventManager.get(CamMoveEvent).recycle(pos, strumLines.members[curCameraTarget], r));
+                    if (!event.cancelled)
+                        camFollow.setPosition(pos.x, pos.y);
+                }
+                pos.put();
+            }
+        }
 
-			camFollow.y += camPos[1] + camOffsetOG.y;
-			if (char == boyfriend) {
-				if (Paths.formatToSongPath(SONG.song) == 'tutorial' && cameraTwn == null && FlxG.camera.zoom != 1)
-				{
-					cameraTwn = FlxTween.tween(FlxG.camera, {zoom: 1}, (Conductor.stepCrochet * 4 / 1000), {ease: FlxEase.elasticInOut, onComplete:
-						function (twn:FlxTween)
-						{
-							cameraTwn = null;
-						}
-					});
-				}
+        callOnScripts('onCameraMove', [curCameraTarget]);
+        var curCameraChar = 'none';
+        switch(curCameraTarget) {
+            case 0: curCameraChar = 'dad';
+            case 1: curCameraChar = 'bf';
+            case 2: curCameraChar = 'gf';
+        }
+        callOnScripts('onMoveCamera', [curCameraChar]);
+    }
 
-				cameraLookAt = 1;
-				if (stage3D != null)
-					stage3D.setFollowCamera('bf');
-			} else if (char == dad) {
-				tweenCamIn();
-				cameraLookAt = 0;
-				if (stage3D != null)
-					stage3D.setFollowCamera('dad');
-			} else if (char == gf) {
-				tweenCamIn();
-				if (stage3D != null)
-					stage3D.setFollowCamera('gf');
-			}
-		}
-	}
+    public function setCamPosFromChar(char:Character, x:Float, y:Float) {
+        if (char != null) {
+            //get these from character
+            var camOffsetOG:FlxPoint = char.cameraOffset;
+            var camPos:Array<Float> = char.cameraPosition;
+
+            if (ClientPrefs.data.oldCameraSystem) camFollow.set(x, y);
+            else camFollow.setPosition(x, y);
+
+            if (char == boyfriend) camFollow.x -= camPos[0] + camOffsetOG.x;
+            else camFollow.x += camPos[0] + camOffsetOG.x;
+
+            camFollow.y += camPos[1] + camOffsetOG.y;
+            if (char == boyfriend) {
+                if (Paths.formatToSongPath(SONG.song) == 'tutorial' && cameraTwn == null && FlxG.camera.zoom != 1)
+                {
+                    cameraTwn = FlxTween.tween(FlxG.camera, {zoom: 1}, (Conductor.stepCrochet * 4 / 1000), {ease: FlxEase.elasticInOut, onComplete:
+                        function (twn:FlxTween)
+                        {
+                            cameraTwn = null;
+                        }
+                    });
+                }
+
+                cameraLookAt = 1;
+                if (stage3D != null)
+                    stage3D.setFollowCamera('bf');
+            } else if (char == dad) {
+                tweenCamIn();
+                cameraLookAt = 0;
+                if (stage3D != null)
+                    stage3D.setFollowCamera('dad');
+            } else if (char == gf) {
+                tweenCamIn();
+                if (stage3D != null)
+                    stage3D.setFollowCamera('gf');
+            }
+        }
+    }
 
 	public function moveCamera(isDad:Bool, ?toGirlfren:Bool = false, ?tX:Float, ?tY:Float)
 	{
@@ -6865,7 +6893,10 @@ class PlayState extends MusicBeatState
 			var chars:Array<Character> = strumLines.members[strumIndex].characters;
 			for (char in chars) {
 				if (char != null) {
-					if (char.danceEveryNumBeats != 0 && beat % char.danceEveryNumBeats == 0 && char.animation.curAnim != null && !char.animation.curAnim.name.startsWith('sing') && !char.stunned && char != gf)
+					if (char.lastHit + (Conductor.stepCrochet * char.singDuration) < Conductor.songPosition && char.codenameOffsets)
+						char.dance();
+
+					if (char.danceEveryNumBeats != 0 && beat % char.danceEveryNumBeats == 0 && char.animation.curAnim != null && !char.animation.curAnim.name.startsWith('sing') && !char.stunned && char != gf && !char.codenameOffsets)
 						char.dance();
 				}
 			}
@@ -6887,6 +6918,8 @@ class PlayState extends MusicBeatState
 
 			if (isSinging && !isMissing && !character.stunned) {
 				var holdTimerExpired:Bool = character.holdTimer > Conductor.stepCrochet * (0.0011 / playbackRate) * character.singDuration;
+				if (character.codenameOffsets)
+					holdTimerExpired = (character.lastHit + (Conductor.stepCrochet * character.singDuration) < Conductor.songPosition);
 				
 				if (holdTimerExpired && (!character.noteHold || endingSong)) {
 					character.dance();
@@ -6899,7 +6932,7 @@ class PlayState extends MusicBeatState
 			if (character.danceEveryNumBeats != 0 
 				&& beat % character.danceEveryNumBeats == 0 
 				&& !isSinging 
-				&& !character.stunned) 
+				&& !character.stunned && !character.codenameOffsets) 
 			{
 				character.dance();
 			}
@@ -6908,7 +6941,12 @@ class PlayState extends MusicBeatState
 
 	public function playerDance():Void {
 		var anim:String = self.getAnimationName();
-		if(self.holdTimer > Conductor.stepCrochet * (0.0011 #if FLX_PITCH / FlxG.sound.music.pitch #end) * self.singDuration && anim.startsWith('sing') && !anim.endsWith('miss'))
+		if (self.lastHit + (Conductor.stepCrochet * self.singDuration) < Conductor.songPosition && self.codenameOffsets && anim.startsWith('sing') && !anim.endsWith('miss'))
+		{
+			self.dance();
+			self.noteHold = false;
+		}
+		if(self.holdTimer > Conductor.stepCrochet * (0.0011 #if FLX_PITCH / FlxG.sound.music.pitch #end) * self.singDuration && anim.startsWith('sing') && !anim.endsWith('miss') && !self.codenameOffsets)
 		{
 			self.dance();
 			self.noteHold = false;
