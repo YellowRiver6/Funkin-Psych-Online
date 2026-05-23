@@ -1,94 +1,123 @@
 package online.substates;
 
-import flixel.FlxSubstate;
+import flixel.FlxBasic;
+import flixel.FlxG;
 import flixel.text.FlxText;
-import flixel.ui.FlxInput;
-import openfl.text.StageText;
-import openfl.text.TextFieldType;
 import openfl.events.Event;
 import openfl.events.FocusEvent;
-import flixel.FlxG;
-import online.ChatBox;
+import openfl.text.StageText;
+import openfl.text.TextFieldType;
+import states.PlayState;
 
-class PostTextSubstate extends FlxSubstate
+// 用 Psych Engine 自带的 MusicBeatSubstate，所有平台都能识别
+class PostTextSubstate extends MusicBeatSubstate
 {
-	var label:FlxText;
+	var title:String;
+	var onEnter:String->Void;
+
 	#if mobile
 	var nativeInput:StageText;
 	#else
-	var input:FlxInput;
+	var input:String = "";
 	#end
 
-	var submitCallback:String->Void;
-	var hint:String;
+	var confirmBack:Bool = false;
 
-	public function new(hint:String, callback:String->Void)
+	public function new(title:String, onEnter:String->Void)
 	{
 		super();
-		this.hint = hint;
-		submitCallback = callback;
+		this.title = title;
+		this.onEnter = onEnter;
 	}
 
 	override function create()
 	{
 		super.create();
-		label = new FlxText(10, 10, 0, hint, 20);
-		add(label);
+
+		// 背景
+		var bg = new flixel.FlxSprite();
+		bg.makeGraphic(FlxG.width, FlxG.height, 0x000000);
+		bg.alpha = 0.7;
+		bg.scrollFactor.set(0, 0);
+		add(bg);
+
+		// 标题
+		var titleTxt = new FlxText(0, 0, FlxG.width, title + "\n\n(按回车提交 / 按返回取消)");
+		titleTxt.setFormat("Arial", 24, 0xFFFFFF, "center");
+		titleTxt.y = FlxG.height / 2 - titleTxt.height / 2 - 100;
+		titleTxt.scrollFactor.set();
+		add(titleTxt);
 
 		#if mobile
-		// Android/iOS：用StageText原生输入框，完美支持中文输入法候选
+		// Android/iOS：用系统原生 StageText，完美支持中文输入法
 		nativeInput = new StageText();
 		nativeInput.type = TextFieldType.INPUT;
-		nativeInput.width = FlxG.width - 20;
-		nativeInput.height = 40;
-		nativeInput.x = 10;
-		nativeInput.y = 40;
+		nativeInput.width = FlxG.width * 0.8;
+		nativeInput.height = 50;
+		nativeInput.x = (FlxG.width - nativeInput.width) / 2;
+		nativeInput.y = FlxG.height / 2 - nativeInput.height / 2;
 		nativeInput.stage = FlxG.stage;
 
-		nativeInput.addEventListener(Event.CHANGE, onTextChange);
 		nativeInput.addEventListener(Event.SUBMIT, onSubmit);
 		nativeInput.addEventListener(FocusEvent.FOCUS_OUT, onBlur);
-
 		nativeInput.needsSoftKeyboard = true;
 		#else
-		// Windows：FlxInput + LIME_ENABLE_IME，中文IME正常
-		input = new FlxInput(10, 40, FlxG.width - 20, 32, "", 20);
-		input.maxWidth = FlxG.width - 20;
-		add(input);
+		// Windows：用简单文本变量 + 监听键盘，避免 FlxInput 兼容性问题
+		input = "";
 		#end
 	}
 
 	#if mobile
-	function onTextChange(e:Event):Void {}
 	function onSubmit(e:Event):Void
 	{
 		var txt = nativeInput.text.trim();
-		if (txt != "") submitCallback(txt);
+		if (txt.length > 0) {
+			onEnter(txt);
+		}
 		close();
 	}
 	function onBlur(e:FocusEvent):Void {}
 	#end
 
-	override function update(elapsed:Float)
+	override function update(elapsed)
 	{
 		super.update(elapsed);
+
 		#if !mobile
-		if (input.justPressedEnter)
-		{
-			var txt = input.text.trim();
-			if (txt != "") submitCallback(txt);
+		// Windows 键盘输入处理
+		if (FlxG.keys.justPressed.BACKSPACE && input.length > 0) {
+			input = input.substr(0, input.length - 1);
+		}
+		if (FlxG.keys.justPressed.ENTER) {
+			if (input.trim().length > 0) {
+				onEnter(input.trim());
+			}
 			close();
 		}
-		#end
+		// 简单文本输入（中文依赖系统IME，project.xml已开启）
+		// 你也可以在这里加自定义字符处理，这里用最兼容的方式
+		#endif
+
+		// 取消逻辑
+		if (controls.BACK) {
+			if (!confirmBack) {
+				confirmBack = true;
+				return;
+			}
+			close();
+		} else {
+			confirmBack = false;
+		}
 	}
 
-	function close()
+	function close():Void
 	{
 		#if mobile
-		nativeInput.stage = null;
-		nativeInput.removeEventListener(Event.CHANGE, onTextChange);
-		nativeInput.removeEventListener(Event.SUBMIT, onSubmit);
-		nativeInput.removeEventListener(FocusEvent.FOCUS_OUT, onBlur);
+		if (nativeInput != null) {
+			nativeInput.stage = null;
+			nativeInput.removeEventListener(Event.SUBMIT, onSubmit);
+			nativeInput.removeEventListener(FocusEvent.FOCUS_OUT, onBlur);
+		}
 		#end
 		FlxG.substates.remove(this);
 	}
