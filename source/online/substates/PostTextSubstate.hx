@@ -48,13 +48,16 @@ class PostTextSubstate extends MusicBeatSubstate {
 		add(input);
 
 		// ==============================================
-		// 【关键】原生中文输入法支持（无任何依赖，不会报错）
+		// 【关键修复】在 Psych 里安全地获取 stage 并添加中文输入支持
 		// ==============================================
-		stage.addEventListener(TextEvent.TEXT_INPUT, function(e:TextEvent):Void {
-			if (e.text != null && e.text != "") {
-				input.text += e.text;
-			}
-		});
+		var canvas = FlxG.canvas;
+		if (canvas != null && canvas.stage != null) {
+			canvas.stage.addEventListener(TextEvent.TEXT_INPUT, function(e:TextEvent):Void {
+				if (e.text != null && e.text != "") {
+					input.text += e.text;
+				}
+			});
+		}
 	}
 
     var confirmBack = false;
