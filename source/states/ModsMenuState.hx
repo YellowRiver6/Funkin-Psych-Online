@@ -82,7 +82,7 @@ class ModsMenuState extends MusicBeatState
 		add(bg);
 		bg.screenCenter();
 
-		noModsTxt = new FlxText(0, 0, FlxG.width, Language.getText("NO MODS INSTALLED\nPRESS BACK TO EXIT AND INSTALL A MOD"), 48);
+		noModsTxt = new FlxText(0, 0, FlxG.width, Language.getText("未安装模组\n按返回键退出并安装模组"), 48);
 		if(FlxG.random.bool(0.1)) noModsTxt.text += Language.getText('\nBITCH.'); //meanie
 		noModsTxt.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		noModsTxt.scrollFactor.set();
@@ -152,7 +152,7 @@ class ModsMenuState extends MusicBeatState
 		setAllLabelsOffset(buttonDown, -15, 10);
 
 		startX -= 100;
-		buttonTop = new FlxButton(startX, 0, "TOP", function() {
+		buttonTop = new FlxButton(startX, 0, "置顶", function() {
 			var doRestart:Bool = (mods[0].restart || mods[curSelected].restart);
 			for (i in 0...curSelected) //so it shifts to the top instead of replacing the top one
 			{
@@ -175,7 +175,7 @@ class ModsMenuState extends MusicBeatState
 
 
 		startX -= 190;
-		buttonDisableAll = new FlxButton(startX, 0, "DISABLE ALL", function() {
+		buttonDisableAll = new FlxButton(startX, 0, "全部禁用", function() {
 			for (i in modsList)
 			{
 				i[1] = false;
@@ -201,7 +201,7 @@ class ModsMenuState extends MusicBeatState
 		visibleWhenHasMods.push(buttonDisableAll);
 
 		startX -= 190;
-		buttonEnableAll = new FlxButton(startX, 0, "ENABLE ALL", function() {
+		buttonEnableAll = new FlxButton(startX, 0, "全部启用", function() {
 			for (i in modsList)
 			{
 				i[1] = true;
@@ -227,10 +227,10 @@ class ModsMenuState extends MusicBeatState
 		visibleWhenHasMods.push(buttonEnableAll);
 
 		startX -= 140;
-		buttonVerify = new FlxButton(startX, 0, "VERIFY", function() {
+		buttonVerify = new FlxButton(startX, 0, "验证", function() {
 			var modURL = OnlineMods.getModURL(modsList[curSelected][0]);
 			if (modURL == null || modURL.trim() == "") {
-				Alert.alert("No mod URL provided!", "Other players will not be able to download this mod!\nPlease set it in the Setup Mods option!");
+				Alert.alert("未提供模组链接！", "其他玩家将无法下载这个模组！\n请在模组设置选项中进行设置！");
 				FlxG.sound.play(Paths.sound('cancelMenu'), 0.6);
 				return;
 			}
@@ -261,7 +261,7 @@ class ModsMenuState extends MusicBeatState
 		visibleWhenHasMods.push(buttonVerify);
 
 		startX -= 100;
-		buttonDelete = new FlxButton(startX, 0, "DEL", function() {
+		buttonDelete = new FlxButton(startX, 0, "删除", function() {
 			var path = haxe.io.Path.join([Paths.mods(), modsList[curSelected][0]]);
 			if(FunkinFileSystem.exists(path) && FileSystem.isDirectory(path))
 			{
@@ -306,7 +306,7 @@ class ModsMenuState extends MusicBeatState
 		visibleWhenHasMods.push(buttonDelete);
 
 		startX -= 140;
-		buttonToggleGlobal = new FlxButton(startX, 70, "GLOBAL", function() {
+		buttonToggleGlobal = new FlxButton(startX, 70, "全局", function() {
 			if (mods[curSelected].restart) {
 				needaReset = true;
 			}
@@ -323,7 +323,7 @@ class ModsMenuState extends MusicBeatState
 		buttonsArray.push(buttonToggleGlobal);
 		visibleWhenHasMods.push(buttonToggleGlobal);
 
-		buttonSettings = new FlxButton(startX, 70, "SETTINGS", function() {
+		buttonSettings = new FlxButton(startX, 70, "设置", function() {
 			if(mods[curSelected].settings != null && mods[curSelected].settings.length > 0)
 			{
 				openSubState(new ModSettingsSubState(mods[curSelected].settings, mods[curSelected].folder, mods[curSelected].name));
@@ -482,12 +482,12 @@ class ModsMenuState extends MusicBeatState
 	{
 		if (modsList[curSelected][1])
 		{
-			buttonToggle.label.text = 'ON';
+			buttonToggle.label.text = '开';
 			buttonToggle.color = FlxColor.GREEN;
 		}
 		else
 		{
-			buttonToggle.label.text = 'OFF';
+			buttonToggle.label.text = '关';
 			buttonToggle.color = FlxColor.RED;
 		}
 	}
@@ -495,12 +495,12 @@ class ModsMenuState extends MusicBeatState
 	function updateButtonToggleGlobal() {
 		if (mods[curSelected].runsGlobally)
 		{
-			buttonToggleGlobal.label.text = 'GLOBAL';
+			buttonToggleGlobal.label.text = '全局';
 			buttonToggleGlobal.color = FlxColor.GREEN;
 		}
 		else
 		{
-			buttonToggleGlobal.label.text = 'LOCAL';
+			buttonToggleGlobal.label.text = '本地';
 			buttonToggleGlobal.color = FlxColor.RED;
 		}
 	}
@@ -680,7 +680,7 @@ class ModsMenuState extends MusicBeatState
 				selector.sprTracker = mod.alphabet;
 				descriptionTxt.text = mod.description;
 				if (mod.restart){//finna make it to where if nothing changed then it won't reset
-					descriptionTxt.text += " (This Mod will restart the game!)";
+					descriptionTxt.text += " (此模组将重启游戏！)";
 				}
 
 				// correct layering
@@ -846,7 +846,7 @@ class ModMetadata
 	{
 		this.folder = folder;
 		this.name = folder;
-		this.description = "No description provided.";
+		this.description = "暂无相关描述。";
 		this.color = ModsMenuState.defaultColor;
 		this.restart = false;
 		this.runsGlobally = false;
@@ -867,7 +867,7 @@ class ModMetadata
 				if(pack.description != 'Description')
 					this.description = pack.description;
 				else
-					this.description = "No description provided.";
+					this.description = "暂无相关描述。";
 			}
 
 			if(pack.color != null)
@@ -889,7 +889,7 @@ class ModMetadata
 				catch(e:Dynamic)
 				{
 					var errorTitle = 'Mod name: ' + name;
-					var errorMsg = 'An error occurred: $e';
+					var errorMsg = '发生了一个错误: $e';
 					trace('$errorTitle - $errorMsg');
 				}
 			}
