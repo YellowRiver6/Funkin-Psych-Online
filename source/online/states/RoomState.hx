@@ -124,7 +124,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 
 	function registerMessages() {
 		if (GameClient.getPlayerSelf() == null) {
-			GameClient.leaveRoom('Self not in the room (registerMessages).');
+			GameClient.leaveRoom('自身不在房间内（注册消息）');
 			return;
 		}
 
@@ -222,7 +222,6 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 			if (!characters.exists(sid)) {
 				var char = new LobbyCharacter(player);
 				characters.set(sid, char);
-				// HOW THE FUCK DOES THIS EVEN HAPPEN??!!??!
 				if (charactersLayer.members == null)
 					charactersLayer = new FlxTypedGroup<LobbyCharacter>();
 				charactersLayer.add(char);
@@ -233,11 +232,6 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 			updateCharacters();
 		}
 
-		//cool colyseus
-		// for (sid => player in GameClient.room.state.players) {
-		// 	trace('for: ' + sid + " " + player);
-		// 	initPlayer(sid, player);
-		// }
 		GameClient.callbacks.onAdd("players", (player, sid) -> {
 			Waiter.put(() -> {
 				initPlayer(sid, player);
@@ -254,17 +248,6 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 			});
 		});
 
-		// GameClient.room.onMessage("ping", function(message) {
-		// 	Waiter.put(() -> {
-		// 		GameClient.send("pong");
-		// 		@:privateAccess {
-		// 			if (stage?.phillyWindow == null) return;
-		// 			stage.curLight = FlxG.random.int(0, stage.phillyLightsColors.length - 1, [stage.curLight]);
-		// 			stage.phillyWindow.color = stage.phillyLightsColors[stage.curLight];
-		// 		}
-		// 	});
-		// });
-
 		GameClient.room.onMessage("charPlay", function(_message:Array<Dynamic>) {
 			var sid:String = _message[0];
 			var message:Array<Dynamic> = _message[1];
@@ -280,7 +263,6 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 		GameClient.callbacks.onChange(GameClient.room.state.gameplaySettings, () -> {
 			Waiter.putPersist(() -> {
 				FreeplayState.updateFreeplayMusicPitch();
-				//FlxG.animationTimeScale = ClientPrefs.getGameplaySetting('songspeed');
 			});
 		});
 
@@ -309,7 +291,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 		#end
 
 		#if DISCORD_ALLOWED
-		DiscordClient.changePresence("In the Lobby", null, null, false);
+		DiscordClient.changePresence("房间大厅", null, null, false);
 		#end
 
 		WeekData.reloadWeekFiles(false);
@@ -329,40 +311,15 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 		groupHUD = new FlxGroup();
 		groupHUD.cameras = [camHUD];
 
-		// STAGE
+		// 背景舞台
 		stage = new LobbyStage();
 		stage.cameras = [cum];
 		add(stage);
-
-		// var debugPoser = new online.objects.DebugPosHelper();
-		// add(debugPoser);
 
 		cum.scroll.set(200, 130);
 		cum.zoom = 0.5;
 
 		add(charactersLayer);
-
-		// POST STAGE
-
-		// player1Text = new FlxText(0, 100, 0, "PLAYER 1");
-		// player1Text.setFormat("VCR OSD Mono", 25, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-
-		// player1Bg = new FlxSprite(-1000);
-		// player1Bg.makeGraphic(1, 1, 0xA4000000);
-		// player1Bg.updateHitbox();
-		// player1Bg.y = player1Text.y - 30;
-		// groupHUD.add(player1Bg);
-		// groupHUD.add(player1Text);
-
-		// player2Text = new FlxText(0, 100, 0, "PLAYER 2");
-		// player2Text.setFormat("VCR OSD Mono", 25, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-
-		// player2Bg = new FlxSprite(-1000);
-		// player2Bg.makeGraphic(1, 1, 0xA4000000);
-		// player2Bg.updateHitbox();
-		// player2Bg.y = player2Text.y - 30;
-		// groupHUD.add(player2Bg);
-		// groupHUD.add(player2Text);
 
 		chatBox = new ChatBox(camHUD, (cmd, args) -> {
 			switch (cmd) {
@@ -373,7 +330,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 						var anims = "";
 						for (anim in @:privateAccess getCharacterSelf().animation._animations)
 							anims += '"${anim.name}" ';
-						ChatBox.addMessage("> Please enter the animation you want to play!\nAvailable animations: " + anims);
+						ChatBox.addMessage("> 请输入要播放的动作！\n可用动作: " + anims);
 					}
 					return true;
 				case "results":
@@ -383,7 +340,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 					checkStage();
 					return true;
 				case "help":
-					ChatBox.addMessage("> Room Commands: /pa <anim>, /results, /restage");
+					ChatBox.addMessage("> 房间指令: /pa <动作>, /results, /restage");
 			}
 			return false;
 		});
@@ -445,7 +402,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 		playIcon.ID = 2;
 		items.add(playIcon);
 
-		roomCode = new FlxText(0, 0, 0, "Room Code: ????");
+		roomCode = new FlxText(0, 0, 0, "房间代码: ????");
 		roomCode.setFormat("VCR OSD Mono", 18, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		roomCode.x = settingsIconBg.x + settingsIconBg.width - roomCode.width;
 		roomCode.y = settingsIconBg.y - roomCode.height - 10;
@@ -461,7 +418,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 		groupHUD.add(roomCodeBg);
 		items.add(roomCode);
 
-		songName = new FlxText(0, 0, 0, "Selected Song: ????");
+		songName = new FlxText(0, 0, 0, "已选歌曲: ????");
 		songName.setFormat("VCR OSD Mono", 18, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		songName.x = roomCodeBg.x + roomCodeBg.width - songName.width;
 		songName.y = roomCodeBg.y - songName.height - 10;
@@ -500,7 +457,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 		itemTipBg.updateHitbox();
 		groupHUD.add(itemTipBg);
 
-		itemTip = new FlxText(0, 0, 0, "Placeholder");
+		itemTip = new FlxText(0, 0, 0, "占位文本");
 		itemTip.setFormat("VCR OSD Mono", 18, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		groupHUD.add(itemTip);
 
@@ -519,7 +476,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 		if (stage != null)
 			stage.createPost();
 
-		GameClient.send("status", "In the Lobby");
+		GameClient.send("status", "在房间大厅");
 
 		mobileManager.addMobilePad('FULL', 'B_C_Y_T_M');
 		mobileManager.addMobilePadCamera();
@@ -584,7 +541,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 		controls.isInSubstate = false;
 		super.closeSubState();
 
-		GameClient.send("status", "In the Lobby");
+		GameClient.send("status", "在房间大厅");
 	}
 
 	var optionShake:FlxTween;
@@ -597,7 +554,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
     override function update(elapsed:Float) {
 		if (GameClient.getPlayerSelf() == null) {
 			if (FlxG.keys.justPressed.ESCAPE) {
-				GameClient.leaveRoom('Self not in the room (update).');
+				GameClient.leaveRoom('自身不在房间内（更新）');
 			}
 			return;
 		}
@@ -608,7 +565,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 
 		if (GameClient.getPlayerSelf() == null) {
 			if (FlxG.keys.justPressed.ESCAPE) {
-				GameClient.leaveRoom('Self not in the room (update).');
+				GameClient.leaveRoom('自身不在房间内（更新）');
 			}
 			return;
 		}
@@ -619,17 +576,17 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 
 		#if lumod
 		if (FlxG.keys.justPressed.F12) {
-			trace('reloading lumod');
+			trace('重载Lumod脚本');
 			Lumod.cache.scripts.clear();
 			lmLoad();
 		}
 		#end
 
 		if (lastFocused != (chatBox.focused && chatBox.typeText.text.length > 0)) {
-			if (!lastFocused) // is now typing
-				GameClient.send("status", "Typing...");
+			if (!lastFocused) // 正在输入
+				GameClient.send("status", "正在输入...");
 			else
-				GameClient.send("status", "In the Lobby");
+				GameClient.send("status", "在房间大厅");
 		}
 
 		lastFocused = chatBox.focused && chatBox.typeText.text.length > 0;
@@ -648,38 +605,16 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 			}
 
 			if (sumContentLength > 0) {
-				GameClient.send("status", 'Downloading (${Math.floor(sumReceivedBytes / sumContentLength * 100)}%)');
+				GameClient.send("status", '正在下载 (${Math.floor(sumReceivedBytes / sumContentLength * 100)}%)');
 			}
 			else {
 				if (lastFocused)
-					GameClient.send("status", "Typing...");
+					GameClient.send("status", "正在输入...");
 				else
-					GameClient.send("status", "In the Lobby");
+					GameClient.send("status", "在房间大厅");
 			}
 		}
 		
-		// if (FlxG.keys.justPressed.SPACE) {
-		// 	Alert.alert("Camera Location:", '${cum.scroll.x},${cum.scroll.y} x ${cum.zoom}');
-		// }
-		// if (FlxG.keys.pressed.U) {
-		// 	cum.zoom -= elapsed * 0.5;
-		// }
-		// if (FlxG.keys.pressed.O) {
-		// 	cum.zoom += elapsed * 0.5;
-		// }
-		// if (FlxG.keys.pressed.I) {
-		// 	cum.scroll.y -= elapsed * 20;
-		// }
-		// if (FlxG.keys.pressed.J) {
-		// 	cum.scroll.x -= elapsed * 20;
-		// }
-		// if (FlxG.keys.pressed.K) {
-		// 	cum.scroll.y += elapsed * 20;
-		// }
-		// if (FlxG.keys.pressed.L) {
-		// 	cum.scroll.x += elapsed * 20;
-		// }
-
 		#if DISCORD_ALLOWED
 		elapsedShit += elapsed;
 
@@ -748,9 +683,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 			}
 			playerHold = held;
 
-			// trace('playerHold = ' + playerHold + ', oppHold = ' + oppHold);
-
-			if (mobileButtonPressed('Y') || FlxG.keys.pressed.ALT) { // useless, but why not?
+			if (mobileButtonPressed('Y') || FlxG.keys.pressed.ALT) {
 				var suffix = (mobileButtonPressed('M') || FlxG.keys.pressed.CONTROL) ? 'miss' : '';
 				if (mobileButtonJustPressed('LEFT') || controls.NOTE_LEFT_P) {
 					playerAnim('singLEFT' + suffix);
@@ -783,7 +716,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 				}
 				if (FlxG.keys.pressed.CONTROL && FlxG.keys.justPressed.C) {
 					Clipboard.text = GameClient.getRoomSecret(true);
-					Alert.alert("Room code copied!");
+					Alert.alert("房间代码已复制！");
 				}
 
 				if (FlxG.keys.justPressed.SHIFT) {
@@ -806,7 +739,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 								GameClient.send("verifyChart", Md5.encode(Song.loadRawSong(GameClient.room.state.song, GameClient.room.state.folder)));
 							}
 							catch (exc) {
-								Alert.alert("Caught an exception!", ShitUtil.readableError(exc));
+								Alert.alert("出现异常！", ShitUtil.readableError(exc));
 								if (optionShake != null)
 									optionShake.cancel();
 								optionShake = FlxTween.shake(playIcon, 0.05, 0.3, FlxAxes.X);
@@ -816,7 +749,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 							checkStage();
 
 							if (!hasStage) {
-								Alert.alert("You don't have the current stage!");
+								Alert.alert("你缺少当前使用的背景！");
 							}
 							else {
 								GameClient.send("startGame");
@@ -824,10 +757,10 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 						}
 						else {
 							if (GameClient.room.state.song == "") {
-								Alert.alert("Song isn't selected!");
+								Alert.alert("未选择歌曲！");
 							}
 							else {
-								Alert.alert("You don't have the current song/mod!");
+								Alert.alert("你缺少当前歌曲/模组！");
 							}
 							var sond = FlxG.sound.play(Paths.sound('badnoise' + FlxG.random.int(1, 3)));
 							sond.pitch = 1.1;
@@ -836,7 +769,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 							optionShake = FlxTween.shake(playIcon, 0.05, 0.3, FlxAxes.X);
 						}
 					case 3:
-						roomCode.text = 'Room Code: "' + GameClient.getRoomSecret() + '"';
+						roomCode.text = '房间代码: "' + GameClient.getRoomSecret() + '"';
 						roomCode.x = settingsIconBg.x + settingsIconBg.width - roomCode.width;
 						roomCodeBg.scale.set(roomCode.width, roomCode.height);
 						roomCodeBg.updateHitbox();
@@ -844,21 +777,21 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 						if (revealTimer != null)
 							revealTimer.cancel();
 						revealTimer = new FlxTimer().start(10, (t) -> {
-							roomCode.text = "Room Code: ????";
+							roomCode.text = "房间代码: ????";
 							roomCode.x = settingsIconBg.x + settingsIconBg.width - roomCode.width;
 							roomCodeBg.scale.set(roomCode.width, roomCode.height);
 							roomCodeBg.updateHitbox();
 							roomCodeBg.x = roomCode.x;
 						});
 						Clipboard.text = GameClient.getRoomSecret(true);
-						Alert.alert("Room code copied!");
+						Alert.alert("房间代码已复制！");
 					case 4:
 						if (GameClient.hasPerms() || GameClient.room.state.allPlayersChoose) {
 							FlxG.switchState(() -> new FreeplayState());
 							FlxG.mouse.visible = false;
 						}
 						else {
-							Alert.alert("Only the host can do that!");
+							Alert.alert("仅房主可执行此操作！");
 							var sond = FlxG.sound.play(Paths.sound('badnoise' + FlxG.random.int(1, 3)));
 							sond.pitch = 1.1;
 							if (optionShake != null)
@@ -892,7 +825,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 				if (GameClient.hasPerms())
 					return true;
 
-				Alert.alert("Song isn't selected!");
+				Alert.alert("未选择歌曲！");
 				var sond = FlxG.sound.play(Paths.sound('badnoise' + FlxG.random.int(1, 3)));
 				sond.pitch = 1.1;
 				if (optionShake != null)
@@ -907,7 +840,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 				if (GameClient.hasPerms())
 					return true;
 
-				Alert.alert("You already have this song installed!");
+				Alert.alert("你已安装该歌曲！");
 				var sond = FlxG.sound.play(Paths.sound('badnoise' + FlxG.random.int(1, 3)));
 				sond.pitch = 1.1;
 				if (optionShake != null)
@@ -945,10 +878,10 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 			}
 			else if (!ignoreAlert) {
 				if (GameClient.room.state.modURL == null || GameClient.room.state.modURL == "") {
-					Alert.alert("Mod couldn't be found!", "Host didn't specify the URL of this mod");
+					Alert.alert("未找到模组！", "房主未提供该模组的下载地址");
 				}
 				else if (Mods.getModDirectories().contains(GameClient.room.state.modDir)) {
-					Alert.alert("Mod couldn't be found!", "Expected mod data to exist in this path: " + (GameClient.room.state.modDir ?? "mods/"));
+					Alert.alert("未找到模组！", "预期模组路径：" + (GameClient.room.state.modDir ?? "mods/"));
 				}
 				var sond = FlxG.sound.play(Paths.sound('badnoise' + FlxG.random.int(1, 3)));
 				sond.pitch = 1.1;
@@ -982,16 +915,16 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 		}
 
 		if (daModName == "" || GameClient.room.state.song == "") {
-			verifyMod.text = "No chosen mod.";
+			verifyMod.text = "未选择模组";
 		}
 		else if (selfPlayer.hasSong) {
-			verifyMod.text = "Mod: " + daModName;
+			verifyMod.text = "模组: " + daModName;
 		}
 		else {
 			if (GameClient.room.state.modURL == null || GameClient.room.state.modURL == "")
-				verifyMod.text = "No mod named: " + daModName + " (Unknown; Host didn't specify mod's URL)";
+				verifyMod.text = "缺少模组: " + daModName + " (未知；房主未提供模组地址)";
 			else 
-				verifyMod.text = "No mod named: " + daModName + " (Download/Verify it here!)";
+				verifyMod.text = "缺少模组: " + daModName + " (点击下载/验证)";
 		}
 
 		verifyMod.x = songNameBg.x + songNameBg.width - verifyMod.width;
@@ -999,11 +932,11 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 		verifyModBg.updateHitbox();
 		verifyModBg.x = verifyMod.x;
 
-		songName.text = "Selected Song: " + GameClient.room.state.song;
+		songName.text = "已选歌曲: " + GameClient.room.state.song;
 		if (GameClient.room.state.song == null || GameClient.room.state.song.trim() == "")
-			songName.text += "(None)";
+			songName.text += "(无)";
 		else if (!selfPlayer.hasSong)
-			songName.text += " (Not found!)";
+			songName.text += " (未找到！)";
 		songName.x = roomCodeBg.x + roomCodeBg.width - songName.width;
 		songNameBg.scale.set(songName.width, songName.height);
 		songNameBg.updateHitbox();
@@ -1011,26 +944,26 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 
 		updateCharacters();
 
-		final settingsBind:String = !controls.mobileControls ? "\n\n(Keybind: SHIFT)" : "";
-		final chatBind:String = !controls.mobileControls ? "\n\n(Keybind: TAB)" : "";
-		final roomBind:String = !controls.mobileControls ? "\n\nACCEPT - Reveals the code and\ncopies it to your clipboard.\n\nCTRL + C - Copies the code without\nrevealing it on the screen." : "\n\nTOUCH - Reveals the code and\ncopies it to your clipboard.";
-		final modBind:String = !controls.mobileControls ? "\n\nRIGHT CLICK - Open Mod Downloader" : "\n\nTOUCH - Open Mod Downloader";
-		final lobbyBind:String = !controls.mobileControls ? "\nPress UI keybinds\nor use your mouse\nto select an option!" : "\nTouch UI keybinds\nto select an option!";
+		final settingsBind:String = !controls.mobileControls ? "\n\n(快捷键: SHIFT)" : "";
+		final chatBind:String = !controls.mobileControls ? "\n\n(快捷键: TAB)" : "";
+		final roomBind:String = !controls.mobileControls ? "\n\n确认 - 显示代码并复制到剪贴板\n\nCTRL + C - 不显示直接复制代码" : "\n\n点击 - 显示代码并复制到剪贴板";
+		final modBind:String = !controls.mobileControls ? "\n\n右键 - 打开模组下载器" : "\n\n点击 - 打开模组下载器";
+		final lobbyBind:String = !controls.mobileControls ? "\n使用方向键\n或鼠标\n选择功能！" : "\n点击UI按键\n选择功能！";
 		switch (curSelected) {
 			case 0:
-				itemTip.text = " - SETTINGS - \nOpens server settings." + settingsBind;
+				itemTip.text = " - 设置 - \n打开房间设置。" + settingsBind;
 			case 1:
-				itemTip.text = " - CHAT - \nOpens chat." + chatBind;
+				itemTip.text = " - 聊天 - \n打开聊天框。" + chatBind;
 			case 2:
-				itemTip.text = " - START GAME/READY - \nToggles your READY status.\n\nPlayers also need to have the\ncurrently selected mod installed.\n\n(Both sides can only\nhave up to 2 players).";
+				itemTip.text = " - 开始游戏/准备 - \n切换你的准备状态。\n\n玩家需要安装当前选择的模组。\n\n(双方最多2名玩家)。";
 			case 3:
-				itemTip.text = " - ROOM CODE - \nUnique code of this room." + roomBind;
+				itemTip.text = " - 房间代码 - \n该房间的唯一代码。" + roomBind;
 			case 4:
-				itemTip.text = " - SELECT SONG - \nSelects the song.\n\n(Players with host permissions\ncan only do that)";
+				itemTip.text = " - 选择歌曲 - \n选择对局歌曲。\n\n(仅房主可操作)";
 			case 5:
-				itemTip.text = " - MOD - \nDownloads the currently selected mod\nif it isn't installed.\n\nAfter you install it\npress this button again!" + modBind;
+				itemTip.text = " - 模组 - \n未安装时下载当前模组\n安装后再次点击验证！" + modBind;
 			default:
-				itemTip.text = " - LOBBY - " + lobbyBind;
+				itemTip.text = " - 大厅 - " + lobbyBind;
 		}
 
 		itemTip.x = settingsIconBg.x + settingsIconBg.width - itemTip.width;
@@ -1041,12 +974,10 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 		itemTipBg.updateHitbox();
     }
 
-	// @interpret
 	function updateCharacters() {
 		if (destroyed)
 			return;
 
-		// var sides = [0, 0];
 		var maxOffset = 0.;
 		for (character in characters) {
 			character.character.ox = character.player.ox;
@@ -1054,14 +985,11 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 			character.updatePlayerText();
 
 			maxOffset = Math.max(maxOffset, character.character.ox);
-
-			// sides[character.player.bfSide ? 1 : 0]++;
 		}
 
 		charactersLayer.members.sort(sortByOX);
 
 		funnyMode = Std.int(maxOffset);
-		//cum.zoom = 0.9 - (maxOffset * 0.1);
 	}
 	
 	function sortByOX(a:LobbyCharacter, b:LobbyCharacter) {
@@ -1165,11 +1093,9 @@ class LobbyCharacter extends FlxTypedGroup<FlxSprite> {
 		profileBox.avatarMaxSize = 100;
 		profileBox.text.text = player.name;
 		profileBox.setPosition(0, profileBoxYOffset);
-		//if (camHUD != null)
-		//	profileBox.camera = camHUD;
 		add(profileBox);
 
-		dlSkinTxt = new FlxText(0, 0, 0, "DOWNLOAD SKIN");
+		dlSkinTxt = new FlxText(0, 0, 0, "下载皮肤");
 		dlSkinTxt.setFormat("VCR OSD Mono", 18, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 
 		loadCharacter();
@@ -1236,12 +1162,12 @@ class LobbyCharacter extends FlxTypedGroup<FlxSprite> {
 
 		profileBox.desc.applyMarkup(
 			(player.verified && profileBox.profileData != null ? 
-				FlxStringUtil.formatMoney(player.points, false) + 'FP (' + ShitUtil.toOrdinalNumber(profileBox.profileData.rank) + ")\n"
+				FlxStringUtil.formatMoney(player.points, false) + '积分 (' + ShitUtil.toOrdinalNumber(profileBox.profileData.rank) + ")\n"
 			 : "") +
-			"Ping: <p>" + player.ping + "ms<p>\n\n" +
+			"延迟: <p>" + player.ping + "毫秒<p>\n\n" +
 			player.status + "\n" +
-			(!player.isReady ? "NOT " : "") + "READY" +
-			(noSkin ? "\n(Unloaded Skin)" : "")
+			(!player.isReady ? "未 " : "") + "准备就绪" +
+			(noSkin ? "\n(皮肤未加载)" : "")
 		, [pingMarker]);
 
 		profileBox.updatePositions();
@@ -1310,30 +1236,22 @@ class LobbyCharacter extends FlxTypedGroup<FlxSprite> {
 
 	var _bfSide = false;
 
-	// var _charCamPos = FlxPoint.get();
-
 	public function repos() {
 		if (_bfSide != player.bfSide) {
 			loadCharacter(false);
 		}
 		_bfSide = player.bfSide;
 
-		// left side
 		if (!player.bfSide) {
 			character.x = charOffsetX + 200 + character.positionArray[0] - character.ox * xCharStepOffset;
 			character.y = 120 + character.positionArray[1];
 			profileBox.x = profileBoxXOffset - profileBox.width / 2 - character.ox * xBoxStepOffset;
 		}
-		// right side
 		else {
 			character.x = charOffsetX + 700 + character.positionArray[0] + character.ox * xCharStepOffset;
 			character.y = 120 + character.positionArray[1];
 			profileBox.x = profileBoxXOffsetP2 + FlxG.width - profileBoxXOffset - profileBox.width / 2 + character.ox * xBoxStepOffset;
 		}
-		// character.getScreenPosition(_charCamPos, profileBox.camera);
-		// profileBox.x = _charCamPos.x + character.width / 2 * character.camera.zoom - profileBox.width / 2; 
-		// profileBox.y = profileBoxYOffset + character.ox * yBoxStepOffset;
-		// profileBox.x = character.x + character.width / 2 - profileBox.width / 2;
 		profileBox.y = 100;
 	}
 }
@@ -1348,7 +1266,7 @@ class LobbyStage extends BaseStage {
 
 	override function create() {
 		var stageData = StageData.getStageFile("lobby");
-		if (stageData == null) { // Stage couldn't be found, create a dummy stage for preventing a crash
+		if (stageData == null) {
 			stageData = StageData.dummy();
 		}
 		Paths.setCurrentLevel(stageData.directory);
@@ -1359,9 +1277,6 @@ class LobbyStage extends BaseStage {
 
 		for (num => data in stageData.objects) {
 			if (data.name == 'train') {
-				// phillyTrain = new PhillyTrain(data.x, data.y);
-				// phillyTrain.sound.volume = 0.5;
-				// insert(members.indexOf(sprites.get('street')), phillyTrain);
 			}
 		}
 
