@@ -23,18 +23,6 @@ class DownloaderState extends MusicBeatState {
 	var searchInput:InputText;
 	var pageInfo:FlxText;
 	
-	//var showVerified = false;
-	// public static var verified:Array<Float> = [
-	// 	305075,
-	// 	358364,
-	// 	360477,
-	// 	387484,
-	// 	377938,
-	// 	398737,
-	// 	411524,
-	// 	418767
-	// ];
-
 	var initQuery:String = '';
 
 	public function new(?query:String = '') {
@@ -51,10 +39,10 @@ class DownloaderState extends MusicBeatState {
 		FlxG.mouse.visible = true;
 
 		#if DISCORD_ALLOWED
-		DiscordClient.changePresence("Browsing mods on GameBanana.", null, null, false);
+		DiscordClient.changePresence("在 GameBanana 浏览模组", null, null, false);
 		#end
 
-		GameClient.send("status", "Browsing mods on GameBanana");
+		GameClient.send("status", "在 GameBanana 浏览模组");
 
 		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		bg.color = 0xff46463b;
@@ -81,8 +69,9 @@ class DownloaderState extends MusicBeatState {
 		searchBg.alpha = 0.6;
 		add(searchBg);
 
+		// 搜索框提示汉化
 		searchPlaceholder = new FlxText();
-		searchPlaceholder.text = "Search mods here // Enter a URL to download...";
+		searchPlaceholder.text = "禁止下载GameBanana的模组！// 输入链接直接下载...";
 		searchPlaceholder.setFormat("VCR OSD Mono", 20, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		searchPlaceholder.alpha = 0.6;
 		searchPlaceholder.x = searchBg.x + 20;
@@ -107,14 +96,15 @@ class DownloaderState extends MusicBeatState {
 		add(searchInput);
 
 		pageInfo = new FlxText(0, 0, FlxG.width);
-		pageInfo.text = '< Page ${page} >';
+		pageInfo.text = '< 第 ${page} 页 >';
 		pageInfo.setFormat("VCR OSD Mono", 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		pageInfo.y = FlxG.height - pageInfo.height - 30;
 		add(pageInfo);
 
 		final q:String = (controls.mobileControls) ? 'LEFT' : 'Q';
 
-		var pageTip1 = new FlxText(20, 0, FlxG.width, '$q - Go to previous page');
+		// 翻页提示汉化
+		var pageTip1 = new FlxText(20, 0, FlxG.width, '$q - 上一页');
 		pageTip1.setFormat("VCR OSD Mono", 20, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		pageTip1.y = pageInfo.y;
 		pageTip1.alpha = 0.6;
@@ -122,7 +112,7 @@ class DownloaderState extends MusicBeatState {
 
 		final e:String = (controls.mobileControls) ? 'RIGHT' : 'E';
 
-		var pageTip2 = new FlxText(-20, 0, FlxG.width, '$e - Go to next page');
+		var pageTip2 = new FlxText(-20, 0, FlxG.width, '$e - 下一页');
 		pageTip2.setFormat("VCR OSD Mono", 20, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		pageTip2.y = pageInfo.y;
 		pageTip2.alpha = pageTip1.alpha;
@@ -183,15 +173,15 @@ class DownloaderState extends MusicBeatState {
 			return;
 
 		if (mods == null)
-			err = "Mods not found!";
+			err = "未找到模组！";
 
 		if (err != null) {
-			pageInfo.text = "Error: " + err;
+			pageInfo.text = "错误：" + err;
 			return;
 		}
 
 		page = _newPage;
-		pageInfo.text = '< Page ${page} >';
+		pageInfo.text = '< 第 ${page} 页 >';
 
 		loadMods(mods);
 	}
@@ -273,7 +263,7 @@ class DownloaderState extends MusicBeatState {
 							openModDownloads(items.members[curSelected].mod.id);
 						}
 						else if (FlxG.mouse.overlaps(items.members[curSelected].linkBg)) {
-							RequestSubstate.requestURL(items.members[curSelected].mod.url, "The following button redirects to:", true);
+							RequestSubstate.requestURL(items.members[curSelected].mod.url, "该按钮将跳转到：", true);
 						}
 					}
 					else {
@@ -295,12 +285,12 @@ class DownloaderState extends MusicBeatState {
 			LoadingScreen.toggle(false);
 
 			if (err != null) {
-				Alert.alert("Fetching downloads failed!", err);
+				Alert.alert("获取下载链接失败！", err);
 				return;
 			}
 
 			if (downloads._bIsTrashed || downloads._bIsWithheld) {
-				Alert.alert("Fetching downloads failed!", "That mod is deleted!");
+				Alert.alert("获取下载链接失败！", "该模组已被删除！");
 				return;
 			}
 
@@ -361,7 +351,7 @@ class DownloaderState extends MusicBeatState {
 		}
 
 		if (i == 0) {
-			pageInfo.text = "No mods found!";
+			pageInfo.text = "未找到任何模组！";
 		}
 
 		items.screenCenter(X);
@@ -422,7 +412,7 @@ class ModItem extends FlxSpriteGroup {
 			if (err == null || bytes == null) {
 				category.loadGraphic(FlxGraphic.fromBitmapData(BitmapData.fromBytes(bytes)));
 				category.antialiasing = ClientPrefs.data.antialiasing;
-				category.x = bg.x + bg.width - category.width; // bg.x is needed for some reason
+				category.x = bg.x + bg.width - category.width;
 				category.visible = true;
 				if (categoryName.width > bg.width - category.frameWidth - 15)
 					categoryName.fieldWidth = bg.width - category.frameWidth - 15;
@@ -550,7 +540,7 @@ class ModItem extends FlxSpriteGroup {
 	}
 
 	function loadScreenshot(index:Int) {
-		if (index >= mod.thumbnails.length + 1 /* with first thumbnail */) {
+		if (index >= mod.thumbnails.length + 1) {
 			index = 0;
 		}
 
