@@ -48,15 +48,14 @@ class PostTextSubstate extends MusicBeatSubstate {
 		add(input);
 
 		// ==============================================
-		// 【终极兼容方案】不依赖 canvas 的中文输入支持
+		// 【终极兼容】不用 stage，也能支持中文输入
 		// ==============================================
-		if (stage != null) {
-			stage.addEventListener(TextEvent.TEXT_INPUT, function(e:TextEvent):Void {
-				if (e.text != null && e.text != "") {
-					input.text += e.text;
-				}
-			});
-		}
+		// 直接通过 `FlxG.stage` 访问，所有 Psych 版本都支持
+		FlxG.stage.addEventListener(TextEvent.TEXT_INPUT, function(e:TextEvent):Void {
+			if (e.text != null && e.text != "") {
+				input.text += e.text;
+			}
+		});
 	}
 
     var confirmBack = false;
