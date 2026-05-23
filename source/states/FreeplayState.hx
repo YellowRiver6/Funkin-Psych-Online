@@ -1601,7 +1601,7 @@ class FreeplayState extends MusicBeatState
 					itemsCamera.targetOffset.y += 200;
 				}
 				else {
-					infoText.text = Language.getText("确认键选择歌曲 / %{1}% 按键试听歌曲 / 重置键返回 ", [space]) + (searchGroup == DEFAULT && searchGroupValue == 2 ? Language.getText('show') : Language.getText('hide')) + Language.getText(" the Song");
+					infoText.text = Language.getText("确认键选择歌曲 / %{1}% 按键试听歌曲 / 重置键来 ", [space]) + (searchGroup == DEFAULT && searchGroupValue == 2 ? Language.getText('展示') : Language.getText('隐藏')) + Language.getText(" 谱面");
 					if (chatBox == null)
 						infoText.text += Language.getText(' / 按 Tab 键选择角色');
 				}
