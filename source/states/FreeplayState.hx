@@ -126,11 +126,11 @@ class FreeplayState extends MusicBeatState
 	var selectedScore(default, set):Int = -1;
 	function set_selectedScore(v) {
 		if (v == -1 && selectedItem == 4) {
-			infoText.text = Language.getText("LEFT or RIGHT to Switch Time / ACCEPT to view this leaderboard in browser");
+			infoText.text = Language.getText("按左 / 右键切换时间 / 按确认键在浏览器中查看排行榜");
 			topCategory.alpha = 1;
 		}
 		else {
-			infoText.text = Language.getText("LEFT or RIGHT to Flip Pages / ACCEPT to view Player's replay of this song");
+			infoText.text = Language.getText("按左 / 右键翻页 / 按确认键查看该歌曲玩家回放");
 			topCategory.alpha = 0.6;
 		}
 
@@ -263,7 +263,7 @@ class FreeplayState extends MusicBeatState
 		topTitle = new Alphabet(0, 0, Language.getText("LEADERBOARD"), true);
 		topCategory = new Alphabet(0, 0, Language.getText("< ALL TIME >"), true);
 		topLoading = new Alphabet(0, 0, Language.getText("LOADING"), true);
-		topShit = new Scoreboard(FlxG.width - 200, 32, 15, [Language.getText("PLAYER"), Language.getText("SCORE"), Language.getText("ACCURACY")]);
+		topShit = new Scoreboard(FlxG.width - 200, 32, 15, [Language.getText("玩家"), Language.getText("成绩"), Language.getText("准度")]);
 
 		bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		bg.antialiasing = ClientPrefs.data.antialiasing;
@@ -417,7 +417,7 @@ class FreeplayState extends MusicBeatState
 		scoreBG.scrollFactor.set();
 		scoreBG.cameras = [hudCamera];
 
-		searchInput = new FlxText(scoreText.x, scoreText.y + 36, 0, "PRESS F TO SEARCH", 24);
+		searchInput = new FlxText(scoreText.x, scoreText.y + 36, 0, "按下 F 键搜索", 24);
 		searchInput.font = scoreText.font;
 		searchInput.scrollFactor.set();
 
@@ -660,7 +660,7 @@ class FreeplayState extends MusicBeatState
 		if (GameClient.isConnected()) {
 			add(chatBox = new ChatBox(camera));
 			chatBox.cameras = [hudCamera];
-			GameClient.send("status", "Choosing a Song");
+			GameClient.send("status", "选择歌曲中");
 		}
 		
 		changeSelection();
@@ -1241,8 +1241,8 @@ class FreeplayState extends MusicBeatState
 
 								var errorStr:String = e.toString();
 								if (errorStr.startsWith('[file_contents,assets/data/'))
-									errorStr = 'Missing file: ' + errorStr.substring(27, errorStr.length - 1); // Missing chart
-								missingText.text = 'ERROR WHILE LOADING CHART:\n$errorStr';
+									errorStr = '文件缺失: ' + errorStr.substring(27, errorStr.length - 1); // Missing chart
+								missingText.text = '加载谱面出错:\n$errorStr';
 								missingText.screenCenter(Y);
 								missingText.visible = true;
 								missingTextBG.visible = true;
@@ -1439,7 +1439,7 @@ class FreeplayState extends MusicBeatState
 		else {
 			PlayState.replayData = null;
 
-			missingText.text = 'OUTDATED REPLAY OR INVALID FOR THIS SONG';
+			missingText.text = '回放版本过时，或不适用于该曲目';
 			missingText.screenCenter(Y);
 			missingText.visible = true;
 			missingTextBG.visible = true;
@@ -1456,7 +1456,7 @@ class FreeplayState extends MusicBeatState
 	var leaderboardTimer(default, set):Float = 3;
 	function set_leaderboardTimer(v:Float) {
 		if (v == 0) {
-			topLoading.text = Language.getText('Loading...');
+			topLoading.text = Language.getText('加载中...');
 			topLoading.visible = true;
 			topShit.visible = false;
 			hasLeaderboardTimerEnded = false;
@@ -1561,7 +1561,7 @@ class FreeplayState extends MusicBeatState
 			});
 		}
 		catch (e:Dynamic) {
-			topLoading.text = 'Failed to load!';
+			topLoading.text = '加载失败!';
 		}
 	}
 
@@ -1588,22 +1588,22 @@ class FreeplayState extends MusicBeatState
 		itemsCamera.targetOffset.set(0, 0);
 
 		if (curSelected == -1) {
-			infoText.text = Language.getText("ACCEPT to select a random song / %{1}% to select without loading / %{2}% to select song group", [space, ctrl]);
+			infoText.text = Language.getText("按下确认键以随机选歌 / %{1}% 直接选择，无需加载 / %{2}% 选择歌曲分组", [space, ctrl]);
 			if (chatBox == null)
-				infoText.text += Language.getText(' / TAB to select your character!');
+				infoText.text += Language.getText(' / 按 Tab 键选择角色');
 			return;
 		}
 
 		switch (selectedItem) {
 			case 0:
 				if (selected) {
-					infoText.text = Language.getText("ACCEPT to enter the Song / Use your Arrow Keys to change the Difficulty");
+					infoText.text = Language.getText("按下确认键进入歌曲 / 使用方向键切换难度");
 					itemsCamera.targetOffset.y += 200;
 				}
 				else {
-					infoText.text = Language.getText("ACCEPT to select the Song / %{1}% to listen to the Song / RESET to ", [space]) + (searchGroup == DEFAULT && searchGroupValue == 2 ? Language.getText('show') : Language.getText('hide')) + Language.getText(" the Song");
+					infoText.text = Language.getText("确认键选择歌曲 / %{1}% 按键试听歌曲 / 重置键返回 ", [space]) + (searchGroup == DEFAULT && searchGroupValue == 2 ? Language.getText('show') : Language.getText('hide')) + Language.getText(" the Song");
 					if (chatBox == null)
-						infoText.text += Language.getText(' / TAB to select your character!');
+						infoText.text += Language.getText(' / 按 Tab 键选择角色');
 				}
 
 				if (centerPoint == null)
@@ -1619,7 +1619,7 @@ class FreeplayState extends MusicBeatState
 				topCategory.alpha = 0.6;
 				topLoading.alpha = 0.6;
 			case 1:
-				infoText.text = Language.getText("ACCEPT to open Gameplay Modifers Menu");
+				infoText.text = Language.getText("按确认键打开游戏设置菜单");
 
 				itemsCamera.follow(modifiersSelect, null, 0.15);
 				itemsCamera.targetOffset.y += 200;
@@ -1633,7 +1633,7 @@ class FreeplayState extends MusicBeatState
 				topCategory.alpha = 0.6;
 				topLoading.alpha = 0.6;
 			case 2:
-				infoText.text = Language.getText("ACCEPT to load a Replay data file");
+				infoText.text = Language.getText("按确认键加载回放数据文件");
 				
 				itemsCamera.follow(replaysSelect, null, 0.15);
 				itemsCamera.targetOffset.y += 200;
@@ -1647,7 +1647,7 @@ class FreeplayState extends MusicBeatState
 				topCategory.alpha = 0.6;
 				topLoading.alpha = 0.6;
 			case 3:
-				infoText.text = Language.getText("ACCEPT to reset Score and Accuracy of this Song");
+				infoText.text = Language.getText("确认键重置该歌曲分数与准确率");
 
 				itemsCamera.follow(resetSelect, null, 0.15);
 				itemsCamera.targetOffset.y += 200;
@@ -1661,7 +1661,7 @@ class FreeplayState extends MusicBeatState
 				topCategory.alpha = 0.6;
 				topLoading.alpha = 0.6;
 			case 4:
-				infoText.text = Language.getText("LEFT or RIGHT to Flip Pages / ACCEPT to view Player's replay of this song");
+				infoText.text = Language.getText("左右键翻页 / 确认键查看该歌曲玩家录像");
 
 				itemsCamera.follow(topShit.background, null, 0.15);
 				itemsCamera.targetOffset.y -= 120 + topTitle.height;
@@ -1680,7 +1680,7 @@ class FreeplayState extends MusicBeatState
 		}
 
 		if (selected)
-			infoText.text += Language.getText(" / BACK to return to Songs");
+			infoText.text += Language.getText(" / 返回键回到歌曲列表");
 
 		if (GameClient.isConnected()) {
 			replaysSelect.alpha -= 0.4;
@@ -2256,7 +2256,7 @@ class FreeplayState extends MusicBeatState
 			var errorStr:String = e.toString();
 			if (errorStr.startsWith('[file_contents,assets/data/'))
 				errorStr = 'Missing file: ' + errorStr.substring(27, errorStr.length - 1); // Missing chart
-			missingText.text = 'ERROR WHILE LOADING CHART:\n$errorStr';
+			missingText.text = '加载谱面时出错:\n$errorStr';
 			missingText.screenCenter(Y);
 			missingText.visible = true;
 			missingTextBG.visible = true;
@@ -2293,12 +2293,12 @@ class FreeplayState extends MusicBeatState
 	static function set_searchString(v) {
 		if (FreeplayState.instance.searchInputWait || v.length > 0) {
 			FreeplayState.instance.searchInput.alpha = FreeplayState.instance.searchInputWait ? 1.0 : 0.6;
-			FreeplayState.instance.searchInput.text = "SEARCH: '" + v + "'";
+			FreeplayState.instance.searchInput.text = "搜索: '" + v + "'";
 			return searchString = v;
 		}
 
 		FreeplayState.instance.searchInput.alpha = 0.6;
-		FreeplayState.instance.searchInput.text = 'PRESS F TO SEARCH';
+		FreeplayState.instance.searchInput.text = '按 F 键搜索';
 		return searchString = v;
 	}
 
