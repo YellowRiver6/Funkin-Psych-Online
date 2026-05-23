@@ -181,7 +181,7 @@ class OptionsState extends MusicBeatState
 		super.create();
 
 		mobileManager.addMobilePad("UP_DOWN", "A_B");
-		online.GameClient.send("status", "In the Game Options");
+		online.GameClient.send("status", "在引擎设置中");
 	}
 
 	override function closeSubState() {
