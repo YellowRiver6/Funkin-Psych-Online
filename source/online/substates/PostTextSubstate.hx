@@ -36,7 +36,7 @@ class PostTextSubstate extends MusicBeatSubstate
 		titleTxt.scrollFactor.set();
 		add(titleTxt);
 
-		// 标准输入框（最稳定、不报错）
+		// 输入框
 		input = new FlxInput(FlxG.width * 0.1, FlxG.height / 2 - 20, FlxG.width * 0.8, 40);
 		input.borderColor = 0xFFFFFF;
 		input.borderSize = 2;
