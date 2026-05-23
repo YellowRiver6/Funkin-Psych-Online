@@ -1,5 +1,8 @@
 package online.substates;
 
+// 必须加这个，才能让输入框支持中文
+import flixel.addons.ui.FlxInputTextIMEManager;
+
 class PostTextSubstate extends MusicBeatSubstate {
 	var title:String;
 	var onEnter:String->Void;
@@ -29,7 +32,7 @@ class PostTextSubstate extends MusicBeatSubstate {
 		bg.scrollFactor.set(0, 0);
 		add(bg);
 
-		// 汉化提示文本
+		// 汉化提示
 		var title = new FlxText(0, 0, FlxG.width, this.title + "\n\n(按回车键提交)");
 		title.setFormat("VCR OSD Mono", 24, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		title.y = FlxG.height / 2 - title.height / 2 - 150;
@@ -47,7 +50,12 @@ class PostTextSubstate extends MusicBeatSubstate {
 		input.y = FlxG.height / 2 - input.height / 2;
 		input.scrollFactor.set();
 		add(input);
-    }
+
+		// ==============================================
+		// 【核心修复】开启中文输入法支持
+		// ==============================================
+		FlxInputTextIMEManager.enableIME(input);
+	}
 
     var confirmBack = false;
     override function update(elapsed) {
@@ -69,7 +77,9 @@ class PostTextSubstate extends MusicBeatSubstate {
 
 	override function destroy() {
 		super.destroy();
-
 		FlxG.cameras.remove(coolCam);
+
+		// 关闭输入法，防止影响其他界面
+		FlxInputTextIMEManager.disableIME();
 	}
 }
