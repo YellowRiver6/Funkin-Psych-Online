@@ -917,7 +917,7 @@ class FreeplayState extends MusicBeatState
 		if (curSelected == -1)
 			scoreText.text = randomMessage;
 		else
-			scoreText.text = Language.getText('PERSONAL BEST') + ': ' + lerpScore + ' (' + ratingSplit.join('.') + '%)';
+			scoreText.text = Language.getText('个人最佳') + ': ' + lerpScore + ' (' + ratingSplit.join('.') + '%)';
 		positionHighscore();
 
 		if ((chatBox != null && chatBox.focused) || searchInputWait || transToPlayState) {
