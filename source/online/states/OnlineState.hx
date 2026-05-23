@@ -158,7 +158,7 @@ class OnlineState extends MusicBeatState {
 			// ==============================================
 			// 这里把字体大小从 40 改成 30（适配中文）
 			// ==============================================
-			text.setFormat("VCR OSD Mono", 30, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+			text.setFormat("VCR OSD Mono", 40, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 			text.alpha = inputWait ? 0.5 : 0.8;
 			if (text.ID == curSelected) {
 				text.text = "> " + text.text + " <";
@@ -241,7 +241,7 @@ class OnlineState extends MusicBeatState {
 		availableRooms.screenCenter(X);
 		add(availableRooms);
 
-		var credit = new FlxText(0, 0, 0, 'Psych Online 作者：Snirozu');
+		var credit = new FlxText(0, 0, 0, '您游玩的是由千野年糕ovo汉化的版本');
 		credit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		credit.alpha = 0.3;
 		credit.screenCenter(X);
