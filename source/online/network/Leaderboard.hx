@@ -10,8 +10,8 @@ class Leaderboard {
 		'week'
 	];
 	public static var categoryTitles:Array<String> = [
-		'All Time',
-		'Weekly'
+		'历史总分',
+		'每周排行'
 	];
 
     public static function submitScore(replayData:String) {
@@ -71,7 +71,7 @@ class Leaderboard {
 		var response = FunkinNetwork.requestAPI({
 			path: "/api/score/report",
 			headers: ["content-type" => "application/json"],
-			body: Json.stringify({content: 'Score #${scoreID}\nReason: ' + desc}),
+			body: Json.stringify({content: '分数 #${scoreID}\n举报原因: ' + desc}),
 			post: true
 		});
 
