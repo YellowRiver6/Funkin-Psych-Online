@@ -10,8 +10,8 @@ class Leaderboard {
 		'week'
 	];
 	public static var categoryTitles:Array<String> = [
-		'历史总分',
-		'每周排行'
+		'All Time',
+		'Weekly Time'
 	];
 
     public static function submitScore(replayData:String) {
