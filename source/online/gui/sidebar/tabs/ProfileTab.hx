@@ -67,6 +67,7 @@ class ProfileTab extends TabSprite {
 		avatar.y = 20;
 		addChild(avatar);
 
+		// 修复了这里的多余括号！
 		flag = new Bitmap(new BitmapData(1, 1, true, 0x00000000));
 		addChild(flag);
 
@@ -260,7 +261,7 @@ class ProfileTab extends TabSprite {
 		avatar.width = 125;
 		avatar.height = 125;
 
-		flag.bitmapData = new BitmapData(1, 1, true, 0x00000000));
+		flag.bitmapData = new BitmapData(1, 1, true, 0x00000000);
 		flag.visible = false;
 		Thread.run(() -> {
 			var avatarData = FunkinNetwork.getUserAvatar(loadingUser);
@@ -314,7 +315,7 @@ class ProfileTab extends TabSprite {
 		var joinDate = ShitUtil.parseISODate(user.joined);
 		stats.setText(
 			"排名：" + ShitUtil.toOrdinalNumber(user.rank) + '\n' +
-			"分数：" + FlxStringUtil.formatMoney(user.points, false) + " FP\n" +
+			"FP：" + FlxStringUtil.formatMoney(user.points, false) + " FP\n" +
 			"平均准确率：" + FlxMath.roundDecimal((user.avgAccuracy * 100), 2) + "%\n" +
 			"注册时间：" + joinDate.getDate() + '/' + (joinDate.getMonth() + 1) + '/' + (joinDate.getFullYear() + '').substr(2) + "\n\n"
 		);
