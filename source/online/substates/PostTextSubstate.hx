@@ -21,10 +21,10 @@ class PostTextSubstate extends MusicBeatSubstate {
 
     override function create() {
         super.create();
-		// 开启系统IME中文输入核心开关
-		if(System.window != null){
+
+		// 强制开启中文输入法（Windows / Linux / Mac 全支持）
+		if (System.window != null) {
 			System.window.imeEnabled = true;
-			System.setHint("SDL_IME_INTERNAL_EDITING", "1");
 		}
 
 		coolCam = new FlxCamera();
@@ -38,14 +38,14 @@ class PostTextSubstate extends MusicBeatSubstate {
 		bg.scrollFactor.set(0, 0);
 		add(bg);
 
-		// 标题文字
-		var titleTxt = new FlxText(0, 0, FlxG.width, this.title + "\n\n(按回车键提交)");
-		titleTxt.setFormat("Microsoft YaHei", 24, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		// 标题
+		var titleTxt = new FlxText(0, 0, FlxG.width, this.title + "\n\n(Press Enter to submit)");
+		titleTxt.setFormat("VCR OSD Mono", 24, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		titleTxt.y = FlxG.height / 2 - titleTxt.height / 2 - 150;
 		titleTxt.scrollFactor.set();
 		add(titleTxt);
 
-		// 原生支持中文输入框
+		// 输入框
 		input = new TextField();
 		input.type = TextFieldType.INPUT;
 		input.editable = true;
@@ -54,23 +54,19 @@ class PostTextSubstate extends MusicBeatSubstate {
 		input.height = 40;
 		input.x = (FlxG.width - input.width) / 2;
 		input.y = FlxG.height / 2 - input.height / 2;
-		// 中文字体，关闭字体嵌入保证输入法生效
-		input.defaultTextFormat = new TextFormat("Microsoft YaHei", 26, 0xFFFFFF);
+		input.defaultTextFormat = new TextFormat("VCR OSD Mono", 26, 0xFFFFFF);
 		input.embedFonts = false;
+		input.wordWrap = false;
+		input.multiline = false;
+		
 		stage.addChild(input);
 		input.setFocus();
-
-		// 字符录入监听
-		FlxG.stage.addEventListener(TextEvent.TEXT_INPUT, e -> {
-			input.text += e.text;
-		});
 	}
 
     var confirmBack = false;
     override function update(elapsed) {
         super.update(elapsed);
 
-		// 回车提交
 		if(controls.ACCEPT){
 			var txt = input.text.trim();
 			if(txt.length > 0){
@@ -96,7 +92,10 @@ class PostTextSubstate extends MusicBeatSubstate {
 			input.parent.removeChild(input);
 		}
 		FlxG.cameras.remove(coolCam);
-		// 关闭输入焦点
-		if(System.window != null) System.window.imeEnabled = false;
+
+		// 关闭输入法
+		if (System.window != null) {
+			System.window.imeEnabled = false;
+		}
 	}
 }
