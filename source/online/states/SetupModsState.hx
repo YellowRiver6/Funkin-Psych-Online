@@ -30,7 +30,7 @@ class SetupModsState extends MusicBeatState {
         super.create();
 
 		#if DISCORD_ALLOWED
-		DiscordClient.changePresence("In the Menus", "Mods URL Setup");
+		DiscordClient.changePresence("菜单中", "设置模组链接");
 		#end
 
 		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
@@ -74,12 +74,12 @@ class SetupModsState extends MusicBeatState {
 		items.screenCenter(Y);
 		add(items);
 
-		final accept:String = (controls.mobileControls) ? 'A' : 'ACCEPT, Paste links with CTRL + V';
-		final back:String = (controls.mobileControls) ? 'B' : 'BACK';
-		final shift:String = (controls.mobileControls) ? 'C' : 'SHIFT';
+		final accept:String = (controls.mobileControls) ? 'A' : '确认键, CTRL+V 粘贴链接';
+		final back:String = (controls.mobileControls) ? 'B' : '返回键';
+		final shift:String = (controls.mobileControls) ? 'C' : 'SHIFT键';
 
 		var title = new FlxText(0, 0, FlxG.width, 
-		"Before you play, it is recommended to set links for your mods!\nSelect mods with " + accept + ", Leave with " + back + "\nHold " + shift + " while exiting to discard all changes"
+		"开始游戏前，建议为你的模组设置下载链接！\n按 " + accept + " 选择模组，按 " + back + " 离开\n退出时按住 " + shift + " 可放弃所有修改"
 		);
 		title.setFormat("VCR OSD Mono", 22, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		title.y = 50;
@@ -161,7 +161,6 @@ class SetupModsState extends MusicBeatState {
 			curSelected = swagMods.length - 1;
 		}
 
-		// how the fuck can this be null
 		if (items == null)
 			return;
 
@@ -175,9 +174,9 @@ class SetupModsState extends MusicBeatState {
 			}
 
 			if (OnlineMods.checkInvalidURL(modsInput[item.ID]))
-				item.color = FlxColor.RED;
+				item.color = FlxColor.RED; // 链接无效
 			else
-				item.color = FlxColor.LIME;
+				item.color = FlxColor.LIME; // 链接有效
 			item.screenCenter(X);
 		}
     }
@@ -194,20 +193,20 @@ class SetupModsState extends MusicBeatState {
 
 		var key = e.keyCode;
 
-		if (e.charCode == 0) { // non-printable characters crash String.fromCharCode
+		if (e.charCode == 0) {
 			return;
 		}
 
-		if (key == 46) { // delete
+		if (key == 46) { // Delete 删除
 			return;
 		}
 
-		if (key == 8) { // bckspc
+		if (key == 8) { // 退格键
 			modsInput[curSelected] = modsInput[curSelected].substring(0, modsInput[curSelected].length - 1);
 			changeSelection(0);
 			return;
 		}
-		else if (key == 13 || key == 27) { // enter or esc
+		else if (key == 13 || key == 27) { // 回车 / ESC
 			tempDisableInput();
 			inInput = FlxG.stage.window.textInputEnabled = false;
 			changeSelection(0);
