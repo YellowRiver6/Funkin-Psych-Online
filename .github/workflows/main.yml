@@ -1,21 +1,29 @@
-name: Build Psych Extended Online
+name: Build Psych Extended Online (Windows Only)
+on: workflow_dispatch
 
-on:
-  workflow_dispatch:
-  push:
-    branches: [ main ]
+permissions:
+  contents: read
+
+env:
+  PROJECT_NAME: PsychExtendedOnline
 
 jobs:
-  Build:
+  build:
+    name: Windows Build
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup & Build
-        run: |
-          .\setup\windows.bat
-          lime build windows -D officialBuild -final
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
-          name: windows-build-x86_64
-          path: export/release/windows/bin/
+          submodules: recursive
+          
+      # 这里是你原有的构建逻辑（调用内部工作流）
+      - name: Build Windows
+        uses: ./.github/workflows/build.yml
+        with:
+          name: Windows
+          os: windows-latest
+          buildArgs: "windows -final -D officialBuild"
+          artifactName: WindowsBuild
+          # 请确认你的 Windows 构建产物路径，这是通用格式
+          artifactPath: "export/release/windows/*.zip"
