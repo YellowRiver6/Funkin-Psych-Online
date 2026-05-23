@@ -204,17 +204,17 @@ class SmolProfile extends Sprite implements ITabInteractable {
 		status = this.createText(nick.x, nick.y + 30, 18);
 		addChild(status);
 
-		invitePlay = new TabButton('邀请游戏', () -> {});
+		invitePlay = new TabButton('invitePlay', () -> {});
 		invitePlay.x = underlay.width - invitePlay.width - 20;
 		invitePlay.y = underlay.height / 2 - invitePlay.height / 2;
 		addChild(invitePlay);
 
-		addFriend = new TabButton('添加好友', () -> {});
+		addFriend = new TabButton('addFriend', () -> {});
 		addFriend.x = underlay.width - invitePlay.width - 20;
 		addFriend.y = underlay.height / 2 - invitePlay.height / 2;
 		addChild(addFriend);
 
-		viewProfile = new TabButton('查看资料', () -> {});
+		viewProfile = new TabButton('viewProfile', () -> {});
 		viewProfile.x = invitePlay.x - viewProfile.width - 10;
 		viewProfile.y = underlay.height / 2 - viewProfile.height / 2;
 		addChild(viewProfile);
