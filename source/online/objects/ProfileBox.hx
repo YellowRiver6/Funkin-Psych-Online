@@ -93,12 +93,12 @@ class ProfileBox extends FlxSpriteGroup {
 			if (profileData != null) {
 				if (autoUpdateThings) {
 					if (isSelf)
-						text.text = "Welcome, " + user + "!";
+						text.text = "欢迎你，" + user + "！";
 					else
 						text.text = user;
-					desc.text = "Points: " + FlxStringUtil.formatMoney(profileData.points ?? 0, false);
-					desc.text += "\nRank: " + ShitUtil.toOrdinalNumber(profileData.rank);
-					desc.text += "\nAvg. Accuracy: " + FlxMath.roundDecimal((profileData.avgAccuracy * 100), 2) + "%";
+					desc.text = "FP: " + FlxStringUtil.formatMoney(profileData.points ?? 0, false);
+					desc.text += "\n排名: " + ShitUtil.toOrdinalNumber(profileData.rank);
+					desc.text += "\n平均准确率: " + FlxMath.roundDecimal((profileData.avgAccuracy * 100), 2) + "%";
 				}
 
 				Thread.run(() -> {
@@ -128,11 +128,11 @@ class ProfileBox extends FlxSpriteGroup {
 			else {
 				if (autoUpdateThings) {
 					if (isSelf) {
-						text.text = "Not logged in!";
-						desc.text = "(Click to register)";
+						text.text = "尚未登录！";
+						desc.text = "(点击进行注册)";
 					}
 					else
-						text.text = "User not found!";
+						text.text = "找不到该用户！";
 					cardHeight = 50;
 				}
 			}
@@ -196,8 +196,7 @@ class ProfileBox extends FlxSpriteGroup {
 		if (!avatar.visible) {
 			text.x = x + bg.width / 2 - text.width / 2;
 			desc.x = x + bg.width / 2 - desc.width / 2;
-			// text.y = y + bg.height / 2 - text.height / 2 - (desc.text.length > 0 ? (cardHeight >= 80 ? 20 : 10) : 0);
-        }
+		}
 		text.alignment = LEFT;
 		desc.y = text.y + text.height + 5;
 		if (desc.text.length < 1) {
@@ -209,11 +208,9 @@ class ProfileBox extends FlxSpriteGroup {
 
 		maxTextSize = bg.width - (text.x - x) - 20;
 		text.fieldWidth = maxTextSize;
-		//text.scale.x = Math.min(1, maxTextSizeDesc / text.width);
 
 		maxTextSizeDesc = bg.width - (desc.x - x) - 20;
 		desc.fieldWidth = maxTextSizeDesc;
-		//desc.scale.x = Math.min(1, maxTextSizeDesc / desc.width);
 
 		if (autoCardHeight) {
 			_cardHeight = Std.int(Math.max((desc.y - y) + desc.height, (avatar.y - y) + avatar.height) + 20);
