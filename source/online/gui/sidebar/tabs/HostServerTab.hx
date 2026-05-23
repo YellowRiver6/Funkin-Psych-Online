@@ -23,12 +23,12 @@ class HostServerTab extends TabSprite {
 		logs = this.createText(0, 0, 16, FlxColor.WHITE);
 		addChild(logs);
 
-		startAndStop = new TabButton('启动', startAndStopServer);
+		startAndStop = new TabButton('startAndStop', startAndStopServer);
 		startAndStop.x = tabWidth - startAndStop.width - 10;
 		startAndStop.y = 10;
 		addChild(startAndStop);
 
-		updateServer = new TabButton('更新', () -> {
+		updateServer = new TabButton('updateServer', () -> {
 			if (FileSystem.exists('_server/'))
 				FileUtils.removeFiles('_server/');
 			prepareServer();
