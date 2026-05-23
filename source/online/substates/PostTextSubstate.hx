@@ -1,15 +1,13 @@
 package online.substates;
 
-import flixel.FlxBasic;
 import flixel.FlxG;
 import flixel.text.FlxText;
 import openfl.events.Event;
 import openfl.events.FocusEvent;
 import openfl.text.StageText;
 import openfl.text.TextFieldType;
-import states.PlayState;
 
-// 用 Psych Engine 自带的 MusicBeatSubstate，所有平台都能识别
+// 用 Psych Engine 标准基类，所有平台都能识别
 class PostTextSubstate extends MusicBeatSubstate
 {
 	var title:String;
@@ -34,14 +32,14 @@ class PostTextSubstate extends MusicBeatSubstate
 	{
 		super.create();
 
-		// 背景
+		// 半透明背景
 		var bg = new flixel.FlxSprite();
 		bg.makeGraphic(FlxG.width, FlxG.height, 0x000000);
 		bg.alpha = 0.7;
 		bg.scrollFactor.set(0, 0);
 		add(bg);
 
-		// 标题
+		// 标题文字
 		var titleTxt = new FlxText(0, 0, FlxG.width, title + "\n\n(按回车提交 / 按返回取消)");
 		titleTxt.setFormat("Arial", 24, 0xFFFFFF, "center");
 		titleTxt.y = FlxG.height / 2 - titleTxt.height / 2 - 100;
@@ -49,7 +47,7 @@ class PostTextSubstate extends MusicBeatSubstate
 		add(titleTxt);
 
 		#if mobile
-		// Android/iOS：用系统原生 StageText，完美支持中文输入法
+		// Android/iOS：原生 StageText 输入框
 		nativeInput = new StageText();
 		nativeInput.type = TextFieldType.INPUT;
 		nativeInput.width = FlxG.width * 0.8;
@@ -62,7 +60,7 @@ class PostTextSubstate extends MusicBeatSubstate
 		nativeInput.addEventListener(FocusEvent.FOCUS_OUT, onBlur);
 		nativeInput.needsSoftKeyboard = true;
 		#else
-		// Windows：用简单文本变量 + 监听键盘，避免 FlxInput 兼容性问题
+		// Windows：简单字符串输入
 		input = "";
 		#end
 	}
@@ -94,8 +92,6 @@ class PostTextSubstate extends MusicBeatSubstate
 			}
 			close();
 		}
-		// 简单文本输入（中文依赖系统IME，project.xml已开启）
-		// 你也可以在这里加自定义字符处理，这里用最兼容的方式
 		#endif
 
 		// 取消逻辑
