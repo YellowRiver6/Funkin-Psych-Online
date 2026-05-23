@@ -8,7 +8,7 @@ class ChatTab extends TabSprite {
 	var messageGroup:Sprite;
 
 	public function new() {
-		super('Chat', 'chat');
+		super('聊天', 'chat');
 		tabWidth = 500;
 	}
 
@@ -16,7 +16,7 @@ class ChatTab extends TabSprite {
 		super.create();
 
 		var placeholderInput = this.createText(0, 0, 16, FlxColor.WHITE);
-		placeholderInput.text = '(Click here or press TAB to chat)';
+		placeholderInput.text = '(点击这里或按 TAB 键发送消息)';
 		placeholderInput.width = tabWidth;
 		placeholderInput.height = placeholderInput.textHeight;
 		placeholderInput.alpha = 0.5;
@@ -29,8 +29,6 @@ class ChatTab extends TabSprite {
 		input.multiline = false;
 		input.y = heightSpace - input.height;
 		input.addEventListener(Event.CHANGE, _ -> {
-			//TODO? emojis
-			// TextFormats.applyEmojis(input);
 			placeholderInput.visible = input.text.length <= 0;
 		});
 		placeholderInput.y = input.y;
@@ -87,17 +85,17 @@ class ChatTab extends TabSprite {
 			if (input.text.trim() == '/notify pm') {
 				ClientPrefs.data.disablePMs = !ClientPrefs.data.disablePMs;
 				ClientPrefs.saveSettings();
-				addMessage('PM Notifications are now ${ClientPrefs.data.disablePMs ? 'OFF' : 'ON'}!');
+				addMessage('私信通知已：${ClientPrefs.data.disablePMs ? "关闭" : "开启"}!');
 			}
 			else if (input.text.trim() == '/notify roominvite') {
 				ClientPrefs.data.disableRoomInvites = !ClientPrefs.data.disableRoomInvites;
 				ClientPrefs.saveSettings();
-				addMessage('Room Invite Notifications are now ${ClientPrefs.data.disableRoomInvites ? 'OFF' : 'ON'}!');
+				addMessage('房间邀请通知已：${ClientPrefs.data.disableRoomInvites ? "关闭" : "开启"}!');
 			}
 			else if (input.text.trim() == '/notify') {
 				ClientPrefs.data.notifyOnChatMsg = !ClientPrefs.data.notifyOnChatMsg;
 				ClientPrefs.saveSettings();
-				addMessage('Chat Notifications are now ${ClientPrefs.data.notifyOnChatMsg ? 'ON' : 'OFF'}!');
+				addMessage('聊天通知已：${ClientPrefs.data.notifyOnChatMsg ? "开启" : "关闭"}!');
 			}
 			else if (input.text.trim().startsWith('/profile')) {
 				online.gui.sidebar.tabs.ProfileTab.view(input.text.substr('/profile'.length).trim());
@@ -107,7 +105,7 @@ class ChatTab extends TabSprite {
 					NetworkClient.room.send('chat', input.text);
 				}
 				else {
-					addMessage("Not connected to the server! Trying to connect!");
+					addMessage("未连接到服务器！正在尝试重连！");
 					NetworkClient.connect();
 				}
 			}
@@ -162,7 +160,6 @@ class ChatTab extends TabSprite {
 			format.color = data.hue != null ? FlxColor.fromHSL(data.hue, 1.0, 0.8) : FlxColor.WHITE;
 		if (data.center == true) {
 			format.align = CENTER;
-			//message.x = tabWidth / 2 - message.width / 2;
 		}
 		message.defaultTextFormat = format;
 		message.wordWrap = true;
@@ -175,7 +172,7 @@ class ChatTab extends TabSprite {
 			if (data.hue != null) {
 				prefix = ShitUtil.toBiDigitString(date.getHours()) + ":" + ShitUtil.toBiDigitString(date.getMinutes()) + " ";
 				if (!SideUI.instance.active && ((data.isPM && !ClientPrefs.data.disablePMs) || (isNew && ClientPrefs.data.notifyOnChatMsg))) {
-					Alert.alert('New Chat Message!', data.content);
+					Alert.alert('收到新消息！', data.content);
 				}
 			}
 
