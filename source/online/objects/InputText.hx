@@ -2,6 +2,7 @@ package online.objects;
 
 import online.gui.sidebar.SideUI;
 import flixel.addons.ui.FlxInputText;
+import openfl.text.TextField;
 
 class InputText extends FlxInputText {
     public function new(x:Float, y:Float, width:Float, onEnter:(text:String)->Void) {
@@ -10,6 +11,10 @@ class InputText extends FlxInputText {
 		backgroundColor = FlxColor.TRANSPARENT;
 		fieldBorderColor = FlxColor.TRANSPARENT;
 		caretColor = FlxColor.WHITE;
+
+        // 关键：启用系统输入法（IME），支持中文
+        textField.imeEnabled = true;
+        textField.type = TextFieldType.INPUT;
 
         var prevText:String = '';
 		callback = (text, action) -> {
@@ -21,7 +26,7 @@ class InputText extends FlxInputText {
             prevText = text;
 
             if (action == FlxInputText.ENTER_ACTION) {
-				hasFocus = false; //allow event to overwrite it
+				hasFocus = false;
 				onEnter(text);
             }
         };
