@@ -104,31 +104,31 @@ class ProfileTab extends TabSprite {
 		stats = this.createText(50, line2.y + 20, 22);
 		addChild(stats);
 
-		web = new TabButton('web', () -> {
+		web = new TabButton('internet', () -> {
 			FlxG.openURL(FunkinNetwork.client.getURL("/user/" + StringTools.urlEncode(username)));
 		});
 		web.x = tabBg.width - web.width - 20;
 		web.y = tabBg.height - web.height - 20;
 		addChild(web);
 
-		settings = new TabButton('Settings', () -> {
+		settings = new TabButton('wheel', () -> {
 			FlxG.openURL(FunkinNetwork.client.getURL("/api/auth/cookie?id=" + Auth.authID + "&token=" + Auth.authToken));
 		});
 		settings.x = web.x;
 		settings.y = web.y;
 		addChild(settings);
 
-		addFriend = new TabButton('addFriend', () -> inviteToFriends());
+		addFriend = new TabButton('add_friend', () -> inviteToFriends());
 		addFriend.x = web.x - web.width - 20;
 		addFriend.y = web.y;
 		addChild(addFriend);
 
-		removeFriend = new TabButton('removeFriend', () -> removeFromFriends());
+		removeFriend = new TabButton('remove_friend', () -> removeFromFriends());
 		removeFriend.x = addFriend.x;
 		removeFriend.y = web.y;
 		addChild(removeFriend);
 
-		invitePlay = new TabButton('invitePlay', () -> Util.inviteToPlay(username));
+		invitePlay = new TabButton('invite', () -> Util.inviteToPlay(username));
 		invitePlay.x = addFriend.x - addFriend.width - 20;
 		invitePlay.y = web.y;
 		addChild(invitePlay);
