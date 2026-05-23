@@ -6,8 +6,6 @@ import openfl.utils.Future;
 import openfl.events.KeyboardEvent;
 import lime.system.Clipboard;
 
-//TODO every update fetch an icon from the queue and wait for the promise relating to it to finish, then store it in icons
-
 class SoFunkinSubstate extends MusicBeatSubstate {
 	public var options:Array<String> = [];
 	public var optionsIcons:Map<Int, HealthIcon> = new Map();
@@ -69,7 +67,6 @@ class SoFunkinSubstate extends MusicBeatSubstate {
 				leText = new Alphabet(90, 320, '', true);
 			else
 				leText = new online.objects.AlphaLikeText(90, 320, '');
-			// leText.isMenuItem = true;
 			leText.targetY = i;
 			leText.ID = i;
 			leText.snapToPosition();
@@ -82,15 +79,14 @@ class SoFunkinSubstate extends MusicBeatSubstate {
 		searchUnderlay.alpha = 0.6;
 		add(searchUnderlay);
 
-		searchInput = new FlxText(0, 0, "PRESS " + buttonS + " TO SEARCH");
+		// 汉化
+		searchInput = new FlxText(0, 0, "按 " + buttonS + " 键搜索");
 		searchInput.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, RIGHT);
 		searchInput.scrollFactor.set();
 		add(searchInput);
 
-		// if (!ClientPrefs.data.disableFreeplayAlphabet)
-		groupTitle = new Alphabet(90, 320, "DEFAULT", true);
-		// else
-		// 	groupTitle = new online.objects.AlphaLikeText(90, 320, "");
+		// 汉化
+		groupTitle = new Alphabet(90, 320, "默认", true);
 		groupTitle.targetY = -1;
 		groupTitle.snapToPosition();
 		add(cast groupTitle);
@@ -109,20 +105,21 @@ class SoFunkinSubstate extends MusicBeatSubstate {
 	
 	override function destroy() {
 		super.destroy();
-
 		FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 	}
 
 	function set_searchString(v) {
 		if (searchInputWait || v.length > 0) {
 			searchInput.alpha = searchInputWait ? 1.0 : 0.6;
-			searchInput.text = "SEARCH: '" + v + "'";
+			// 汉化
+			searchInput.text = "搜索: '" + v + "'";
 			reposSearch();
 			return searchString = v;
 		}
 
 		searchInput.alpha = 0.6;
-		searchInput.text = 'PRESS $buttonS TO SEARCH';
+		// 汉化
+		searchInput.text = '按 ' + buttonS + ' 键搜索';
 		reposSearch();
 		return searchString = v;
 	}
@@ -183,7 +180,8 @@ class SoFunkinSubstate extends MusicBeatSubstate {
 		if (searchOptions.length == 0 && searchString.length > 0) {
 			searchString = '';
 			search();
-			searchInput.text = "NOT FOUND!";
+			// 汉化
+			searchInput.text = "未找到！";
 			return;
 		}
 
@@ -324,8 +322,6 @@ class SoFunkinSubstate extends MusicBeatSubstate {
 
 		var foundTexts:Array<String> = [];
 
-		// 50 more loops here but it's way faster than just simply updating every text
-
 		for (i => item in grpTexts.members) {
 			final searchIndex = i + curSelected - centerOfRenders;
 			item.ID = searchOptions[searchIndex];
@@ -416,9 +412,6 @@ class SoFunkinSubstate extends MusicBeatSubstate {
 		for (icon in grpIconsOverlay) {
 			icon.update(0);
 		}
-
-		// if (postRenderCallback != null)
-		// 	postRenderCallback();
 	}
 
 	function onKeyDown(e:KeyboardEvent) {
@@ -427,24 +420,24 @@ class SoFunkinSubstate extends MusicBeatSubstate {
 
 		var key = e.keyCode;
 
-		if (e.charCode == 0) { // non-printable characters crash String.fromCharCode
+		if (e.charCode == 0) {
 			return;
 		}
 
-		if (key == 46) { // delete
+		if (key == 46) {
 			return;
 		}
 
-		if (key == 8) { // bckspc
+		if (key == 8) {
 			searchString = searchString.substring(0, searchString.length - 1);
 			return;
 		}
-		else if (key == 13) { // enter
+		else if (key == 13) {
 			disableInputWaitNext = true;
 			search();
 			return;
 		}
-		else if (key == 27) { // esc
+		else if (key == 27) {
 			disableInputWaitNext = true;
 			return;
 		}
