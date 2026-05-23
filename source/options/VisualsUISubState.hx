@@ -39,7 +39,7 @@ class VisualsUISubState extends BaseOptionsMenu
 
 		// options
 		var option:Option = new Option('Note Colors',
-			'Set the colors for your notes!',
+			'设置音符的颜色！',
 			null,
 			'button');
 		option.onChange = () -> {
@@ -52,7 +52,7 @@ class VisualsUISubState extends BaseOptionsMenu
 		addOption(option);
 
 		var option:Option = new Option('Disable RGB Notes',
-			"If checked, notes will use the HSV coloring method.",
+			"如果勾选，音符将使用HSV配色方案。",
 			'disableRGBNotes',
 			'bool');
 		addOption(option);
@@ -63,7 +63,7 @@ class VisualsUISubState extends BaseOptionsMenu
 				ClientPrefs.data.noteSkin = ClientPrefs.defaultData.noteSkin; //Reset to default if saved noteskin couldnt be found
 
 			var option:Option = new Option('Note Skins:',
-				"Select your prefered Note skin.",
+				"选择你喜欢的音符皮肤。",
 				'noteSkin',
 				'string',
 				NoteSkinData.noteSkinArray);
@@ -80,7 +80,7 @@ class VisualsUISubState extends BaseOptionsMenu
 
 			noteSplashes.insert(0, ClientPrefs.defaultData.splashSkin); //Default skin always comes first
 			var option:Option = new Option('Note Splashes:',
-				"Select your prefered Note Splash variation or turn it off.",
+				"选择你喜欢的音符击中特效，或关闭该功能。",
 				'splashSkin',
 				'string',
 				noteSplashes);
@@ -88,7 +88,7 @@ class VisualsUISubState extends BaseOptionsMenu
 		}
 
 		var option:Option = new Option('Note Splash Opacity',
-			'How much transparent should the Note Splashes be.\n0% disables it.',
+			'设置音符击中特效的透明度。\n0% 表示关闭该特效。',
 			'splashAlpha',
 			'percent');
 		option.scrollSpeed = 1.6;
@@ -99,7 +99,7 @@ class VisualsUISubState extends BaseOptionsMenu
 		addOption(option);
 
 		var option:Option = new Option('Note Hold Splash Opacity',
-			'How much transparent should the Note Hold Splash be.\n0% disables it.',
+			'设置长按音符特效的透明度。\n0% 表示关闭该特效。',
 			'holdSplashAlpha',
 			'percent');
 		option.scrollSpeed = 1.6;
@@ -110,7 +110,7 @@ class VisualsUISubState extends BaseOptionsMenu
 		addOption(option);
 
 		var option:Option = new Option('Trail Note Opacity',
-			'How much transparent should the Note Trail be.',
+			'设置长按音符拖尾的透明度。',
 			'holdAlpha',
 			'percent');
 		option.scrollSpeed = 1.3;
@@ -120,7 +120,7 @@ class VisualsUISubState extends BaseOptionsMenu
 		option.decimals = 1;
 		addOption(option);
 
-		var option:Option = new Option('Note Underlay Opacity', 'If higher than 0%, an underlay will be displayed behind player notes.', 'noteUnderlayOpacity', 'percent');
+		var option:Option = new Option('Note Underlay Opacity', '如果数值大于0%，玩家音符下方会显示底色。', 'noteUnderlayOpacity', 'percent');
 		addOption(option);
 		option.scrollSpeed = 1.6;
 		option.minValue = 0.0;
@@ -129,7 +129,7 @@ class VisualsUISubState extends BaseOptionsMenu
 		option.decimals = 2;
 
 		var option:Option = new Option('Note Underlay Type:',
-			"How should the game render note underlays.",
+			"设置游戏渲染音符底色的方式。",
 			'noteUnderlayType',
 			'string',
 			['All-In-One', 'By Note']);
@@ -138,37 +138,37 @@ class VisualsUISubState extends BaseOptionsMenu
 
 	function openAccessibility() {
 		var option:Option = new Option('Flashing Lights',
-			"Uncheck this if you're sensitive to flashing lights!",
+			"如果你对闪光敏感，请取消勾选！",
 			'flashing',
 			'bool');
 		addOption(option);
 
 		var option:Option = new Option('Camera Zooms',
-			"If unchecked, the camera won't zoom in on a beat hit.",
+			"如果取消勾选，击中节拍时相机不会缩放。",
 			'camZooms',
 			'bool');
 		addOption(option);
 
 		var option:Option = new Option('Camera Shakes',
-			"If unchecked, camera will be allowed to shake.",
+			"如果取消勾选，相机将不会震动。",
 			'camShakes',
 			'bool');
 		addOption(option);
 
 		var option:Option = new Option('Camera Tilt',
-			"If unchecked, camera will be allowed to tilt.",
+			"如果取消勾选，相机将不会倾斜。",
 			'camAngles',
 			'bool');
 		addOption(option);
 
 		var option:Option = new Option('Camera Movement',
-			"If unchecked, camera will move instead of being locked still on girlfriend.",
+			"如果取消勾选，相机会固定不动，不会跟随角色移动。",
 			'camMovement',
 			'bool');
 		addOption(option);
 
 		var option:Option = new Option('Score Text Zoom on Hit',
-			"If unchecked, disables the Score text zooming\neverytime you hit a note.",
+			"如果取消勾选，每次击中音符时分数文本不会放大。",
 			'scoreZoom',
 			'bool');
 		addOption(option);
@@ -176,7 +176,7 @@ class VisualsUISubState extends BaseOptionsMenu
 
 	function openComboAndRating() {
 		var option:Option = new Option('Adjust Positions',
-			'Customize the offsets for combo and rating sprites here!',
+			'在这里自定义连击和判定文本的偏移位置！',
 			null,
 			'button');
 		option.onChange = () -> {
@@ -185,25 +185,25 @@ class VisualsUISubState extends BaseOptionsMenu
 		addOption(option);
 
 		var option:Option = new Option('Rating Color',
-			'If checked, the Rating text will be colored depending on your current... well... Rating, same with Combo.',
+			'如果勾选，判定文本和连击会根据当前评级显示对应颜色。',
 			'colorRating',
 			'bool');
 		addOption(option);
 
 		var option:Option = new Option('Disable Combo Rating',
-			'If checked, the combo rating sprite will no longer show up.',
+			'如果勾选，将不再显示连击评级。',
 			'disableComboRating',
 			'bool');
 		addOption(option);
 
 		var option:Option = new Option('Disable Combo Counter',
-			'If checked, the combo counter sprite will no longer show up.',
+			'如果勾选，将不再显示连击计数器。',
 			'disableComboCounter',
 			'bool');
 		addOption(option);
 
 		var option:Option = new Option('Show Note Timing',
-			'If checked, a timing of the hitted note will be shown on the screen (in miliseconds)',
+			'如果勾选，屏幕上会显示击中音符的时间（毫秒）。',
 			'showNoteTiming',
 			'bool');
 		addOption(option);
@@ -211,27 +211,27 @@ class VisualsUISubState extends BaseOptionsMenu
 
 	function openUI() {
 		var option:Option = new Option('Language:',
-			"Select your language. \n(This is temporary option, will have own state later)",
+			"选择你的语言。\n（这是临时选项，后续会有独立设置界面）",
 			'lang',
 			'string',
 			["EN", "TR"]);
 		addOption(option);
 
 		var option:Option = new Option('Hide HUD',
-			'If checked, hides most HUD elements.',
+			'如果勾选，隐藏大部分游戏界面元素。',
 			'hideHud',
 			'bool');
 		addOption(option);
 
 		var option:Option = new Option('Time Bar:',
-			"What should the Time Bar display?",
+			"设置时间条显示的内容。",
 			'timeBarType',
 			'string',
 			['Time Left', 'Time Elapsed', 'Song Name', 'Disabled']);
 		addOption(option);
 
 		var option:Option = new Option('Health Bar Opacity',
-			'How much transparent should the health bar and icons be.',
+			'设置生命值条和图标的透明度。',
 			'healthBarAlpha',
 			'percent');
 		option.scrollSpeed = 1.6;
@@ -242,7 +242,7 @@ class VisualsUISubState extends BaseOptionsMenu
 		addOption(option);
 
 		var option:Option = new Option('Nameplate Fade Time',
-			'After how many seconds should player nameplates be hidden?\nSet to 0 to instantly hide them.\nSet to -1 to never hide them.',
+			'玩家名称牌会在几秒后隐藏？\n设置为0立即隐藏，设置为-1永久显示。',
 			'nameplateFadeTime',
 			'int');
 		option.displayFormat = '%vs';
@@ -254,25 +254,25 @@ class VisualsUISubState extends BaseOptionsMenu
 		addOption(option);
 
 		var option:Option = new Option('Show Funkin Points Counter',
-			'If checked, the current FP count will be shown in the score text, can be toggled in-game with F7',
+			'如果勾选，分数文本中会显示当前FP值，游戏内可按F7切换。',
 			'showFP',
 			'bool');
 		addOption(option);
 
 		var option:Option = new Option('FP V5 Preview',
-			'If enabled, new FP algorithm will be shown in the Counter',
+			'如果启用，计数器会显示新版FP算法。',
 			'newFPPreview',
 			'bool');
 		addOption(option);
 
 		var option:Option = new Option('Disable Song Comments',
-			'Disables song comments on the replay viewer and (if visible, while playing)',
+			'在回放查看器和游戏中禁用歌曲评论。',
 			'disableSongComments',
 			'bool');
 		addOption(option);
 		
 		var option:Option = new Option('Song Comments Opacity',
-			'How visible should the song comments be while you\'re playing a song',
+			'设置游戏中歌曲评论的可见度。',
 			'midSongCommentsOpacity',
 			'percent');
 		option.scrollSpeed = 1.6;
@@ -283,14 +283,14 @@ class VisualsUISubState extends BaseOptionsMenu
 		addOption(option);
 
 		var option:Option = new Option('FPS Counter',
-			'If unchecked, hides FPS Counter.',
+			'如果取消勾选，隐藏FPS计数器。',
 			'showFPS',
 			'bool');
 		addOption(option);
 		option.onChange = onChangeFPSCounter;
 
 		var option:Option = new Option('Disable Online Shaders',
-			'If checked, disables shaders that being used on online menus.',
+			'如果勾选，关闭在线菜单中使用的着色器。',
 			'disableOnlineShaders',
 			'bool');
 		addOption(option);
