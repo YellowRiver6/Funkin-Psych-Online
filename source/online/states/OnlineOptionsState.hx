@@ -90,8 +90,8 @@ class OnlineOptionsState extends MusicBeatState {
 				address += ":2567";
 			}
 
-			if (address == "ws://funkin.sniro.boo") {
-				address = "wss://funkin.sniro.boo";
+			if (address == "ws://psychcn.online") {
+				address = "wss://psychcn.online";
 			}
 
 			if (address == "ws://gettinfreaky.onrender.com") {
@@ -104,7 +104,7 @@ class OnlineOptionsState extends MusicBeatState {
 		var serverOption:InputOption;
 		var appendText = "";
 		if (GameClient.serverAddresses.length > 0) {
-			appendText += "国服服务器：";
+			appendText += "\n国服服务器：";
 			for (address in GameClient.serverAddresses) {
 				if (address != "ws://localhost:2567")
 					appendText += "\n" + address;
