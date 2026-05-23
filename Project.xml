@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
 	<!-- _________________________ Application Settings _________________________ -->
-	<!-- ___ Build with spesific libraries ___ -->
 	<architecture exclude="armv7" if="ONLY_ARM64" />
 	<architecture exclude="armeabi-v7a" if="ONLY_ARM64" />
 	<architecture exclude="arm64" if="ONLY_ARMV7" />
@@ -10,28 +9,16 @@
 	<app title="Friday Night Funkin': Psych Extended Online" file="PsychExtendedOnline" main="Main" packageName="com.arkoselabs.psychdextendedonline" package="com.arkoselabs.psychdextendedonline" company="ArkoseLabs" version="0.14.6" />
 	<app if="mobile" title='Psych Extended Online' />
 
-	<!--Switch Export with Unique ApplicationID and Icon-->
 	<set name="APP_ID" value="0x0100f6c013bbc000" />
+	<haxedef name="LINC_LUA_RELATIVE_DYNAMIC_LIB" />
 
-	<!-- NOTE TO SELF: DISABLE THIS IF ISSUES ARE FOUND -->
-	<haxedef name="LINC_LUA_RELATIVE_DYNAMIC_LIB" /> <!-- stable luas PUT AFTER FIRST LINE WITH APP NAME AND ETC -->
-
-	<!--The flixel preloader is not accurate in Chrome. You can use it regularly if you embed the swf into a html file
-		or you can set the actual size of your file manually at "FlxPreloaderBase-onUpdate-bytesTotal"-->
-	<!-- <app preloader="Preloader" resizable="true" /> -->
 	<app preloader="flixel.system.FlxPreloader" />
-
-	<!--Minimum without FLX_NO_GAMEPAD: 11.8, without FLX_NO_NATIVE_CURSOR: 11.2-->
 	<set name="SWF_VERSION" value="11.8" />
 	
-	<!-- ______________________ PSYCH EXTENDED CUSTOMIZATION ______________________ -->
-
 	<haxedef name="FLX_CNE_FORK" />
 	<define name="HSC_ALLOWED" />
 	<define name="SCRIPTING_ALLOWED" />
 	<define name="TRANSLATIONS_ALLOWED" />
-
-	<!-- ______________________ PSYCH ENGINE CUSTOMIZATION ______________________ -->
 
 	<define name="MODS_ALLOWED" />
 	<define name="HSCRIPT_ALLOWED" />
@@ -39,30 +26,15 @@
 	<define name="ACHIEVEMENTS_ALLOWED" />
 	<define name="DISCORD_ALLOWED" if="desktop || android" unless="hl" />
 	<define name="VIDEOS_ALLOWED" if="desktop || mobile" />
-	<define name="PSYCH_WATERMARKS" /> <!-- DELETE THIS TO REMOVE WATERMARKS/DEV NAMES ON TITLE SCREEN -->
-	<define name="TITLE_SCREEN_EASTER_EGG" /> <!-- DELETE THE if="officialBuild" for enabling this on an unofficial build -->
+	<define name="PSYCH_WATERMARKS" />
+	<define name="TITLE_SCREEN_EASTER_EGG" />
 	<define name="RAR_SUPPORTED" if="windows" unless="hl" />
 
-	<!-- ____________________________ Window Settings ___________________________ -->
-
-	<!--These window settings apply to all targets-->
 	<window width="1280" height="720" fps="120" background="#000000" hardware="true" vsync="false" />
-
-	<!--HTML5-specific-->
 	<window if="html5" resizable="true" />
-
-	<!--Desktop-specific-->
 	<window if="desktop" orientation="landscape" fullscreen="false" resizable="true" />
-
-	<!--Mobile-specific-->
-	<window if="mobile" orientation="landscape" fullscreen="true" resizable="false" allow-shaders="true"
-		require-shaders="true" allow-high-dpi="true" />
-
-	<!--Switch-specific-->
-	<window if="switch" orientation="landscape" fullscreen="true" width="0" height="0"
-		resizable="true" />
-
-	<!-- _____________________________ Path Settings ____________________________ -->
+	<window if="mobile" orientation="landscape" fullscreen="true" resizable="false" allow-shaders="true" require-shaders="true" allow-high-dpi="true" />
+	<window if="switch" orientation="landscape" fullscreen="true" width="0" height="0" resizable="true" />
 
 	<set name="BUILD_DIR" value="export/debug" if="debug" />
 	<set name="BUILD_DIR" value="export/release" unless="debug" />
@@ -73,9 +45,6 @@
 	<classpath name="source" />
 	<classpath name="library_extended" />
 
-	<!-- __________________________ Game Assets & Etc. __________________________ -->
-
-	<!-- Preload Assets -->
 	<define name="PRELOAD_ALL" unless="web" />
 	<define name="NO_PRELOAD_ALL" unless="PRELOAD_ALL" />
 
@@ -88,15 +57,12 @@
 	</section>
 
 	<define name="CHECK_FOR_UPDATES" unless="LOCAL" />
-
-	<!-- Week Assets -->
 	<library name="videos" preload="true" />
 	<section if="PRELOAD_ALL">
 		<library name="songs" preload="true" />
 		<library name="shared" preload="true" />
 		<library name="week_assets" preload="true" />
 	</section>
-	
 	<section if="NO_PRELOAD_ALL">
 		<library name="songs" preload="false" />
 		<library name="shared" preload="false" />
@@ -109,8 +75,7 @@
 	<assets path="assets/shared" library="shared" exclude="*.ogg" if="web" />
 	<assets path="assets/shared" library="shared" exclude="*.mp3" unless="web" />
 	<assets path="assets/week_assets" library="week_assets" rename="assets" exclude="*.ogg" if="web" />
-	<assets path="assets/week_assets" library="week_assets" rename="assets" exclude="*.mp3"
-		unless="web" />
+	<assets path="assets/week_assets" library="week_assets" rename="assets" exclude="*.mp3" unless="web" />
 	
 	<section if="MODS_ALLOWED">
 		<assets path='example_mods' rename='mods' embed='false' />
@@ -118,22 +83,16 @@
 	<assets path='art/readme.txt' rename='do NOT readme.txt' unless="mobile" />
 	<assets path='art/run-server.bat' rename='run-server.bat' if="windows" />
 
-	<!-- || Mobile Defines || -->
-	<!-- Crash Handler Shit (Idk what it does, If you ask me it doesn't do anything) -->
 	<define name="CRASH_HANDLER" if="desktop || mobile" />
 	<assets path="mobile/storageModes.txt" if="mobile"/>
-
-	<!-- _______________________________ Libraries ______________________________ -->
 
 	<haxelib name="flixel" />
 	<haxelib name="flixel-ui" />
 	<haxelib name="flixel-addons" />
-	<!-- Mobile Libraries -->
 	<haxelib name="mobile-controls"/>
 	<haxedef name="mobile_controls_file_support"/>
 	<haxedef name="mobile_controls_allow_mouse_clicks" if="desktop"/>
 
-	<!--Psych stuff needed-->
 	<haxelib name="linc_luajit" if="LUA_ALLOWED" />
 	<haxelib name="hscript-improved" if="HSC_ALLOWED" />
 	<haxelib name="SScript" if="HSCRIPT_ALLOWED" />
@@ -157,72 +116,28 @@
 	<haxelib name="away3d" />
 	<haxelib name="yagp" />
 	<haxelib name="tink_await" />
-	<!-- <haxelib name="interpret" /> -->
 
 	<haxedef name="interpretable" />
 	<haxedef name="interpret_watch" />
-
 	<haxedef name="openflPos" />
 	<haxedef name="hscriptPos" />
-
-	<!-- Enables a terminal log prompt on debug builds -->
 	<haxelib name="hxcpp-debug-server" if="debug"/>
 	<haxedef name="HXC_LIBVLC_LOGGING" if="VIDEOS_ALLOWED debug" />
 	<haxedef name="LUMOD_HSCRIPT" />
 
-	<!-- ______________________________ Haxedefines _____________________________ -->
-
-	<!--Enable the Flixel core recording system-->
-	<!--<haxedef name="FLX_RECORD" />-->
-
-	<!--Disable the right and middle mouse buttons-->
-	<!-- <haxedef name="FLX_NO_MOUSE_ADVANCED" /> -->
-
-	<!--Disable the native cursor API on Flash-->
-	<!--<haxedef name="FLX_NO_NATIVE_CURSOR" />-->
-
-	<!--Optimise inputs, be careful you will get null errors if you don't use conditionals in your game-->
-	<!-- <haxedef name="FLX_NO_MOUSE" if="mobile" /> -->
-	<!-- <haxedef name="FLX_NO_KEYBOARD" if="mobile" /> -->
-	<!-- <haxedef name="FLX_NO_TOUCH" if="desktop" /> -->
-	<!--<haxedef name="FLX_NO_GAMEPAD" />-->
-
-	<!--Disable the Flixel core sound tray-->
-	<!--<haxedef name="FLX_NO_SOUND_TRAY" />-->
-
-	<!--Disable the Flixel sound management code-->
-	<!--<haxedef name="FLX_NO_SOUND_SYSTEM" />-->
-
-	<!--Disable the Flixel core focus lost screen-->
 	<haxedef name="FLX_NO_FOCUS_LOST_SCREEN" />
-
-	<!-- Show debug traces for hxCodec -->
 	<haxedef name="HXC_DEBUG_TRACE" if="debug" />
-
-	<!--Disable the Flixel core debugger. Automatically gets set whenever you compile in release mode!-->
-	<haxedef name="FLX_NO_DEBUG" /> <!-- worst debugger ever lol -->
-
-	<!--Enable this for Nape release builds for a serious peformance improvement-->
+	<haxedef name="FLX_NO_DEBUG" />
 	<haxedef name="NAPE_RELEASE_BUILD" unless="debug" />
-
-	<!--Used for Izzy Engine's crash handler-->
 	<haxedef name="HXCPP_CHECK_POINTER" />
 	<haxedef name="HXCPP_STACK_LINE" />
 	<haxedef name="HXCPP_STACK_TRACE" />
 	<haxedef name="HXCPP_CATCH_SEGV" />
-	<haxedef name="HXCPP_DEBUG_LINK" />
-
-	<!-- <haxedef name="message.reporting" value="pretty" /> -->
 	<haxedef name='no-deprecation-warnings' />
-
-	<!--Avoid memory leaks with for loops in HScript-->
 	<haxedef name="loop_unroll_max_cost" value="25" />
 	<haxedef name="DISABLED_MACRO_SUPERLATIVE" if="android" />
-
-	<!--Macro fixes-->
 	<haxeflag name="--macro" value="allowPackage('flash')" />
 	<haxeflag name="--macro" value="include('my.pack')" />
-
 	<haxeflag name="-D" value="HXCPP_DEBUGGER" if="debug"/>
 	<haxeflag name="-debug" if="debug"/>
 
@@ -237,35 +152,17 @@
 		<haxeflag name="--macro" value="addGlobalMetadata('llua', '@:build(online.backend.MonitorMacro.build())')" />
 	</section>
 
-	<!-- Do whatever you want I'm tired uninstall and install everytime -->
 	<certificate path="key.keystore" password="psychengine" alias="psychport" alias-password="psychengine" if="android" unless="debug" />
-
-	<haxedef name="DISABLE_AUDIO_FOCUS" if="android" /> <!-- Disable the fucking audio focus -->>
-
+	<haxedef name="DISABLE_AUDIO_FOCUS" if="android" />
 	<haxedef name="openfl_dpi_aware" />
-
-	<!-- Haxe 4.3.0+: Enable pretty syntax errors and stuff. -->
-	<!-- pretty (haxeflixel default), indent, classic (haxe compiler default) -->
-	<!-- makes much easier to understand which line is has problem -->
 	<haxedef name="message.reporting" value="pretty" />
-
-	<!-- Global Script shit, I'll write the desc later -->
 	<define name="GLOBAL_SCRIPT" if="SCRIPTING_ALLOWED" />
-
-	<!-- Comment this out to prevent extending classes in hscript.
-		 Reduces compilation time at the cost of limited HScript flexibility. !-->
 	<define name="CUSTOM_CLASSES" unless="STRIPPED_COMPILE" />
-
-	<!-- Comment this out to disable abstract support in hscript. !-->
 	<haxedef name="HSCRIPT_ABSTRACT_SUPPORT" unless="STRIPPED_COMPILE" />
 
-	<!-- _________________________________ Custom _______________________________ -->
-
-	<!-- Basic Support For Kizzy -->
 	<java path="source/mobile/android/" if="android" />
 	<java path="mobile/android/" if="android" />
 
-	<!-- Category Type for Apple Systems -->
 	<config:ios category_type="public.app-category.music-games" />
 	<config:mac category_type="public.app-category.music-games" />
 
@@ -274,12 +171,8 @@
 		<haxedef name="lime_disable_motion_sensors" />
 	</section>
 
-	<!--Place custom nodes like icons here (higher priority to override the HaxeFlixel icon)-->
-
 	<assets path='art/iconOG.png' rename='icon.png' if="linux" />
-	
 	<icon path="art/thumb-rect.png" if="mobile" />
-
 	<section unless="mobile">
 		<icon path="art/icon16.png" size='16'/>
 		<icon path="art/icon32.png" size='32'/>
@@ -287,16 +180,19 @@
 		<icon path="art/iconOG.png" />
 	</section>
 
-	<!-- ====================================== -->
-	<!-- 👇 我在这里帮你加了安卓修复配置 👇 -->
-	<!-- ====================================== -->
+	<!-- Windows中文IME支持：开启输入法编辑候选 -->
+	<haxedef name="LIME_ENABLE_IME" if="windows" />
+
+	<!-- Android输入法配置：允许中文、不遮挡、软键盘正常弹出/收起 -->
 	<android>
 		<manifest android:installLocation="auto">
+			<uses-permission android:name="android.permission.INTERNET"/>
+			<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 			<application android:hardwareAccelerated="true">
 				<activity 
 					android:name=".MainActivity" 
 					android:configChanges="keyboard|keyboardHidden|orientation|screenSize" 
-					android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
+					android:windowSoftInputMode="adjustResize">
 				</activity>
 			</application>
 		</manifest>
