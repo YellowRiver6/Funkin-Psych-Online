@@ -4,13 +4,13 @@ import haxe.io.Path;
 import sys.FileSystem;
 import haxe.io.Error;
 
-//TODO force kill server and node.exe
-//TODO stop freezing
+// 待办：强制关闭服务器和 node.exe
+// 待办：修复卡死问题
 
 class HostServerTab extends TabSprite {
     public function new() {
-        super('Host Server (EXPERIMENTAL)', 'server');
-		tabWidth = 600;
+        super('创建房间 (测试版)', 'server');
+		    tabWidth = 600;
     }
 
 	var logs:TextField;
@@ -23,12 +23,12 @@ class HostServerTab extends TabSprite {
 		logs = this.createText(0, 0, 16, FlxColor.WHITE);
 		addChild(logs);
 
-		startAndStop = new TabButton('start', startAndStopServer);
+		startAndStop = new TabButton('启动', startAndStopServer);
 		startAndStop.x = tabWidth - startAndStop.width - 10;
 		startAndStop.y = 10;
 		addChild(startAndStop);
 
-		updateServer = new TabButton('update', () -> {
+		updateServer = new TabButton('更新', () -> {
 			if (FileSystem.exists('_server/'))
 				FileUtils.removeFiles('_server/');
 			prepareServer();
@@ -42,7 +42,7 @@ class HostServerTab extends TabSprite {
 		super.onShow();
 
 		if (process == null)
-			logs.setText('\nYou can host a server locally with the button here! -->\n\nThe server will not be exposed to the public and will\nonly be visible in your local network.\n\n(If you don\'t have NodeJS installed,\nthe game will install it on your system)');
+			logs.setText('\n你可以点击右侧按钮本地创建房间！\n\n房间不会公开显示，\n只有同一局域网的玩家能看见。\n\n(如果你未安装 NodeJS，\n游戏会自动为你安装)');
 	}
 
     function startAndStopServer() {
@@ -112,7 +112,7 @@ class HostServerTab extends TabSprite {
 			logProcess(installPackages);
         }
 
-		logs.setText('Starting the server...');
+		logs.setText('正在启动服务器...');
 		startAndStop.icon.bitmapData = GAssets.image('sidebar/exit');
 
         Thread.run(() -> {
@@ -135,7 +135,7 @@ class HostServerTab extends TabSprite {
 		});
 
         try {
-            //it will run forever until the user wants to stop it
+            // 会一直运行直到用户手动停止
 			while (process != null && process.exitCode(false) == null) {
                 try {
                     var line = process.stdout.readLine();
@@ -145,9 +145,9 @@ class HostServerTab extends TabSprite {
                     });
                 }
                 catch (e:Dynamic) {
-                    trace('cras');
+                    trace('崩溃');
                     if (e == Error.Blocked) {
-                        // Blocked will be ignored
+                        // 忽略阻塞错误
                         continue;
                     }
                     throw e;
@@ -165,7 +165,7 @@ class HostServerTab extends TabSprite {
 			return;
 		}
 
-        trace('killing the server');
+        trace('正在关闭服务器');
 		#if windows
 		var killServer = new sys.io.Process("taskkill /t /f /PID " + process.getPid());
 		#else
@@ -176,9 +176,9 @@ class HostServerTab extends TabSprite {
 		process = null;
 
 		Waiter.putPersist(() -> {
-            Alert.alert('Server Stopped!');
+            Alert.alert('服务器已停止！');
 			var instance:HostServerTab = cast(SideUI.instance.tabs[SideUI.instance.initTabs.indexOf(HostServerTab)]);
-			instance.logs.setText(instance.logs.text + '\n' + 'Server has been stopped!');
+			instance.logs.setText(instance.logs.text + '\n' + '服务器已停止！');
 			if (instance != null && instance.initialized) {
 				instance.startAndStop.icon.bitmapData = GAssets.image('sidebar/start');
 				instance.updateServer.visible = true;
