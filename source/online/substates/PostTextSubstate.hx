@@ -1,7 +1,6 @@
 package online.substates;
 
-// 必须加这个，才能让输入框支持中文
-import flixel.addons.ui.FlxInputTextIMEManager;
+import openfl.events.TextEvent;
 
 class PostTextSubstate extends MusicBeatSubstate {
 	var title:String;
@@ -9,7 +8,6 @@ class PostTextSubstate extends MusicBeatSubstate {
 
 	public function new(title:String, onEnter:String->Void) {
         super();
-
 		this.title = title;
 		this.onEnter = onEnter;
     }
@@ -23,7 +21,6 @@ class PostTextSubstate extends MusicBeatSubstate {
 		coolCam = new FlxCamera();
 		coolCam.bgColor.alpha = 0;
 		FlxG.cameras.add(coolCam, false);
-
 		cameras = [coolCam];
 
 		var bg = new FlxSprite();
@@ -32,17 +29,16 @@ class PostTextSubstate extends MusicBeatSubstate {
 		bg.scrollFactor.set(0, 0);
 		add(bg);
 
-		// 汉化提示
+		// 汉化提示（完全不影响功能）
 		var title = new FlxText(0, 0, FlxG.width, this.title + "\n\n(按回车键提交)");
 		title.setFormat("VCR OSD Mono", 24, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		title.y = FlxG.height / 2 - title.height / 2 - 150;
 		title.scrollFactor.set();
 		add(title);
 
+		// 输入框本体
 		input = new InputText(0, 0, FlxG.width, text -> {
-            if (text.trim().length <= 0)
-                return;
-
+            if (text.trim().length <= 0) return;
 			onEnter(text);
             close();
 		});
@@ -52,15 +48,18 @@ class PostTextSubstate extends MusicBeatSubstate {
 		add(input);
 
 		// ==============================================
-		// 【核心修复】开启中文输入法支持
+		// 【关键】原生中文输入法支持（无任何依赖，不会报错）
 		// ==============================================
-		FlxInputTextIMEManager.enableIME(input);
+		stage.addEventListener(TextEvent.TEXT_INPUT, function(e:TextEvent):Void {
+			if (e.text != null && e.text != "") {
+				input.text += e.text;
+			}
+		});
 	}
 
     var confirmBack = false;
     override function update(elapsed) {
         super.update(elapsed);
-
 		input.hasFocus = true;
 
         if (input.text.length <= 0 && controls.BACK) {
@@ -78,8 +77,5 @@ class PostTextSubstate extends MusicBeatSubstate {
 	override function destroy() {
 		super.destroy();
 		FlxG.cameras.remove(coolCam);
-
-		// 关闭输入法，防止影响其他界面
-		FlxInputTextIMEManager.disableIME();
 	}
 }
