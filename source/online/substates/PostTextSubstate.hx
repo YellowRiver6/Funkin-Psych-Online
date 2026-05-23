@@ -1,72 +1,75 @@
 package online.substates;
 
-import flixel.FlxG;
-import flixel.text.FlxText;
-import flixel.ui.FlxInput;
-
-class PostTextSubstate extends MusicBeatSubstate
-{
+class PostTextSubstate extends MusicBeatSubstate {
 	var title:String;
 	var onEnter:String->Void;
-	var input:FlxInput;
-	var confirmBack:Bool = false;
 
-	public function new(title:String, onEnter:String->Void)
-	{
-		super();
+	public function new(title:String, onEnter:String->Void) {
+        super();
+
 		this.title = title;
 		this.onEnter = onEnter;
-	}
+    }
 
-	override function create()
-	{
-		super.create();
+	var input:InputText;
+	var coolCam:FlxCamera;
 
-		// 背景
-		var bg = new flixel.FlxSprite();
-		bg.makeGraphic(FlxG.width, FlxG.height, 0x000000);
+    override function create() {
+        super.create();
+
+		coolCam = new FlxCamera();
+		coolCam.bgColor.alpha = 0;
+		FlxG.cameras.add(coolCam, false);
+
+		cameras = [coolCam];
+
+		var bg = new FlxSprite();
+		bg.makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		bg.alpha = 0.7;
 		bg.scrollFactor.set(0, 0);
 		add(bg);
 
-		// 标题
-		var titleTxt = new FlxText(0, 0, FlxG.width, title);
-		titleTxt.setFormat(null, 32, 0xFFFFFF, "center");
-		titleTxt.y = FlxG.height / 2 - 120;
-		titleTxt.scrollFactor.set();
-		add(titleTxt);
+		// 这里汉化了提示文字
+		var title = new FlxText(0, 0, FlxG.width, this.title + "\n\n(按回车键提交)");
+		title.setFormat("VCR OSD Mono", 24, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		title.y = FlxG.height / 2 - title.height / 2 - 150;
+		title.scrollFactor.set();
+		add(title);
 
-		// 输入框
-		input = new FlxInput(FlxG.width * 0.1, FlxG.height / 2 - 20, FlxG.width * 0.8, 40);
-		input.borderColor = 0xFFFFFF;
-		input.borderSize = 2;
+		input = new InputText(0, 0, FlxG.width, text -> {
+            if (text.trim().length <= 0)
+                return;
+
+			onEnter(text);
+            close();
+		});
+		input.setFormat("VCR OSD Mono", 24, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		input.y = FlxG.height / 2 - input.height / 2;
+		input.scrollFactor.set();
 		add(input);
-	}
+    }
 
-	override function update(elapsed)
-	{
-		super.update(elapsed);
+    var confirmBack = false;
+    override function update(elapsed) {
+        super.update(elapsed);
 
-		if (input.justPressedEnter)
-		{
-			if (input.text.trim() != "")
-				onEnter(input.text);
-			close();
-		}
+		input.hasFocus = true;
 
-		if (controls.BACK)
-		{
-			if (!confirmBack)
-			{
+        if (input.text.length <= 0 && controls.BACK) {
+            if (!confirmBack) {
 				confirmBack = true;
-				return;
-			}
-			close();
-		}
-	}
+                return;
+            }
+            close();
+        }
+		else if (input.text.length > 0) {
+			confirmBack = false;
+        }
+    }
 
-	function close()
-	{
-		FlxG.substates.remove(this);
+	override function destroy() {
+		super.destroy();
+
+		FlxG.cameras.remove(coolCam);
 	}
 }
