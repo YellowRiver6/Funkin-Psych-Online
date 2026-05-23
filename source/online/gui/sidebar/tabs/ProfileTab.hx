@@ -40,7 +40,7 @@ class ProfileTab extends TabSprite {
 	var web:TabButton;
 
     public function new() {
-        super('Profile', 'profile');
+        super('个人资料', 'profile');
     }
 
     public static function view(username:String) {
@@ -56,7 +56,7 @@ class ProfileTab extends TabSprite {
 		flagsAPI = new HTTPHandler('https://flagsapi.com');
 		
 		loadingTxt = this.createText(20, 20, 40);
-		loadingTxt.setText('Fetching...');
+		loadingTxt.setText('加载中...');
 		loadingTxt.visible = false;
 		addChild(loadingTxt);
 
@@ -90,7 +90,7 @@ class ProfileTab extends TabSprite {
 		addChild(line1);
 
 		statsTitle = this.createText(0, line1.y + 20, 30);
-		statsTitle.setText("Statistics");
+		statsTitle.setText("数据统计");
 		statsTitle.x = tabBg.width / 2 - statsTitle.textWidth / 2;
 		addChild(statsTitle);
 
@@ -103,31 +103,31 @@ class ProfileTab extends TabSprite {
 		stats = this.createText(50, line2.y + 20, 22);
 		addChild(stats);
 
-		web = new TabButton('internet', () -> {
+		web = new TabButton('网页', () -> {
 			FlxG.openURL(FunkinNetwork.client.getURL("/user/" + StringTools.urlEncode(username)));
 		});
 		web.x = tabBg.width - web.width - 20;
 		web.y = tabBg.height - web.height - 20;
 		addChild(web);
 
-		settings = new TabButton('wheel', () -> {
+		settings = new TabButton('设置', () -> {
 			FlxG.openURL(FunkinNetwork.client.getURL("/api/auth/cookie?id=" + Auth.authID + "&token=" + Auth.authToken));
 		});
 		settings.x = web.x;
 		settings.y = web.y;
 		addChild(settings);
 
-		addFriend = new TabButton('add_friend', () -> inviteToFriends());
+		addFriend = new TabButton('添加好友', () -> inviteToFriends());
 		addFriend.x = web.x - web.width - 20;
 		addFriend.y = web.y;
 		addChild(addFriend);
 
-		removeFriend = new TabButton('remove_friend', () -> removeFromFriends());
+		removeFriend = new TabButton('删除好友', () -> removeFromFriends());
 		removeFriend.x = addFriend.x;
 		removeFriend.y = web.y;
 		addChild(removeFriend);
 
-		invitePlay = new TabButton('invite', () -> Util.inviteToPlay(username));
+		invitePlay = new TabButton('邀请游戏', () -> Util.inviteToPlay(username));
 		invitePlay.x = addFriend.x - addFriend.width - 20;
 		invitePlay.y = web.y;
 		addChild(invitePlay);
@@ -166,7 +166,7 @@ class ProfileTab extends TabSprite {
 			}
 			else {
 				Waiter.putPersist(() -> {
-					loadingTxt.setText('Failed to fetch!');
+					loadingTxt.setText('获取失败！');
 					loadingTxt.visible = true;
 				});
 			}
@@ -180,7 +180,7 @@ class ProfileTab extends TabSprite {
 			child.visible = !v;
 		}
 		tabBg.visible = true;
-		loadingTxt.setText('Fetching...');
+		loadingTxt.setText('加载中...');
 		loadingTxt.visible = v;
 		if (v)
 			tabBg.bitmapData = new BitmapData(tabBg.bitmapData.width, tabBg.bitmapData.height, true, FlxColor.fromRGB(10, 10, 10));
@@ -198,7 +198,7 @@ class ProfileTab extends TabSprite {
 
 			if (response != null && !response.isFailed()) {
 				Waiter.putPersist(() -> {
-					Alert.alert('Removed ' + daUsername + " from friends");
+					Alert.alert('已将 ' + daUsername + " 从好友列表移除");
 					if (username == daUsername)
 						username = username;
 				});
@@ -217,7 +217,7 @@ class ProfileTab extends TabSprite {
 
 			if (response != null && !response.isFailed()) {
 				Waiter.putPersist(() -> {
-					Alert.alert('Friend invite has been sent to ' + daUsername + "!");
+					Alert.alert('已向 ' + daUsername + " 发送好友申请！");
 					if (username == daUsername)
 						username = username;
 				});
@@ -260,7 +260,7 @@ class ProfileTab extends TabSprite {
 		avatar.width = 125;
 		avatar.height = 125;
 
-		flag.bitmapData = new BitmapData(1, 1, true, 0x00000000);
+		flag.bitmapData = new BitmapData(1, 1, true, 0x00000000));
 		flag.visible = false;
 		Thread.run(() -> {
 			var avatarData = FunkinNetwork.getUserAvatar(loadingUser);
@@ -290,14 +290,14 @@ class ProfileTab extends TabSprite {
 		});
 
 		updateUsernameText();
-		role.setText((user.club != null ? '[${user.club}] | ' : '') + (user.role != null ? user.role : 'Member'));
+		role.setText((user.club != null ? '[${user.club}] | ' : '') + (user.role != null ? user.role : '普通玩家'));
 		var seenAgo = ShitUtil.timeAgo(ShitUtil.parseISODate(user.lastActive).getTime());
 		if (seenAgo == 'just now')
-			seen.setText("ONLINE", null, FlxColor.LIME);
+			seen.setText("在线", null, FlxColor.LIME);
 		else
-			seen.setText("Seen " + seenAgo, null, 0xFF7C7C7C);
+			seen.setText("最后在线：" + seenAgo, null, 0xFF7C7C7C);
 
-		desc.setText(ShitUtil.pickReadableHTML(user.bio ?? '').wrapText());
+		desc.setText(ShitUtil.pickReadableHTML(user.bio ?? '这家伙很懒，什么都没写~').wrapText());
 		desc.selectable = true;
 
 		line1.x = desc.x;
@@ -312,9 +312,13 @@ class ProfileTab extends TabSprite {
 		stats.y = line2.y + 20;
 
 		var joinDate = ShitUtil.parseISODate(user.joined);
-		stats.setText("Rank: " + ShitUtil.toOrdinalNumber(user.rank) + '\n' + "Points: " + FlxStringUtil.formatMoney(user.points, false) + "FP\n" + "Avg. Accuracy: "
-			+ FlxMath.roundDecimal((user.avgAccuracy * 100), 2) + "%\n" + "Joined: " + joinDate.getDate() + '/' + (joinDate.getMonth() + 1) + '/'
-			+ (joinDate.getFullYear() + '').substr(2) + "\n\n");
+		stats.setText(
+			"排名：" + ShitUtil.toOrdinalNumber(user.rank) + '\n' +
+			"分数：" + FlxStringUtil.formatMoney(user.points, false) + " FP\n" +
+			"平均准确率：" + FlxMath.roundDecimal((user.avgAccuracy * 100), 2) + "%\n" +
+			"注册时间：" + joinDate.getDate() + '/' + (joinDate.getMonth() + 1) + '/' + (joinDate.getFullYear() + '').substr(2) + "\n\n"
+		);
+		
 		removeFriend.visible = user.friends.contains(FunkinNetwork.nickname);
 		addFriend.visible = !removeFriend.visible && user.canFriend;
 		invitePlay.visible = removeFriend.visible;
