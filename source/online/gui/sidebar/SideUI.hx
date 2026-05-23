@@ -100,11 +100,11 @@ class SideUI extends WSprite {
 		addChild(upBar);
 
 		welcome = this.createText(15, 15, 20);
-		welcome.setText('...');
+		welcome.setText('加载中...');
 		addChild(welcome);
 
 		tip = this.createText(15, 15, 15);
-		tip.setText('Use ' + InputFormatter.getKeyName(cast(ClientPrefs.keyBinds.get('sidebar')[0], FlxKey)) + ' to toggle the Network Sidebar!', upBar.width, 0xFF535353);
+		tip.setText('按 ' + InputFormatter.getKeyName(cast(ClientPrefs.keyBinds.get('sidebar')[0], FlxKey)) + ' 打开/关闭侧边栏', upBar.width, 0xFF535353);
 		tip.x = upBar.width / 2 - tip.width / 2;
 		tip.y = welcome.y;
 		addChild(tip);
@@ -148,22 +148,13 @@ class SideUI extends WSprite {
 
 			if ((e.keyCode.checkKey('sidebar') || (e.keyCode == 27 && active)) && stage.focus == null) {
 				active = !active;
-				// if (FunkinNetwork.loggedIn) {
-				// 	active = !active;
-				// 	return;
-				// }
-				// else {
-				// 	Waiter.put(() -> {
-				// 		Alert.alert("Forbidden!", "Sidebar is only accessible for\npeople that are logged to the network!");
-				// 	});
-				// }
 			}
 			
 			if (active) {
 				curTab.keyDown(e);
 
 				if (e.keyCode == Keyboard.F1) {
-					trace("reloading syncscript!");
+					trace("重新加载同步脚本!");
 					online.backend.SyncScript.initScript();
 				}
 			}
@@ -239,7 +230,7 @@ class SideUI extends WSprite {
 			if (!active)
 				return;
 
-			welcome.setText('Logged as ${FunkinNetwork.nickname}', upBar.width);
+			welcome.setText('已登录：${FunkinNetwork.nickname}', upBar.width);
 			welcome.x = upBar.width - welcome.width - 50;
 			welcome.y = upBar.height / 2 - welcome.getTextHeight() / 2 - 5;
 
@@ -253,7 +244,7 @@ class SideUI extends WSprite {
 			if (!active)
 				return;
 
-			welcome.setText('Not logged in', upBar.width);
+			welcome.setText('未登录账号', upBar.width);
 			welcome.x = upBar.width - welcome.width - 50;
 			welcome.y = upBar.height / 2 - welcome.getTextHeight() / 2 - 5;
 
