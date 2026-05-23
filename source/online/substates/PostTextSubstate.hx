@@ -29,7 +29,7 @@ class PostTextSubstate extends MusicBeatSubstate {
 		bg.scrollFactor.set(0, 0);
 		add(bg);
 
-		// 汉化提示（完全不影响功能）
+		// 汉化提示
 		var title = new FlxText(0, 0, FlxG.width, this.title + "\n\n(按回车键提交)");
 		title.setFormat("VCR OSD Mono", 24, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		title.y = FlxG.height / 2 - title.height / 2 - 150;
@@ -48,11 +48,10 @@ class PostTextSubstate extends MusicBeatSubstate {
 		add(input);
 
 		// ==============================================
-		// 【关键修复】在 Psych 里安全地获取 stage 并添加中文输入支持
+		// 【终极兼容方案】不依赖 canvas 的中文输入支持
 		// ==============================================
-		var canvas = FlxG.canvas;
-		if (canvas != null && canvas.stage != null) {
-			canvas.stage.addEventListener(TextEvent.TEXT_INPUT, function(e:TextEvent):Void {
+		if (stage != null) {
+			stage.addEventListener(TextEvent.TEXT_INPUT, function(e:TextEvent):Void {
 				if (e.text != null && e.text != "") {
 					input.text += e.text;
 				}
