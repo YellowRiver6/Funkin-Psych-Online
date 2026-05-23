@@ -104,7 +104,7 @@ class OnlineOptionsState extends MusicBeatState {
 		var serverOption:InputOption;
 		var appendText = "";
 		if (GameClient.serverAddresses.length > 0) {
-			appendText += "\n官方服务器：";
+			appendText += "\国服服务器：";
 			for (address in GameClient.serverAddresses) {
 				if (address != "ws://localhost:2567")
 					appendText += "\n" + address;
