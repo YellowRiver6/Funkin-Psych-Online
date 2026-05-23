@@ -1,22 +1,21 @@
 name: Build Psych Extended Online
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
 
 jobs:
-  Build:            
-            - name: Windows-NORMAL
-            os: windows-latest
-            setupCommand: .\"setup/windows.bat"
-            buildArgs: "windows -D officialBuild -final"
-            artifactName: windowsBuild-x86_64
-            artifactPath: export\release\windows\bin\*
-            doCache: "YES"
-    uses: ./.github/workflows/build.yml
-    with:
-        name: ${{ matrix.name }}
-        os: ${{ matrix.os }}
-        setupCommand: ${{ matrix.setupCommand }}
-        buildArgs: ${{ matrix.buildArgs }}
-        artifactName: ${{ matrix.artifactName }}
-        artifactPath: ${{ matrix.artifactPath }}
-        doCache: ${{ matrix.doCache }}
+  Build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup & Build
+        run: |
+          .\setup\windows.bat
+          lime build windows -D officialBuild -final
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-build-x86_64
+          path: export/release/windows/bin/
