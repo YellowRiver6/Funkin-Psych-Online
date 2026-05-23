@@ -1,101 +1,103 @@
 package online.substates;
 
-import openfl.events.TextEvent;
-import openfl.text.TextField;
+import flixel.FlxSubstate;
+import flixel.text.FlxText;
+import flixel.ui.FlxInput;
+import openfl.text.StageText;
 import openfl.text.TextFieldType;
-import openfl.text.TextFormat;
-import lime.system.System;
+import openfl.events.Event;
+import openfl.events.FocusEvent;
+import flixel.FlxG;
+import online.ChatBox;
 
-class PostTextSubstate extends MusicBeatSubstate {
-	var title:String;
-	var onEnter:String->Void;
+class PostTextSubstate extends FlxSubstate
+{
+	var label:FlxText;
+	#if mobile
+	var nativeInput:StageText;
+	#else
+	var input:FlxInput;
+	#end
 
-	public function new(title:String, onEnter:String->Void) {
-        super();
-		this.title = title;
-		this.onEnter = onEnter;
-    }
+	var submitCallback:String->Void;
+	var hint:String;
 
-	var input:TextField;
-	var coolCam:FlxCamera;
-
-    override function create() {
-        super.create();
-
-		// 强制开启中文输入法（Windows / Linux / Mac 全支持）
-		if (System.window != null) {
-			System.window.imeEnabled = true;
-		}
-
-		coolCam = new FlxCamera();
-		coolCam.bgColor.alpha = 0;
-		FlxG.cameras.add(coolCam, false);
-		cameras = [coolCam];
-
-		var bg = new FlxSprite();
-		bg.makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
-		bg.alpha = 0.7;
-		bg.scrollFactor.set(0, 0);
-		add(bg);
-
-		// 标题
-		var titleTxt = new FlxText(0, 0, FlxG.width, this.title + "\n\n(Press Enter to submit)");
-		titleTxt.setFormat("VCR OSD Mono", 24, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-		titleTxt.y = FlxG.height / 2 - titleTxt.height / 2 - 150;
-		titleTxt.scrollFactor.set();
-		add(titleTxt);
-
-		// 输入框
-		input = new TextField();
-		input.type = TextFieldType.INPUT;
-		input.editable = true;
-		input.selectable = true;
-		input.width = FlxG.width * 0.7;
-		input.height = 40;
-		input.x = (FlxG.width - input.width) / 2;
-		input.y = FlxG.height / 2 - input.height / 2;
-		input.defaultTextFormat = new TextFormat("VCR OSD Mono", 26, 0xFFFFFF);
-		input.embedFonts = false;
-		input.wordWrap = false;
-		input.multiline = false;
-		
-		stage.addChild(input);
-		input.setFocus();
+	public function new(hint:String, callback:String->Void)
+	{
+		super();
+		this.hint = hint;
+		submitCallback = callback;
 	}
 
-    var confirmBack = false;
-    override function update(elapsed) {
-        super.update(elapsed);
+	override function create()
+	{
+		super.create();
+		label = new FlxText(10, 10, 0, hint, 20);
+		add(label);
 
-		if(controls.ACCEPT){
+		#if mobile
+		// Android/iOS：用StageText原生输入框，完美支持中文输入法候选
+		nativeInput = new StageText();
+		nativeInput.type = TextFieldType.INPUT;
+		nativeInput.width = FlxG.width - 20;
+		nativeInput.height = 40;
+		nativeInput.x = 10;
+		nativeInput.y = 40;
+		nativeInput.stage = FlxG.stage;
+
+		nativeInput.addEventListener(Event.CHANGE, onTextChange);
+		nativeInput.addEventListener(Event.SUBMIT, onSubmit);
+		nativeInput.addEventListener(FocusEvent.FOCUS_OUT, onBlur);
+
+		nativeInput.needsSoftKeyboard = true;
+		#else
+		// Windows：FlxInput + LIME_ENABLE_IME，中文IME正常
+		input = new FlxInput(10, 40, FlxG.width - 20, 32, "", 20);
+		input.maxWidth = FlxG.width - 20;
+		add(input);
+		#end
+	}
+
+	#if mobile
+	function onTextChange(e:Event):Void {}
+	function onSubmit(e:Event):Void
+	{
+		var txt = nativeInput.text.trim();
+		if (txt != "") submitCallback(txt);
+		close();
+	}
+	function onBlur(e:FocusEvent):Void {}
+	#end
+
+	override function update(elapsed:Float)
+	{
+		super.update(elapsed);
+		#if !mobile
+		if (input.justPressedEnter)
+		{
 			var txt = input.text.trim();
-			if(txt.length > 0){
-				onEnter(txt);
-				close();
-			}
+			if (txt != "") submitCallback(txt);
+			close();
 		}
+		#end
+	}
 
-        if (input.text.length <= 0 && controls.BACK) {
-            if (!confirmBack) {
-				confirmBack = true;
-                return;
-            }
-            close();
-        }
-		else if (input.text.length > 0)
-			confirmBack = false;
-    }
+	function close()
+	{
+		#if mobile
+		nativeInput.stage = null;
+		nativeInput.removeEventListener(Event.CHANGE, onTextChange);
+		nativeInput.removeEventListener(Event.SUBMIT, onSubmit);
+		nativeInput.removeEventListener(FocusEvent.FOCUS_OUT, onBlur);
+		#end
+		FlxG.substates.remove(this);
+	}
 
-	override function destroy() {
+	override function destroy()
+	{
+		#if mobile
+		nativeInput = null;
+		#end
 		super.destroy();
-		if(input != null && input.parent != null){
-			input.parent.removeChild(input);
-		}
-		FlxG.cameras.remove(coolCam);
-
-		// 关闭输入法
-		if (System.window != null) {
-			System.window.imeEnabled = false;
-		}
 	}
 }
