@@ -7,57 +7,56 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 	function openGameOptions() {
 		/* Psych Extended Stuffs */
 		var option:Option = new Option('Old Camera System',
-			"If checked, game uses old camera system instead of new one.\n(If you have a any camera issue, enable or disable this)",
+			"如果勾选，游戏将使用旧相机系统而非新系统。\n（如果你遇到任何相机问题，请启用或关闭此项）",
 			'oldCameraSystem',
 			'bool');
 		addOption(option);
 
 		var option:Option = new Option('Alternative Camera',
-			"If checked, camera updates directly instead of waiting to next section",
+			"如果勾选，相机会直接更新，而不是等待下一个小节",
 			'alterCamera',
 			'bool');
 		addOption(option);
 
-		//I'd suggest using "Downscroll" as an example for making your own option since it is the simplest here
-		var option:Option = new Option('Downscroll', //Name
-			'If checked, notes go Down instead of Up, simple enough.', //Description
-			'downScroll', //Save data variable name
-			'bool'); //Variable type
+		var option:Option = new Option('Downscroll',
+			"如果勾选，音符会向下移动而不是向上。",
+			'downScroll',
+			'bool');
 		addOption(option);
 
 		var option:Option = new Option('Middlescroll',
-			'If checked, your notes get centered.',
+			"如果勾选，你的音符会居中显示。",
 			'middleScroll',
 			'bool');
 		addOption(option);
 
 		var option:Option = new Option('Opponent Notes',
-			'If unchecked, opponent notes get hidden.',
+			"如果取消勾选，对手的音符会被隐藏。",
 			'opponentStrums',
 			'bool');
 		addOption(option);
 
 		var option:Option = new Option('Ghost Tapping',
-			"If checked, you won't get misses from pressing keys\nwhile there are no notes able to be hit.",
+			"如果勾选，在没有可击中音符时按键，不会判定失误。",
 			'ghostTapping',
 			'bool');
 		addOption(option);
 		
 		var option:Option = new Option('Auto Pause',
-			"If checked, the game automatically pauses if the screen isn't on focus.",
+			"如果勾选，当游戏窗口失去焦点时会自动暂停。",
 			'autoPause',
 			'bool');
 		addOption(option);
 		option.onChange = onChangeAutoPause;
 
 		var option:Option = new Option('Disable Reset Button',
-			"If checked, pressing Reset won't do anything.",
+			"如果勾选，按下重置键将不会生效。",
 			'noReset',
 			'bool');
 		addOption(option);
 
 		var option:Option = new Option('Hitsound Volume',
-			'Funny notes does \"Tick!\" when you hit them."',
+			"击中音符时会发出“嘀”的音效。",
 			'hitsoundVolume',
 			'percent');
 		addOption(option);
@@ -69,7 +68,7 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		option.onChange = onChangeHitsoundVolume;
 
 		var option:Option = new Option('Rating Offset',
-			'Changes how late/early you have to hit for a "Sick!"\nHigher values mean you have to hit later.',
+			"调整判定“Sick!”的早晚偏移值。\n数值越高，需要越晚击中。",
 			'ratingOffset',
 			'int');
 		option.displayFormat = '%vms';
@@ -78,40 +77,8 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		option.maxValue = 30;
 		addOption(option);
 
-		// phantom ass options
-
-		// var option:Option = new Option('Sick! Hit Window',
-		// 	'Changes the amount of time you have\nfor hitting a "Sick!" in milliseconds.',
-		// 	'sickWindow',
-		// 	'int');
-		// option.displayFormat = '%vms';
-		// option.scrollSpeed = 15;
-		// option.minValue = 15;
-		// option.maxValue = 45;
-		// addOption(option);
-
-		// var option:Option = new Option('Good Hit Window',
-		// 	'Changes the amount of time you have\nfor hitting a "Good" in milliseconds.',
-		// 	'goodWindow',
-		// 	'int');
-		// option.displayFormat = '%vms';
-		// option.scrollSpeed = 30;
-		// option.minValue = 15;
-		// option.maxValue = 90;
-		// addOption(option);
-
-		// var option:Option = new Option('Bad Hit Window',
-		// 	'Changes the amount of time you have\nfor hitting a "Bad" in milliseconds.',
-		// 	'badWindow',
-		// 	'int');
-		// option.displayFormat = '%vms';
-		// option.scrollSpeed = 60;
-		// option.minValue = 15;
-		// option.maxValue = 135;
-		// addOption(option);
-
 		var option:Option = new Option('Safe Frames',
-			'Changes how many frames you have for\nhitting a note earlier or late.',
+			"调整提前或晚点击中音符的容错帧数。",
 			'safeFrames',
 			'float');
 		option.scrollSpeed = 5;
@@ -121,19 +88,19 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		addOption(option);
 
 		var option:Option = new Option('Disable Note Modchart',
-			'If checked, strum notes will no longer move or change their opacity to invisible.',
+			"如果勾选，音符将不会移动或改变透明度。",
 			'disableStrumMovement',
 			'bool');
 		addOption(option);
 
 		var option:Option = new Option('Modchart Skin Changes',
-			'If enabled, the song events will change the character of your active skin',
+			"如果启用，谱面事件会改变你当前皮肤的角色。",
 			'modchartSkinChanges',
 			'bool');
 		addOption(option);
 
 		var option:Option = new Option('Disable Lag Detection',
-			'If checked, the game will no longer rewind 3 seconds when a lag is detected',
+			"如果勾选，游戏检测到卡顿后不会回退3秒。",
 			'disableLagDetection',
 			'bool');
 		addOption(option);
@@ -142,7 +109,7 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 	function openPreferences() {
 		#if CHECK_FOR_UPDATES
 		var option:Option = new Option('Check for Updates',
-			'On Release builds, turn this on to check for updates when you start the game.',
+			"正式版中，启用此项会在游戏启动时检查更新。",
 			'checkForUpdates',
 			'bool');
 		addOption(option);
@@ -150,32 +117,32 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 
 		#if DISCORD_ALLOWED
 		var option:Option = new Option('Discord Rich Presence',
-			"Uncheck this to prevent accidental leaks, it will hide the Application from your \"Playing\" box on Discord",
+			"取消勾选可在Discord中隐藏游戏状态。",
 			'discordRPC',
 			'bool');
 		addOption(option);
 		#end
 		
 		var option:Option = new Option('Disable Recording Replays',
-			'If checked, the game will no longer record your gameplay, this will cause your scores to not be submitted to the leaderboard!',
+			"如果勾选，游戏将不再记录游戏录像，分数也不会上传到排行榜。",
 			'disableReplays',
 			'bool');
 		addOption(option);
 
 		var option:Option = new Option('Disable Leaderboard Submiting',
-			'If checked, the game will no longer submit your replays to the leaderboard\nCan be toggled in-game with F2',
+			"如果勾选，游戏将不再上传录像到排行榜。\n可在游戏内按F2切换。",
 			'disableSubmiting',
 			'bool');
 		addOption(option);
 
 		var option:Option = new Option('Disable Automatic Downloads',
-			'Disables automatic downloads of Mods and Skins from the opponent',
+			"禁用自动下载对手的模组和皮肤。",
 			'disableAutoDownloads',
 			'bool');
 		addOption(option);
 
 		var option:Option = new Option('Pause Screen Song:',
-			"What song do you prefer for the Pause Screen?",
+			"你希望暂停界面播放什么音乐？",
 			'pauseMusic',
 			'string',
 			['None', 'Breakfast', 'Tea Time']);
@@ -183,14 +150,14 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		option.onChange = onChangePauseMusic;
 
 		var option:Option = new Option('Group Songs:',
-			"How should songs on Freeplay menu be group by?",
+			"自由模式中的歌曲应如何分组？",
 			'groupSongsBy',
 			'string',
 			FreeplayState.GROUPS);
 		addOption(option);
 
 		var option:Option = new Option('Favorite Tracks Menu Theme',
-			'If checked, the game will be picking your random favorite song as the main menu theme!',
+			"如果勾选，游戏会随机播放你收藏的歌曲作为主菜单音乐。",
 			'favsAsMenuTheme',
 			'bool');
 		option.onChange = () -> {
@@ -199,7 +166,7 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		addOption(option);
 
 		var option:Option = new Option('Debug Mode',
-			"If checked, enables debug warnings etc.",
+			"如果勾选，启用调试警告等功能。",
 			'debugMode',
 			'bool');
 		addOption(option);
@@ -208,7 +175,7 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 	public function new(category:String)
 	{
 		title = category;
-		rpcTitle = 'Game Settings Menu'; //for Discord Rich Presence
+		rpcTitle = 'Game Settings Menu';
 
 		switch (category) {
 			case 'Gameplay':
