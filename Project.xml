@@ -286,4 +286,20 @@
 		<icon path="art/icon64.png" size='64'/>
 		<icon path="art/iconOG.png" />
 	</section>
+
+	<!-- ====================================== -->
+	<!-- 👇 我在这里帮你加了安卓修复配置 👇 -->
+	<!-- ====================================== -->
+	<android>
+		<manifest android:installLocation="auto">
+			<application android:hardwareAccelerated="true">
+				<activity 
+					android:name=".MainActivity" 
+					android:configChanges="keyboard|keyboardHidden|orientation|screenSize" 
+					android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
+				</activity>
+			</application>
+		</manifest>
+	</android>
+
 </project>
