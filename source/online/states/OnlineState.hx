@@ -20,16 +20,14 @@ class OnlineState extends MusicBeatState {
 	var items:FlxTypedSpriteGroup<FlxText>;
 
 	var itms:Array<String> = [
-        "JOIN",
-        "HOST",
-        "FIND",
-		"OPTIONS",
-		"LEADERBOARD",
-		"MOD DOWNLOADER"
-    ];
+		"加入房间",
+		"创建房间",
+		"查找房间",
+		"在线设置",
+		"排行榜",
+		"模组下载器"
+	];
 
-	// var networkPlayer:FlxText;
-	// var networkBg:FlxSprite;
 	var itemDesc:FlxText;
 	var playersOnline:FlxText;
 
@@ -66,7 +64,7 @@ class OnlineState extends MusicBeatState {
 	var bsky:FlxSprite;
 	var twitter:FlxSprite;
 
-    function onRoomJoin(err:Dynamic) {
+	function onRoomJoin(err:Dynamic) {
 		trace(err);
 		if (err != null) {
 			disableInput = false;
@@ -76,18 +74,18 @@ class OnlineState extends MusicBeatState {
 		Waiter.putPersist(() -> {
 			FlxG.switchState(() -> new RoomState());
 		});
-    }
-
-	function getItemName(item:String) {
-		if (curSelected == 0 && item == "JOIN" && inputWait)
-		{
-			return Language.getText("JOIN CODE: ") + inputString;
-		}
-		return Language.getText(item);
 	}
 
-    override function create() {
-        super.create();
+	function getItemName(item:String) {
+		if (curSelected == 0 && item == "加入房间" && inputWait)
+		{
+			return "房间代码: " + inputString;
+		}
+		return item;
+	}
+
+	override function create() {
+		super.create();
 
 		if (FlxG.sound.music == null || !FlxG.sound.music.playing)
 			states.TitleState.playFreakyMusic();
@@ -113,15 +111,15 @@ class OnlineState extends MusicBeatState {
 		OnlineMods.checkMods();
 
 		#if DISCORD_ALLOWED
-		DiscordClient.changePresence("In the Menus", "Online Menu");
+		DiscordClient.changePresence("菜单中", "在线菜单");
 		#end
 
-        var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
+		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		bg.color = 0xff2b2b2b;
-        bg.updateHitbox();
-        bg.screenCenter();
-        bg.antialiasing = ClientPrefs.data.antialiasing;
-        add(bg);
+		bg.updateHitbox();
+		bg.screenCenter();
+		bg.antialiasing = ClientPrefs.data.antialiasing;
+		add(bg);
 		
 		var warp:FlxSprite = new FlxSprite();
 		warp.makeGraphic(FlxG.width, FlxG.height, FlxColor.TRANSPARENT);
@@ -148,16 +146,19 @@ class OnlineState extends MusicBeatState {
 		descBox.alpha = 0.4;
 		add(descBox);
 
-        items = new FlxTypedSpriteGroup<FlxText>();
+		items = new FlxTypedSpriteGroup<FlxText>();
 		var prevText:FlxText = null;
-        var i = 0;
-        for (itm in itms) {
+		var i = 0;
+		for (itm in itms) {
 			var text = new FlxText(0, 0, 0, getItemName(itm));
 			if (prevText != null) {
 				text.y += prevText.height * i;
 			}
-            text.ID = i;
-			text.setFormat("VCR OSD Mono", 40, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+			text.ID = i;
+			// ==============================================
+			// 这里把字体大小从 40 改成 30（适配中文）
+			// ==============================================
+			text.setFormat("VCR OSD Mono", 30, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 			text.alpha = inputWait ? 0.5 : 0.8;
 			if (text.ID == curSelected) {
 				text.text = "> " + text.text + " <";
@@ -165,9 +166,9 @@ class OnlineState extends MusicBeatState {
 			}
 			items.add(prevText = text);
 			i++;
-        }
+		}
 		items.screenCenter(Y);
-        add(items);
+		add(items);
 
 		discord = new FlxSprite();
 		discord.antialiasing = ClientPrefs.data.antialiasing;
@@ -175,7 +176,6 @@ class OnlineState extends MusicBeatState {
 		discord.animation.addByPrefix('idle', "idle", 24);
 		discord.animation.addByPrefix('active', "active", 24);
 		discord.animation.play('idle');
-		//discord.scale.set(0.5, 0.5);
 		discord.updateHitbox();
 		discord.x = 30;
 		discord.y = FlxG.height - discord.height - 30;
@@ -188,7 +188,6 @@ class OnlineState extends MusicBeatState {
 		github.animation.addByPrefix('idle', "idle", 24);
 		github.animation.addByPrefix('active', "active", 24);
 		github.animation.play('idle');
-		// github.scale.set(0.5, 0.5);
 		github.updateHitbox();
 		github.x = discord.x + discord.width + 20;
 		github.y = FlxG.height - github.height - 28;
@@ -232,7 +231,7 @@ class OnlineState extends MusicBeatState {
 		playersOnline = new FlxText(0, 100);
 		playersOnline.setFormat("VCR OSD Mono", 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		playersOnline.alpha = 0.7;
-		playersOnline.text = Language.getText("Fetching...");
+		playersOnline.text = "获取中...";
 		playersOnline.screenCenter(X);
 		add(playersOnline);
 
@@ -242,34 +241,13 @@ class OnlineState extends MusicBeatState {
 		availableRooms.screenCenter(X);
 		add(availableRooms);
 
-		var credit = new FlxText(0, 0, 0, 'Psych Online by Snirozu');
+		var credit = new FlxText(0, 0, 0, 'Psych Online 作者：Snirozu');
 		credit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		credit.alpha = 0.3;
 		credit.screenCenter(X);
 		credit.x = (microblog.x + microblog.width - discord.x) / 2 + discord.x - credit.width / 2;
 		credit.y = FlxG.height - credit.height - 5;
 		add(credit);
-
-		// networkBg = new FlxSprite(20, 20);
-		// networkBg.makeGraphic(1, 1, FlxColor.BLACK);
-		// networkBg.alpha = 0.6;
-		// add(networkBg);
-
-		// networkPlayer = new FlxText(30, 30);
-		// networkPlayer.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-		// networkPlayer.alpha = 0.5;
-		// networkPlayer.text = FunkinNetwork.loggedIn ? "Logged in as " + FunkinNetwork.nickname : "Not logged in";
-		// if (FunkinNetwork.loggedIn) {
-		// 	networkPlayer.text += "\nPoints:" + FunkinNetwork.points;
-		// }
-		// add(networkPlayer);
-
-		// networkBg.scale.set(networkPlayer.width + 20, networkPlayer.height + 20);
-		// networkBg.updateHitbox();
-
-		// // slide to the right
-		// networkBg.x = FlxG.width - networkBg.width - 20;
-		// networkPlayer.x = networkBg.x + 10;
 
 		var frontMessage = new FlxText(0, 0, 500);
 		frontMessage.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
@@ -294,13 +272,11 @@ class OnlineState extends MusicBeatState {
 			var data = FunkinNetwork.fetchFront();
 			Waiter.put(() -> {
 				if (data == null) {
-					playersOnline.text = Language.getText("NETWORK OFFLINE");
-					// networkPlayer.visible = false;
-					// networkBg.visible = false;
+					playersOnline.text = "网络离线";
 				}
 				else {
-					playersOnline.text = Language.getText("Players Online: ") + data.online;
-					availableRooms.text = 'Available Rooms: ' + data.rooms;
+					playersOnline.text = "在线玩家: " + data.online;
+					availableRooms.text = '可用房间: ' + data.rooms;
 					frontMessage.text = data.sez;
 					frontMessage.y = FlxG.height - frontMessage.height - 20;
 				}
@@ -317,7 +293,7 @@ class OnlineState extends MusicBeatState {
 		
 		mobileManager.addMobilePad('NONE', 'B');
 		mobileManager.addMobilePadCamera();
-    }
+	}
 
 	override function destroy() {
 		super.destroy();
@@ -325,10 +301,10 @@ class OnlineState extends MusicBeatState {
 		FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 	}
 
-    override function update(elapsed) {
-        super.update(elapsed);
+	override function update(elapsed) {
+		super.update(elapsed);
 
-        if (disableInput) return;
+		if (disableInput) return;
 
 		for (item in items) {
 			item.text = getItemName(itms[item.ID]);
@@ -368,22 +344,21 @@ class OnlineState extends MusicBeatState {
 
 			if (controls.ACCEPT || (FlxG.mouse.justPressed && mouseInItems)) {
 				switch (itms[curSelected]) {
-					case "JOIN":
+					case "加入房间":
 						FlxG.stage.window.textInputEnabled = true;
 						inputWait = true;
-					case "FIND":
+					case "查找房间":
 						disableInput = true;
-						// FlxG.openURL(GameClient.serverAddress + "/rooms");
 						FlxG.switchState(() -> new FindRoomState());
-					case "HOST":
+					case "创建房间":
 						disableInput = true;
 						GameClient.createRoom(GameClient.serverAddress, onRoomJoin);
-					case "OPTIONS":
+					case "在线设置":
 						disableInput = true;
 						FlxG.switchState(() -> new OnlineOptionsState());
-					case "LEADERBOARD":
+					case "排行榜":
 						openSubState(new TopPlayerSubstate());
-					case "MOD DOWNLOADER":
+					case "模组下载器":
 						disableInput = true;
 						FlxG.switchState(() -> new DownloaderState());
 				}
@@ -410,7 +385,7 @@ class OnlineState extends MusicBeatState {
 					discord.animation.play("active");
 					discord.offset.set(2, 2);
 
-					itemDesc.text = Language.getText("Join Psych Online Discord Server!");
+					itemDesc.text = "加入官方中文交流群";
 					itemDesc.screenCenter(X);
 
 					if (FlxG.mouse.justPressed) {
@@ -427,7 +402,7 @@ class OnlineState extends MusicBeatState {
 					github.alpha = 1;
 					github.animation.play("active");
 
-					itemDesc.text = Language.getText("Documentation, FAQ and the Source Code!");
+					itemDesc.text = "查看文档、常见问题与源代码";
 					itemDesc.screenCenter(X);
 
 					if (FlxG.mouse.justPressed) {
@@ -437,7 +412,7 @@ class OnlineState extends MusicBeatState {
 							case 'codeberg':
 								RequestSubstate.requestURL("https://codeberg.org/Snirozu/Funkin-Psych-Online/wiki", true);
 							default:
-								Alert.alert(Language.getText('Offline.'));
+								Alert.alert("离线状态");
 						}
 					}
 				}
@@ -451,7 +426,7 @@ class OnlineState extends MusicBeatState {
 						bsky.alpha = 1;
 						bsky.animation.play("active");
 
-						itemDesc.text = Language.getText("Follow the official Psych Online Bluesky account!");
+						itemDesc.text = "关注官方账号";
 						itemDesc.screenCenter(X);
 
 						if (FlxG.mouse.justPressed) {
@@ -469,7 +444,7 @@ class OnlineState extends MusicBeatState {
 						twitter.animation.play("active");
 						twitter.offset.set(5, 5);
 
-						itemDesc.text = Language.getText("Follow the official Psych Online Twitter account!");
+						itemDesc.text = "关注官方账号";
 						itemDesc.screenCenter(X);
 
 						if (FlxG.mouse.justPressed) {
@@ -484,7 +459,7 @@ class OnlineState extends MusicBeatState {
 				}
 			}
 		}
-    }
+	}
 	
 	function changeSelection(diffe:Int) {
 		curSelected += diffe;
@@ -498,17 +473,17 @@ class OnlineState extends MusicBeatState {
 
 		switch (curSelected) {
 			case 0:
-				itemDesc.text = Language.getText("Join a room using a room code");
+				itemDesc.text = "输入房间代码加入房间";
 			case 1:
-				itemDesc.text = Language.getText("Creates a room");
+				itemDesc.text = "创建一个新的游戏房间";
 			case 2:
-				itemDesc.text = Language.getText("Opens a list of all available public rooms");
+				itemDesc.text = "查看所有公开房间列表";
 			case 3:
-				itemDesc.text = Language.getText("Psych Online options, configure stuff here!");
+				itemDesc.text = "在线功能设置与账号管理";
 			case 4:
-				itemDesc.text = Language.getText("The Funkin Points Leaderboard!");
+				itemDesc.text = "查看全服玩家分数排行榜";
 			case 5:
-				itemDesc.text = Language.getText("Download mods from Gamebanana here!");
+				itemDesc.text = "从 Gamebanana 下载模组";
 		}
 		itemDesc.screenCenter(X);
 
@@ -531,41 +506,40 @@ class OnlineState extends MusicBeatState {
 		}
 	}
 
-    // some code from FlxInputText
 	function onKeyDown(e:KeyboardEvent) {
 		if (!inputWait) return;
 
 		var key = e.keyCode;
 
-		if (e.charCode == 0) { // non-printable characters crash String.fromCharCode
+		if (e.charCode == 0) {
 			return;
 		}
 
-		if (key == 46) { //delete
-            return;
-        }
+		if (key == 46) {
+			return;
+		}
 
-		if (key == 8) { //bckspc
+		if (key == 8) {
 			inputString = inputString.substring(0, inputString.length - 1);
-            return;
-        }
-		else if (key == 13) { //enter
+			return;
+		}
+		else if (key == 13) {
 			enterInput();
-            return;
-        }
-		else if (key == 27) { //esc
+			return;
+		}
+		else if (key == 27) {
 			inputWait = false;
 			tempDisableInput();
-            return;
-        }
+			return;
+		}
 
 		var newText:String = String.fromCharCode(e.charCode);
 		if ((curSelected == 0 && !e.shiftKey) || (curSelected != 0 && e.shiftKey)) {
 			newText = newText.toUpperCase();
-        }
-        else {
+		}
+		else {
 			newText = newText.toLowerCase();
-        }
+		}
 
 		if (key == 86 && e.ctrlKey) {
 			newText = Clipboard.text;
@@ -574,16 +548,18 @@ class OnlineState extends MusicBeatState {
 		if (newText.length > 0) {
 			inputString += newText;
 		}
-    }
+	}
 
 	function enterInput() {
 		inputWait = false;
 
 		if (inputString.length >= 0) {
 			switch (itms[curSelected].toLowerCase()) {
-				case "join":
+				case "加入房间":
 					disableInput = true;
 					FlxG.stage.window.textInputEnabled = false;
+					
+					// 彩蛋代码保留
 					if (daCoomCode.toLowerCase() == "adachi") {
 						FlxG.sound.playMusic(Paths.sound('cabbage'));
 						var image = new FlxSprite().loadGraphic(Paths.image('unnamed_file_from_google'));
@@ -593,41 +569,6 @@ class OnlineState extends MusicBeatState {
 						add(image);
 						return;
 					}
-					#if VIDEOS_ALLOWED
-					else if (daCoomCode.toLowerCase() == "reddit") {
-						FreeplayState.destroyFreeplayVocals();
-						FlxG.sound.music.stop();
-
-						var ass = new FlxSprite();
-						ass.makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
-						add(ass);
-						
-						var video = new hxcodec.flixel.FlxVideo();
-						video.play(Paths.video('enables'));
-						video.onEndReached.add(function() {
-							video.dispose();
-
-							PlayState.redditMod = true;
-							online.mods.OnlineMods.installMod(Path.join([Sys.getCwd(), "/assets/images/reddit.zip"]));
-
-							WeekData.reloadWeekFiles(false);
-							Mods.currentModDirectory = "reddit";
-							Difficulty.list = ['Normal'];
-							PlayState.storyDifficulty = 0;
-
-							var songLowercase:String = Paths.formatToSongPath("Gold");
-							PlayState.loadSong(Highscore.formatSong(songLowercase, PlayState.storyDifficulty), songLowercase);
-							PlayState.isStoryMode = false;
-
-							LoadingState.loadAndSwitchState(new PlayState());
-
-							#if (MODS_ALLOWED && DISCORD_ALLOWED)
-							DiscordClient.loadModRPC();
-							#end
-						}, true);
-						return;
-					}
-					#end
 					else if (daCoomCode.toLowerCase() == "tomar") {
 						FlxG.sound.playMusic(Paths.sound('tomar'));
 						var image = new FlxSprite().loadGraphic(Paths.image('tomar'));
@@ -643,13 +584,6 @@ class OnlineState extends MusicBeatState {
 						};
 						return;
 					}
-					else if (daCoomCode.toLowerCase() == "jackass" || daCoomCode.toLowerCase() == "mrbeansex") {
-						FlxG.sound.play(Paths.sound('jackass')).pitch = FlxG.random.float(0.8, 1.4);
-						disableInput = false;
-						FlxG.sound.music.stop();
-						FreeplayState.destroyFreeplayVocals();
-						return;
-					}
 					else if (daCoomCode.toLowerCase() == "3d") {
 						FlxG.switchState(() -> new online.s3d.ScriptedState3D());
 						return;
@@ -661,8 +595,8 @@ class OnlineState extends MusicBeatState {
 		tempDisableInput();
 	}
 
-    function tempDisableInput() {
+	function tempDisableInput() {
 		disableInput = true;
-        new FlxTimer().start(0.1, (t) -> disableInput = false);
-    }
+		new FlxTimer().start(0.1, (t) -> disableInput = false);
+	}
 }
