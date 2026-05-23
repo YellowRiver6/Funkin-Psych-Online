@@ -24,7 +24,8 @@ class LeavePie extends FlxTypedSpriteGroup<FlxSprite> {
 
 		final back:String = (Controls.instance.mobileControls) ? Std.isOfType(getState(), states.PlayState) ? 'P' : 'B' : 'BACK';
 
-		exitTip = new FlxText(pieDial.x + 80, pieDial.y + 5, 0, 'Hold $back to leave!');
+		// 只汉化这里
+		exitTip = new FlxText(pieDial.x + 80, pieDial.y + 5, 0, '按住 $back 离开');
 		exitTip.setFormat("VCR OSD Mono", 18, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		exitTip.alpha = 0;
 		add(exitTip);
