@@ -158,7 +158,7 @@ class OnlineState extends MusicBeatState {
 			// ==============================================
 			// 这里把字体大小从 40 改成 30（适配中文）
 			// ==============================================
-			text.setFormat("VCR OSD Mono", 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+			text.setFormat("VCR OSD Mono", 34, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 			text.alpha = inputWait ? 0.5 : 0.8;
 			if (text.ID == curSelected) {
 				text.text = "> " + text.text + " <";
