@@ -66,7 +66,7 @@ class OnlineMods {
 				Waiter.putPersist(() -> {
 					LoadingScreen.toggle(false);
 					if (err != null) {
-						Alert.alert("Failed to download!", "For mod: " + url + "\n" + ShitUtil.readableError(err));
+						Alert.alert("下载失败！", "模组：" + url + "\n" + ShitUtil.readableError(err));
 						return;
 					}
 
@@ -82,7 +82,7 @@ class OnlineMods {
 		}
 
 		if (StringTools.startsWith(url, "https://drive.google.com/drive/folders/")) {
-			Alert.alert("Mod download failed!", "Can't download GDrive folders!");
+			Alert.alert("模组下载失败！", "无法下载谷歌云盘文件夹！");
 			return;
 		}
 
@@ -91,7 +91,7 @@ class OnlineMods {
 			return;
 		}
 
-		RequestSubstate.requestDownload(url, "Do you want to download this mod?", onSuccess);
+		RequestSubstate.requestDownload(url, "你要下载这个模组吗？", onSuccess);
 	}
 
 	static final vanillaSongs:Array<String> = [
@@ -103,7 +103,6 @@ class OnlineMods {
 		'cocoa', 'eggnog', 'winter-horrorland',
 		'senpai', 'roses', 'thorns',
 		'ugh', 'guns', 'stress'
-		//OTHER SHIT
 		,'dad-battle', 'philly-nice', 'test', 'smash', 'ridge'
 	];
 
@@ -115,13 +114,12 @@ class OnlineMods {
 		return new ModDownloader(fileName, modURL, gbMod, onSuccess, headers, ogURL);
 	}
 
-	//gbMod only works if the url is a mod page url not the direct download one
 	public static function installMod(fileName:String, ?modURL:String, ?gbMod:GBMod, ?onSuccess:String->Void) {
-		fileName = Path.normalize(fileName); // I HATE WINDOWS PATH FORMAT AAAAAAAAAAAAAA (C:/ is cool though, JUST INVERT THESE SLASHES PLEASE)
+		fileName = Path.normalize(fileName);
 		var _fileNameSplit = fileName.split("/");
 		var swagFileName = _fileNameSplit[_fileNameSplit.length - 1].split(".")[0];
-		var beginFolder = null; // the folder inside the archive to extract
-		var parentFolder = Paths.mods(); // the destination mod path
+		var beginFolder = null;
+		var parentFolder = Paths.mods();
 		var modName:String = null;
 		var ignoreRest = false;
 		var isExecutable = false;
@@ -166,7 +164,7 @@ class OnlineMods {
 				mode: LIST,
 				onError: (code, type) -> {
 					Waiter.putPersist(() -> {
-						Alert.alert("Listing RAR failed!", '$code\n$type');
+						Alert.alert("读取 RAR 失败！", '$code\n$type');
 					});
 					rarFailed = true;
 				},
@@ -177,7 +175,7 @@ class OnlineMods {
 			});
 			#else
 			Waiter.putPersist(() -> {
-				Alert.alert("RAR is not supported on this platform!");
+				Alert.alert("当前平台不支持 RAR 格式！");
 			});
 			#end
 			if (rarFailed) {
@@ -193,7 +191,7 @@ class OnlineMods {
 				trace(exc, CallStack.toString(exc.stack));
 				file.close();
 				Waiter.putPersist(() -> {
-					Alert.alert("Mod's data is corrupted or invalid!", exc + "\n" + CallStack.toString(exc.stack) + "\n\n" + fileName);
+					Alert.alert("模组文件损坏或无效！", exc + "\n" + CallStack.toString(exc.stack) + "\n\n" + fileName);
 				});
 				return;
 			}
@@ -209,8 +207,8 @@ class OnlineMods {
 			}
 			if (Math.min(fileSize, dataSize) < 0 || Math.max(fileSize, dataSize) >= 3000000000) {
 				Waiter.putPersist(() -> {
-					Alert.alert("Downloading Cancelled",
-						'Mod\'s archive file is WAY too big!\n${FlxMath.roundDecimal(Math.max(fileSize, dataSize) / 1000000000, 4)}GB');
+					Alert.alert("下载已取消",
+						'模组压缩包过大！\n${FlxMath.roundDecimal(Math.max(fileSize, dataSize) / 1000000000, 4)}GB');
 				});
 				return;
 			}
@@ -223,7 +221,7 @@ class OnlineMods {
 
 		if (beginFolder == null) {
 			Waiter.putPersist(() -> {
-				Alert.alert("Mod data not found inside of the archive!");
+				Alert.alert("在压缩包内未找到模组数据！");
 			});
 			return;
 		}
@@ -234,7 +232,7 @@ class OnlineMods {
 			}
 			catch (exc) {
 				Waiter.putPersist(() -> {
-					Alert.alert("Installation Error!", "It seems this mod directory is already being accessed\nby the game or another program!\n\nPlease try again by re-opening the game!");
+					Alert.alert("安装错误！", "该模组文件夹正在被游戏或其他程序占用！\n\n请重启游戏后重试！");
 				});
 				return;
 			}
@@ -249,7 +247,7 @@ class OnlineMods {
 				onError: (code, type) -> {
 					trace("RAR FAILED: " + code + " - " + type);
 					Waiter.putPersist(() -> {
-						Alert.alert("Extracting RAR failed!", '$code\n$type');
+						Alert.alert("解压 RAR 失败！", '$code\n$type');
 					});
 					rarFailed = true;
 				},
@@ -260,7 +258,6 @@ class OnlineMods {
 
 					var coolPath = Path.join([parentFolder, file.substring(beginFolder.length)]).split("/");
 					for (i => file in coolPath) {
-						// seems like unrar (c++ side) doesn't want to create files with invalid characters?
 						coolPath[i] = FileUtils.formatFile(file, i == coolPath.length - 1);
 					}
 					return coolPath.join("/");
@@ -268,7 +265,7 @@ class OnlineMods {
 			});
 			#else
 			Waiter.putPersist(() -> {
-				Alert.alert("RAR is not supported on this platform!");
+				Alert.alert("当前平台不支持 RAR 格式！");
 			});
 			#end
 			if (rarFailed) {
@@ -294,7 +291,7 @@ class OnlineMods {
 		if ((gbMod != null ? gbMod.rootCategory == "Skins" : false) && !FunkinFileSystem.exists(Paths.mods(modName + '/pack.json'))) {
 			var isLegacy = false;
 			if (FunkinFileSystem.exists(Paths.mods(modName + '/images/BOYFRIEND.png'))) {
-				Sys.println("Legacy mod detected! (Converting)");
+				Sys.println("检测到旧版模组！(正在转换)");
 
 				FileSystem.createDirectory(Paths.mods(modName + '/images/characters/'));
 				FileSystem.rename(Paths.mods(modName + '/images/BOYFRIEND.png'), Paths.mods(modName + '/images/characters/BOYFRIEND.png'));
@@ -316,12 +313,11 @@ class OnlineMods {
 			File.saveContent(Paths.mods(modName + '/pack.json'), Json.stringify({
 				name: (gbMod != null ? gbMod.name : modName),
 				description: (gbMod != null ? gbMod.pageDownload : ""),
-				//runsGlobally: FunkinFileSystem.exists(Paths.mods(modName + '/songs/')) ? false : isLegacy
 				runsGlobally: false
 			}));
 		}
-		else { // if (/*(gbMod != null ? gbMod.rootCategory == "Executables" : */isExecutable) { // sometimes dum dum people put their non-exe mods to that section
-			trace("Regular mod found! Converting...");
+		else {
+			trace("检测到普通模组！正在转换...");
 			if (isExecutable) {
 				for (file in FileSystem.readDirectory(Paths.mods(modName))) {
 					if (file != "assets" && file != "mods")
@@ -349,16 +345,14 @@ class OnlineMods {
 			if (FunkinFileSystem.exists(Paths.mods(modName + '/shared')))
 				FileUtils.cut(Paths.mods(modName + '/shared'), Paths.mods(modName + "/"));
 
-			if (FunkinFileSystem.exists(Paths.mods(modName + '/data/songData'))) // special for mario madness hehe
+			if (FunkinFileSystem.exists(Paths.mods(modName + '/data/songData')))
 				FileUtils.cut(Paths.mods(modName + '/data/songData'), Paths.mods(modName + "/data/"));
 
-			// exclude alphabets because they change like every psych engine version so they cause bugs
 			if (FunkinFileSystem.exists(Paths.mods(modName + "/images/alphabet.png")) || FunkinFileSystem.exists(Paths.mods(modName + "/images/alphabet.xml"))) {
 				FileSystem.deleteFile(Paths.mods(modName + "/images/alphabet.png"));
 				FileSystem.deleteFile(Paths.mods(modName + "/images/alphabet.xml"));
 			}
 
-			//...and also health bar and time bar
 			if (FunkinFileSystem.exists(Paths.mods(modName + "/images/healthBar.png"))) {
 				FileSystem.deleteFile(Paths.mods(modName + "/images/healthBar.png"));
 			}
@@ -366,12 +360,10 @@ class OnlineMods {
 				FileSystem.deleteFile(Paths.mods(modName + "/images/timeBar.png"));
 			}
 
-			//get yo ass outta here
 			if (FunkinFileSystem.exists(Paths.mods(modName + "/weeks/weekList.txt"))) {
 				FileSystem.deleteFile(Paths.mods(modName + "/weeks/weekList.txt"));
 			}
 
-			// special for forever engine (i really want to play tsurarans songs)
 			FileUtils.forEachFile(Paths.mods(modName + "/songs/"), (path) -> {
 				try {
 					if (path.endsWith(".json")) {
@@ -385,16 +377,8 @@ class OnlineMods {
 				}
 			});
 
-			//delete user data hehe (by accident)
-			//FileUtils.removeFiles(lime.system.System.userDirectory);
-
 			var songsToAdd = [];
 			var diffsToAdd = [];
-			// for (file in FileSystem.readDirectory(Paths.mods(modName + "/songs"))) {
-			// 	if (FileSystem.isDirectory(Path.join([Paths.mods(modName + "/songs"), file]))) {
-			// 		songsToAdd.push(file);
-			// 	}
-			// }
 			FileUtils.forEachFile(Paths.mods(modName + "/data/"), (path) -> {
 				try {
 					if (path.endsWith(".json")) {
@@ -415,7 +399,7 @@ class OnlineMods {
 					}
 				}
 				catch (exc) {
-					Sys.println("failed to include a song " + exc);
+					Sys.println("添加歌曲失败 " + exc);
 				}
 			});
 			var _normalIndex = -1;
@@ -470,16 +454,14 @@ class OnlineMods {
 				runsGlobally: false
 			}));
 
-		//var modLink = (gbMod != null ? "https://gamebanana.com/mods/" + gbMod._id : modURL);
 		var modLink = modURL;
 		OnlineMods.saveModURL(modName, modLink);
 
 		Waiter.putPersist(() -> {
 			if (!PlayState.redditMod)
-				Alert.alert("Mod Installation Successful!", "Downloaded mod: " + modName + "\nFrom: " + (modLink == null ? "Local Storage" : modLink));
+				Alert.alert("模组安装成功！", "已下载模组：" + modName + "\n来源：" + (modLink == null ? "本地文件" : modLink));
 
 			try {
-				// between states crash can occur
 				if (onSuccess != null)
 					onSuccess(modName);
 			}
