@@ -7,7 +7,6 @@ import openfl.events.FocusEvent;
 import openfl.text.StageText;
 import openfl.text.TextFieldType;
 
-// 用 Psych Engine 标准基类，所有平台都能识别
 class PostTextSubstate extends MusicBeatSubstate
 {
 	var title:String;
@@ -47,7 +46,6 @@ class PostTextSubstate extends MusicBeatSubstate
 		add(titleTxt);
 
 		#if mobile
-		// Android/iOS：原生 StageText 输入框
 		nativeInput = new StageText();
 		nativeInput.type = TextFieldType.INPUT;
 		nativeInput.width = FlxG.width * 0.8;
@@ -60,7 +58,6 @@ class PostTextSubstate extends MusicBeatSubstate
 		nativeInput.addEventListener(FocusEvent.FOCUS_OUT, onBlur);
 		nativeInput.needsSoftKeyboard = true;
 		#else
-		// Windows：简单字符串输入
 		input = "";
 		#end
 	}
@@ -82,7 +79,6 @@ class PostTextSubstate extends MusicBeatSubstate
 		super.update(elapsed);
 
 		#if !mobile
-		// Windows 键盘输入处理
 		if (FlxG.keys.justPressed.BACKSPACE && input.length > 0) {
 			input = input.substr(0, input.length - 1);
 		}
@@ -94,7 +90,6 @@ class PostTextSubstate extends MusicBeatSubstate
 		}
 		#endif
 
-		// 取消逻辑
 		if (controls.BACK) {
 			if (!confirmBack) {
 				confirmBack = true;
