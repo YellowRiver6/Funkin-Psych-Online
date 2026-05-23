@@ -20,7 +20,7 @@ class NotificationsTab extends TabSprite {
 	var realHeight:Float = 0;
 
     public function new() {
-        super('Notifications', 'notif');
+        super('通知', 'notif');
     }
 
     override function create() {
@@ -29,7 +29,7 @@ class NotificationsTab extends TabSprite {
 		scrollRect = new Rectangle(0, 0, tabWidth, heightSpace);
 
 		loadingTxt = this.createText(20, 20, 40);
-		loadingTxt.setText('Fetching...');
+		loadingTxt.setText('加载中...');
 		loadingTxt.visible = false;
 		addChild(loadingTxt);
     }
@@ -43,7 +43,7 @@ class NotificationsTab extends TabSprite {
 		notifsList = [];
 
 		if (data.length == 0) {
-			loadingTxt.setText('None...');
+			loadingTxt.setText('暂无通知...');
 			loadingTxt.visible = true;
 			return;
 		}
@@ -83,7 +83,7 @@ class NotificationsTab extends TabSprite {
 			}
 			else {
 				Waiter.putPersist(() -> {
-					loadingTxt.setText('Failed to fetch!');
+					loadingTxt.setText('获取失败！');
 					loadingTxt.visible = true;
 				});
 			}
@@ -95,7 +95,7 @@ class NotificationsTab extends TabSprite {
 			child.visible = !v;
 		}
 		tabBg.visible = true;
-		loadingTxt.setText('Fetching...');
+		loadingTxt.setText('加载中...');
 		loadingTxt.visible = v;
 		return loading = v;
 	}
@@ -171,7 +171,7 @@ class Notification extends Sprite implements ITabInteractable {
 		desc.width = SideUI.instance.curTab.tabWidth - desc.x - 20;
 		addChild(desc);
 
-		remove = new TabButton('cancel', () -> {
+		remove = new TabButton('删除', () -> {
 			if (_actionTime < 0.1)
 				return;
 
@@ -182,7 +182,7 @@ class Notification extends Sprite implements ITabInteractable {
 		remove.y = underlay.height / 2 - remove.height / 2;
 		addChild(remove);
 
-		view = new TabButton('internet', () -> {
+		view = new TabButton('查看', () -> {
 			if (_actionTime < 0.1)
 				return;
 
@@ -193,7 +193,7 @@ class Notification extends Sprite implements ITabInteractable {
 		view.y = underlay.height / 2 - view.height / 2;
 		addChild(view);
 
-		profile = new TabButton('profile', () -> {
+		profile = new TabButton('资料', () -> {
 			if (_actionTime < 0.1)
 				return;
 
@@ -216,7 +216,6 @@ class Notification extends Sprite implements ITabInteractable {
 		title.text = (data.title);
 		desc.text = (data.content);
 
-		// gracias openfl
 		title.height = title.textHeight + 1;
 		desc.height = desc.textHeight + 1;
 
