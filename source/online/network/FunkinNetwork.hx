@@ -125,9 +125,8 @@ class FunkinNetwork {
 	}
 
 	static function saveCredentials(json:Dynamic) {
-		trace("Saving credentials");
+		trace("正在保存账号凭据");
 		Auth.save(json.id, json.token);
-		// new FileReference().save(json.id + "\n" + json.secret, "recovery_token.txt");
 		ping();
 
 		Waiter.putPersist(() -> {
@@ -135,14 +134,6 @@ class FunkinNetwork {
 				online.gui.sidebar.SideUI.instance.active = true;
 		});
 	}
-
-    // public static function postResults(path:String) {
-	// 	var http = new Http(API_URL + "/api/rankings/post");
-	// 	var input = File.read(path);
-	// 	http.fileTransfer("replay", "replay.funkinreplay", input, FileSystem.stat(path).size);
-	// 	http.request(true);
-	// 	input.close();
-    // }
 
 	public static function updateName(name:String):String {
 		var response = requestAPI({
