@@ -6,7 +6,6 @@ import haxe.ValueException;
 import online.util.OneOf;
 import haxe.Exception;
 import haxe.io.Error;
-// import haxe.io.Eof; avoid using that, unreliable
 import haxe.io.Bytes;
 import haxe.io.Output;
 import sys.net.Host;
@@ -36,7 +35,7 @@ class HTTPClient {
 	public var onStatus:Null<ClientStatus>->Void;
 	
 	/**
-	 * @param address Can be either a `HTTPAddress` or a URL string.
+	 * @param address 可以是 HTTPAddress 或 URL 字符串
 	 */
 	public function new(address:OneOf<HTTPAddress, String>) {
 		switch (address) {
@@ -50,10 +49,10 @@ class HTTPClient {
 
 	public function request(?data:OneOf<HTTPRequest, String>):HTTPResponse {
 		if (socket != null)
-			throw new Exception('Socket Still Open');
+			throw new Exception('Socket 仍在打开');
 
 		if (address == null)
-			throw new Exception('Address is null!');
+			throw new Exception('地址为空！');
 
 		cancelRequested = false;
 		contentLength = 0;
@@ -95,7 +94,7 @@ class HTTPClient {
 			if (requestData.path.length > 0 && requestData.path.charAt(0) != "/")
 				requestData.path = "/" + requestData.path;
 
-			// connecting to the server
+			// 连接服务器
 			socket = address.ssl ? new sys.ssl.Socket() : new Socket();
 			socket.setTimeout(5);
 			socket.setBlocking(true);
@@ -107,17 +106,17 @@ class HTTPClient {
 				}
 				catch (e:Dynamic) {
 					if (e == Error.Blocked) {
-						// Blocked will be ignored
+						// 忽略阻塞错误
 						continue;
 					}
 					if (ClientPrefs.isDebug())
-						trace('Failed to connect!');
+						trace('连接失败！');
 					throw e;
 				}
 			}
 			if (cancelRequested) throw null;
 
-			// read response status
+			// 读取响应状态
 			var _connectTries:Int = 3;
 			var httpStatus:Array<String> = null;
 			while (!cancelRequested && httpStatus == null) {
@@ -126,7 +125,7 @@ class HTTPClient {
 				}
 				catch (e:Dynamic) {
 					if (e == Error.Blocked) {
-						// Blocked will be ignored
+						// 忽略阻塞错误
 						continue;
 					}
 
@@ -137,7 +136,7 @@ class HTTPClient {
 					}
 
 					if (ClientPrefs.isDebug())
-						trace('Failed to read header!');
+						trace('读取头部失败！');
 					throw e;
 				}
 			}
@@ -149,7 +148,7 @@ class HTTPClient {
 
 			status = READING_HEADERS;
 
-			// read response headers
+			// 读取响应头
 			response.headers = new Map<String, String>();
 			while (!cancelRequested) {
 				try {
@@ -161,21 +160,21 @@ class HTTPClient {
 				}
 				catch (e:Dynamic) {
 					if (e == Error.Blocked) {
-						// Blocked will be ignored
+						// 忽略阻塞错误
 						continue;
 					}
 					if (isEOF(e)) {
-						// End of Request (early?) (previous ones will catch eof because http status header is required for http servers)
+						// 请求结束
 						break;
 					}
 					if (ClientPrefs.isDebug())
-						trace('Failed to read headers!');
+						trace('读取头部失败！');
 					throw e;
 				}
 			}
 			if (cancelRequested) throw null;
 
-			// forward to another location if it's specified
+			// 如果指定了跳转地址，则自动重定向
 			if (response.headers.exists("location")) {
 				if (socket != null) {
 					socket.close();
@@ -193,7 +192,7 @@ class HTTPClient {
 
 			status = READING_BODY;
 
-			// read response body
+			// 读取响应体
 			var _gotLength:Int = 1;
 
 			if (contentLength > 0) {
@@ -206,12 +205,12 @@ class HTTPClient {
 					}
 					catch (e:Dynamic) {
 						if (e == Error.Blocked) {
-							// Blocked will be ignored
+							// 忽略阻塞错误
 							continue;
 						}
 						response.output.close();
 						if (isEOF(e)) {
-							// End of Request
+							// 请求结束
 							break;
 						}
 						throw e;
@@ -221,7 +220,6 @@ class HTTPClient {
 			}
 			else {
 				var _lastLine = '';
-				// while (_gotLength > 0) {
 				while (!cancelRequested && _lastLine != '0') {
 					try {
 						_gotLength = Std.parseInt('0x' + (_lastLine = socket.input.readLine()));
@@ -230,12 +228,12 @@ class HTTPClient {
 					}
 					catch (e:Dynamic) {
 						if (e == Error.Blocked) {
-							// Blocked will be ignored
+							// 忽略阻塞错误
 							continue;
 						}
 						response.output.close();
 						if (isEOF(e)) {
-							// End of Request
+							// 请求结束
 							break;
 						}
 						throw e;
@@ -247,10 +245,10 @@ class HTTPClient {
 		}
 		catch (exc) {
 			if (cancelRequested || exc == null || (exc is ValueException && (cast exc).value == null))
-				exc = new Exception('Socket Closed');
+				exc = new Exception('Socket 已关闭');
 
 			if (ClientPrefs.isDebug())
-				trace('Status: $status ' + ShitUtil.prettyError(exc) + "\nLine: " + response.statusLine);
+				trace('状态: $status ' + ShitUtil.prettyError(exc) + "\n行: " + response.statusLine);
 
 			response.exception = exc;
 		}
@@ -285,10 +283,10 @@ class HTTPClient {
 	}
 
 	public static function parseStringToAddress(url:String, ?from:HTTPAddress):HTTPAddress {
-		// if the url comes from location http header then it can be sometimes a relative path instead of absolute
+		// 如果 URL 来自重定向，可能是相对路径
 		if (url.startsWith('/')) {
 			if (from == null)
-				throw new Exception('The URL is a path to an address which wasn\'t provided');
+				throw new Exception('URL 是路径，但未提供基础地址');
 
 			return {
 				host: from.host,
@@ -349,7 +347,7 @@ typedef HTTPAddress = {
 
 typedef HTTPRequest = {
 	@:optional var headers:Map<String, String>;
-	@:optional var body:String; // can be changed to output but like, why would i need it rn?
+	@:optional var body:String;
 	@:optional var post:Bool;
 	
 	@:optional var path:String;
@@ -374,7 +372,7 @@ class HTTPResponse {
 
 	public function getBytes():Bytes {
 		if (output != null && output is BytesOutput) {
-			try { // yes this does crash for some reason, no matter the null checks lol
+			try {
 				__bytes = cast(output, BytesOutput).getBytes();
 				output.close();
 			} catch (_) {}
@@ -383,7 +381,7 @@ class HTTPResponse {
 	}
 
 	public function getString():String {
-		getBytes(); //init __bytes
+		getBytes();
 		if (__bytes != null)
 			return __bytes.toString();
 		return null;
@@ -399,9 +397,9 @@ class HTTPResponse {
 	public function getErrorTitle():String {
 		if (isFailed()) {
 			if (exception != null)
-				return "Exception: " + request.path;
+				return "异常: " + request.path;
 
-			return 'HTTP Error ${ShitUtil.prettyStatus(status)}: ' + request.path;
+			return 'HTTP 错误 ${ShitUtil.prettyStatus(status)}: ' + request.path;
 		}
 		return null;
 	}
@@ -418,9 +416,9 @@ class HTTPResponse {
 }
 
 enum ClientStatus {
-	CONNECTING;
-	READING_HEADERS;
-	READING_BODY;
-	COMPLETED;
-	FAILED(exc:Exception);
+	CONNECTING;     // 正在连接
+	READING_HEADERS;// 正在读取头部
+	READING_BODY;   // 正在读取内容
+	COMPLETED;      // 已完成
+	FAILED(exc:Exception); // 失败
 }
