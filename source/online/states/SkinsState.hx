@@ -22,7 +22,6 @@ class SkinsState extends MusicBeatState {
 	static var SKIP_SUFFICES = ['-pixel', '-christmas', '-car', '-blazin'];
 
 	var charactersWithWeeks:Array<Int> = [];
-	// [x] = [character_name_or_dir, left_side_suffix, right_side_suffix, mod_name]
 	var charactersList:Array<Array<String>> = [];
     static var curCharacter:Int = -1;
 	
@@ -43,7 +42,7 @@ class SkinsState extends MusicBeatState {
 
 	static var flipped:Bool = false;
 
-	final accept:String = (Controls.instance.mobileControls) ? "A" : "ACCEPT";
+	final accept:String = (Controls.instance.mobileControls) ? "A" : "确认键";
 
 	static var backClass:Class<Dynamic>;
 
@@ -68,7 +67,6 @@ class SkinsState extends MusicBeatState {
 	static var favSound:FlxSound;
 	static var unfavSound:FlxSound;
 	public static var music:FlxSound;
-	// public static var musicIntro:FlxSound;
 	
 	static var prevConBPM:Float;
 	static var prevConBPMChanges:Array<backend.BPMChangeEvent>;
@@ -81,7 +79,6 @@ class SkinsState extends MusicBeatState {
 	var stageSpeakers:FlxAnimate;
 	var defaultGirlfriend:FlxAnimate;
 	var camFollow:FlxObject;
-	// static var introPlayed:Bool = false;
 
 	var stageObjects:Array<FlxSprite> = [];
 	var curSelGroup:Int = 0;
@@ -90,8 +87,8 @@ class SkinsState extends MusicBeatState {
 		Paths.clearUnusedMemory();
 		Paths.clearStoredMemory();
 
-		#if DISCORD_ALLOWED
-		DiscordClient.changePresence("Selects their Skin", null, null, false);
+		#if DISCORD_ALLOW
+		DiscordClient.changePresence("选择皮肤中", null, null, false);
 		#end
 
 		Mods.loadTopMod();
@@ -109,26 +106,12 @@ class SkinsState extends MusicBeatState {
 			prevConBPMChanges = Conductor.bpmChangeMap;
 			prevConTime = Conductor.songPosition;
 
-			// if (musicIntro != null)
-			// 	musicIntro.stop();
 			if (music != null)
 				music.stop();
 
 			music = FlxG.sound.play(Paths.music('stayFunky'), 1, true);
 			music.persist = true;
 			FlxG.sound.list.add(music);
-
-			// if (!introPlayed) {
-			//  music.pause();
-			//
-			// 	musicIntro = FlxG.sound.play(Paths.music('stayFunky-intro'), 1, false);
-			// 	musicIntro.onComplete = () -> {
-			// 		introPlayed = true;
-			// 		music.play();
-			// 	}
-			// 	musicIntro.persist = true;
-			// 	FlxG.sound.list.add(musicIntro);
-			// }
 
 			Conductor.bpm = 90;
 			Conductor.bpmChangeMap = [];
@@ -230,25 +213,21 @@ class SkinsState extends MusicBeatState {
 
 		var oldModDir = Mods.currentModDirectory;
 
-		// iterate over mods and assets to search for characters
 		for (origin in [null].concat(Mods.parseList().enabled)) {
 			var characters:String;
 			var charactersWeeks:String;
 
-			// game assets
 			if (origin == null) {
 				Mods.loadTopMod();
 				characters = 'assets/characters/';
 				charactersWeeks = 'assets/characters_weeks/';
 			}
-			// mod
 			else {
 				Mods.currentModDirectory = origin;
 				characters = Paths.mods(origin + '/characters/');
 				charactersWeeks = Paths.mods(origin + '/characters_weeks/');
 			}
 
-			// if characters/ folder doesn't exist--skip
 			if (!FunkinFileSystem.exists(characters)) {
 				continue;
 			}
@@ -283,23 +262,13 @@ class SkinsState extends MusicBeatState {
 				return true;
 			}
 
-			//iterate over all characters/
 			for (file in FunkinFileSystem.readDirectory(characters)) {
 				var filePath = Path.join([characters, file]);
-				// strip .json from character filename to get charactername
 				var character:String = file.substr(0, file.length - 5);
 
-				//skip blacklisted or non-character files
 				if (charSkipSearch.contains(character) || !file.endsWith('.json')) {
 					continue;
 				}
-
-				//here are the 4 different formats that are accepted for skins and character mixes:
-				// character          -> character-player   @ PEO (<0.14)
-				// character-opponent -> character          @ PEO (>=0.14)
-				// character          -> character-playable @ V-SLICE AND GAMEBANANA STANDARD
-				// character-left     -> character-right    @ UMM-like
-				//they can be mixed together!
 
 				var hasAdded = false;
 
@@ -409,7 +378,7 @@ class SkinsState extends MusicBeatState {
 		add(arrowRight);
 
 		charSelect = new FlxText(0, 0, FlxG.width);
-		charSelect.text = 'Press $accept to select!';
+		charSelect.text = '按 $accept 确认选择！';
 		charSelect.setFormat("VCR OSD Mono", 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		charSelect.y = barDown.y + barDown.height / 2 - charSelect.height / 2;
 		charSelect.alpha = 0.8;
@@ -417,7 +386,7 @@ class SkinsState extends MusicBeatState {
 		add(charSelect);
 
 		charInfo = new FlxText(0, 0, FlxG.width);
-		charInfo.text = 'Sample';
+		charInfo.text = '该角色拥有自定义混音！';
 		charInfo.setFormat("VCR OSD Mono", 19, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		charInfo.y = barDown.y + (charSelect.y - barDown.y) / 2 - charInfo.height / 2;
 		charInfo.alpha = 0.6;
@@ -425,7 +394,7 @@ class SkinsState extends MusicBeatState {
 		charInfo.visible = false;
 		add(charInfo);
 
-		final fuckurself:String = (controls.mobileControls) ? "Use Arrow Buttons while pressing X to move!" : "Use Note keybinds while pressing SHIFT to move!";
+		final fuckurself:String = (controls.mobileControls) ? "按住 X + 方向键 做出动作！" : "按住 SHIFT + 音符键 做出动作！";
 
 		var swagText = new FlxText(0, charSelect.y + charSelect.height + 5, FlxG.width);
 		swagText.text = fuckurself;
@@ -437,7 +406,7 @@ class SkinsState extends MusicBeatState {
 		final tab:String = (controls.mobileControls) ? "C" : "TAB";
 		final eight:String = (controls.mobileControls) ? "D" : "8";
 		final ctrl:String = (controls.mobileControls) ? "V" : "CTRL";
-		var tip1 = new FlxText(20, 0, FlxG.width, '$tab - Flip skin\n$eight - Edit skin\n$ctrl - Open the Character List');
+		var tip1 = new FlxText(20, 0, FlxG.width, '$tab - 翻转皮肤\n$eight - 编辑皮肤\n$ctrl - 打开角色列表');
 		tip1.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		tip1.y = charSelect.y - 10;
 		tip1.alpha = 0.5;
@@ -447,7 +416,7 @@ class SkinsState extends MusicBeatState {
 		var f1:String = (controls.mobileControls) ? "Y" : "F1";
 		var f2:String = (controls.mobileControls) ? "Z" : "F2";
 		var f3:String = (controls.mobileControls) ? "?" : "F3";
-		var tip2 = new FlxText(-20, 0, FlxG.width, '$f1 for Help!\n$f2 to Browse Verified Skins\n$f3 to Browse GB Skins Category');
+		var tip2 = new FlxText(-20, 0, FlxG.width, '$f1 - 打开帮助\n$f2 - 浏览官方皮肤\n$f3 - 浏览GB皮肤分类');
 		tip2.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		tip2.y = tip1.y;
 		tip2.alpha = tip1.alpha;
@@ -463,12 +432,12 @@ class SkinsState extends MusicBeatState {
 
 		super.create();
 		
-		CustomFadeTransition.nextCamera = hud; // wat
+		CustomFadeTransition.nextCamera = hud;
 
 		mobileManager.addMobilePad('FULL', 'A_B_C_D_V_X_Y_Z');
 		mobileManager.addMobilePadCamera();
 
-		GameClient.send("status", "Selecting their skin");
+		GameClient.send("status", "选择皮肤中");
     }
 
 	function getCharacterName(i:Int) {
@@ -548,7 +517,6 @@ class SkinsState extends MusicBeatState {
 				selectTimer.active = false;
 
 			mobileManager.mobilePad.visible = false;
-			// daCopy[0] = "Default";
 
 			var charList = [];
 			var charModList = [];
@@ -591,16 +559,12 @@ class SkinsState extends MusicBeatState {
 						path: path,
 						mod: charactersList[indexesOfCharacters[i]][3]
 					};
-					// var icon = new HealthIcon(iconName, false);
-					// // icon.sprTracker = leText;
-					// icon.scrollFactor.set(1, 1);
-					// return icon;
 				}
 				Mods.loadTopMod();
 				return null;
 			};
 			selState.curGroup = curSelGroup;
-			selState.groups = ['All', 'Favorites'];
+			selState.groups = ['全部角色', '收藏角色'];
 			selState.groupCallback = i -> {
 				var curSelection = null;
 				if (selState.getSelectedOptionIndex() != -1) {
@@ -661,11 +625,11 @@ class SkinsState extends MusicBeatState {
             ClientPrefs.saveSettings();
             
 			if (isEquipped(curCharacter)) {
-				charSelect.text = 'Selected!';
+				charSelect.text = '已选择！';
 				charSelect.alpha = 1;
 			}
 			else {
-				charSelect.text = 'Press $accept to select!';
+				charSelect.text = '按 $accept 确认选择！';
 				charSelect.alpha = 0.8;
 			}
 			if (acceptSound != null)
@@ -694,8 +658,6 @@ class SkinsState extends MusicBeatState {
 			flipped = !flipped;
 			prevCharacter = null;
 			setCharacter(0);
-			// skipStaticDestroy = true;
-			// LoadingState.loadAndSwitchState(new SkinsState());
 		}
 
 		if (mobileButtonJustPressed('Y') || FlxG.keys.justPressed.F1) {
@@ -705,7 +667,7 @@ class SkinsState extends MusicBeatState {
 				case 'codeberg':
 					RequestSubstate.requestURL("https://codeberg.org/Snirozu/Funkin-Psych-Online/wiki#skins", true);
 				default:
-					Alert.alert('Offline.');
+					Alert.alert('当前处于离线模式');
 			}
 		}
 
@@ -807,8 +769,6 @@ class SkinsState extends MusicBeatState {
 		if (skipStaticDestroy)
 			return;
 
-		// if (musicIntro != null)
-		// 	musicIntro.stop();
 		if (music != null)
 			music.stop();
 	}
@@ -858,17 +818,6 @@ class SkinsState extends MusicBeatState {
 		if (charactersList[curCharacter] != null) {
 			if (ClientPrefs.isDebug())
 				Sys.println(charactersList[curCharacter]);
-			// Mods.currentModDirectory = charactersMod.get(curCharName);
-			// var characterWeek = ShitUtil.getJson('characters_weeks/' + curSkin[1]);
-			// overChart.clear();
-			// if (characterWeek != null) {
-			// 	var charSongs:Array<Array<Dynamic>> = characterWeek.songs;
-			// 	for (arr in charSongs) {
-			// 		// arr[0] - song
-			// 		// arr[1] - diff
-			// 		overChart.set(arr[0].toLowerCase(), arr[1].split(','));
-			// 	}
-			// }
 
 			selectTimer = new FlxTimer().start(0.8, t -> {
 				if (character.members[0] != null) {
@@ -878,8 +827,6 @@ class SkinsState extends MusicBeatState {
 
 				staticSound.stop();
 				staticMan.visible = false;
-
-				// character.add(characterList.get(curCharName));
 
 				Mods.currentModDirectory = charactersList[curCharacter][3];
 
@@ -903,7 +850,7 @@ class SkinsState extends MusicBeatState {
 				catch (exc) {
 					staticSound.play(true);
 					staticMan.visible = true;
-					Alert.alert('Failed to load the skin!', 'exc: ' + exc);
+					Alert.alert('皮肤加载失败！', '错误: ' + exc);
 				}
 			});
 		}
@@ -912,21 +859,22 @@ class SkinsState extends MusicBeatState {
 			tweenColor(FlxColor.fromRGB(255, 255, 255));
 		}
 
-		title.text = curCharacter == -1 ? "(NONE)" : charactersList[curCharacter][0].replace('-', ' ');
+		// 重点修复：这里改回 (none)，绝对不破坏 Alphabet 图片资源
+		title.text = curCharacter == -1 ? "(none)" : charactersList[curCharacter][0].replace('-', ' ');
 		title.x = FlxG.width / 2 - title.width / 2;
 
 		if (isEquipped(curCharacter)) {
-			charSelect.text = 'Selected!';
+			charSelect.text = '已选择！';
 			charSelect.alpha = 1;
 		}
 		else {
-			charSelect.text = 'Press ACCEPT to select!';
+			charSelect.text = '按 确认键 选择！';
 			charSelect.alpha = 0.8;
 		}
 
 		charInfo.visible = false;
 		if (charactersWithWeeks.contains(curCharacter)) {
-			charInfo.text = 'This character has custom MIXES!';
+			charInfo.text = '该角色拥有自定义混音！';
 			charInfo.visible = true;
 		}
     }
@@ -986,7 +934,6 @@ class SkinsState extends MusicBeatState {
 	override function stepHit() {
 		super.stepHit();
 
-		// thats how you do it ninjamuffin duh
 		if (!FlxG.keys.pressed.SHIFT)
 			if (leftHoldTime > 0.5) {
 				setCharacter(-1, true);
