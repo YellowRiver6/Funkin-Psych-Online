@@ -7,6 +7,7 @@ import openfl.display.DisplayObject;
 
 @:publicFields
 class Util {
+	// 检查按键是否被按下
 	static function checkKey(key:Int, keyID:String):Bool {
 		for (k in ClientPrefs.keyBinds.get(keyID)) {
 			if (key == k)
@@ -15,11 +16,12 @@ class Util {
 		return false;
 	}
 
+	// 检测鼠标是否重叠在对象上
 	static function overlapsMouse(obj:DisplayObject) {
 		return obj != null && obj.visible && obj.alpha > 0 && obj.mouseX > 0 && obj.mouseX < obj.width && obj.mouseY > 0 && obj.mouseY < obj.height;
-		//return obj.mouseX >= obj.x && obj.mouseX <= obj.x + obj.width && obj.mouseY >= obj.y && obj.mouseY <= obj.y + obj.height;
 	}
 
+	// 创建文本
 	static function createText(?parent:DisplayObject, x:Float, y:Float, size:Int = 18, ?color:Int = 0xFFFFFFFF) {
 		var obj = new TextField();
 		obj.x = x;
@@ -31,6 +33,7 @@ class Util {
 		return obj;
 	}
 
+	// 设置文本内容
 	static function setText(obj:TextField, text:String, ?maxWidth:Null<Float>, ?color:Null<Int>) {
 		obj.scaleX = 1;
 		obj.scaleY = 1;
@@ -45,13 +48,16 @@ class Util {
 		obj.scaleY = obj.scaleX;
 	}
 
+	// 获取文本宽度
 	static function getTextWidth(obj:TextField) {
 		return obj.textWidth;
 	}
+	// 获取文本高度
 	static function getTextHeight(obj:TextField):Float {
 		return obj.textHeight;
 	}
 
+	// 邀请玩家一起游戏
 	static function inviteToPlay(daUsername:String) {
 		if (GameClient.isConnected()) {
 			if (NetworkClient.room == null)
@@ -63,13 +69,14 @@ class Util {
 				NetworkClient.room.send('inviteplayertoroom', daUsername);
 			}
 			else
-				Alert.alert('Failed to connect to the Network!');
+				Alert.alert('网络连接失败！');
 		}
 		else {
-			Alert.alert('You\'re not in a room!');
+			Alert.alert('你不在房间内！');
 		}
 	}
 
+	// 获取真实高度
 	static function getRealHeight(?parent:DisplayObject) {
 		var maxHeight:Float = 0;
 		for (child in @:privateAccess parent.__children) {
@@ -79,6 +86,7 @@ class Util {
 		return maxHeight;
 	}
 
+	// 自动换行文本
 	static function wrapText(text:String, ?everyCharacters:Int = 45, ?stopAtLine:Int = 10, ?trimLines:Bool = true) {
 		var output = '';
 		var i = -1;
@@ -88,7 +96,6 @@ class Util {
 
 		while (++i < text.length) {
 			if (char == '\n' && char == text.charAt(i)) {
-				//skip double newlines
 				continue;
 			}
 			char = text.charAt(i);
