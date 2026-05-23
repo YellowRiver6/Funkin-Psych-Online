@@ -171,7 +171,7 @@ class Notification extends Sprite implements ITabInteractable {
 		desc.width = SideUI.instance.curTab.tabWidth - desc.x - 20;
 		addChild(desc);
 
-		remove = new TabButton('remove', () -> {
+		remove = new TabButton('cancel', () -> {
 			if (_actionTime < 0.1)
 				return;
 
@@ -182,7 +182,7 @@ class Notification extends Sprite implements ITabInteractable {
 		remove.y = underlay.height / 2 - remove.height / 2;
 		addChild(remove);
 
-		view = new TabButton('view', () -> {
+		view = new TabButton('internet', () -> {
 			if (_actionTime < 0.1)
 				return;
 
@@ -193,7 +193,7 @@ class Notification extends Sprite implements ITabInteractable {
 		view.y = underlay.height / 2 - view.height / 2;
 		addChild(view);
 
-		profile = new TabButton('资料', () -> {
+		profile = new TabButton('profile', () -> {
 			if (_actionTime < 0.1)
 				return;
 
