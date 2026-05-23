@@ -24,7 +24,7 @@ class FriendsTab extends TabSprite {
 	var realHeight:Float = 0;
 
     public function new() {
-        super('Friends', 'friends');
+        super('好友', 'friends');
     }
 
     override function create() {
@@ -33,23 +33,23 @@ class FriendsTab extends TabSprite {
 		scrollRect = new Rectangle(0, 0, tabWidth, heightSpace);
 
 		loadingTxt = this.createText(20, 20, 40);
-		loadingTxt.setText('Fetching...');
+		loadingTxt.setText('加载中...');
 		loadingTxt.visible = false;
 		addChild(loadingTxt);
 
 		friendsTxt = this.createText(0, 0, 25, FlxColor.WHITE);
-		friendsTxt.setText('My Friends');
+		friendsTxt.setText('我的好友');
 		friendsTxt.x = tabWidth / 2 - friendsTxt.width / 2;
 		friendsTxt.y = 10;
 		addChild(friendsTxt);
 
 		requestsTxt = this.createText(0, 0, 25, FlxColor.WHITE);
-		requestsTxt.setText('Incoming Friend Invites');
+		requestsTxt.setText('收到的好友申请');
 		requestsTxt.x = tabWidth / 2 - requestsTxt.width / 2;
 		addChild(requestsTxt);
 
 		pendingTxt = this.createText(0, 0, 25, FlxColor.WHITE);
-		pendingTxt.setText('Pending Friend Invites from You');
+		pendingTxt.setText('我发出的好友申请');
 		pendingTxt.x = tabWidth / 2 - pendingTxt.width / 2;
 		addChild(pendingTxt);
     }
@@ -136,7 +136,7 @@ class FriendsTab extends TabSprite {
 			}
 			else {
 				Waiter.putPersist(() -> {
-					loadingTxt.setText('Failed to fetch!');
+					loadingTxt.setText('获取失败！');
 					loadingTxt.visible = true;
 				});
 			}
@@ -148,7 +148,7 @@ class FriendsTab extends TabSprite {
 			child.visible = !v;
 		}
 		tabBg.visible = true;
-		loadingTxt.setText('Fetching...');
+		loadingTxt.setText('加载中...');
 		loadingTxt.visible = v;
 		return loading = v;
 	}
@@ -204,17 +204,17 @@ class SmolProfile extends Sprite implements ITabInteractable {
 		status = this.createText(nick.x, nick.y + 30, 18);
 		addChild(status);
 
-		invitePlay = new TabButton('invite', () -> {});
+		invitePlay = new TabButton('邀请游戏', () -> {});
 		invitePlay.x = underlay.width - invitePlay.width - 20;
 		invitePlay.y = underlay.height / 2 - invitePlay.height / 2;
 		addChild(invitePlay);
 
-		addFriend = new TabButton('add_friend', () -> {});
+		addFriend = new TabButton('添加好友', () -> {});
 		addFriend.x = underlay.width - invitePlay.width - 20;
 		addFriend.y = underlay.height / 2 - invitePlay.height / 2;
 		addChild(addFriend);
 
-		viewProfile = new TabButton('profile', () -> {});
+		viewProfile = new TabButton('查看资料', () -> {});
 		viewProfile.x = invitePlay.x - viewProfile.width - 10;
 		viewProfile.y = underlay.height / 2 - viewProfile.height / 2;
 		addChild(viewProfile);
@@ -241,7 +241,11 @@ class SmolProfile extends Sprite implements ITabInteractable {
 		addFriend.visible = data.isNotFriend && data.canFriend;
 
 		nick.setText(data.name, 140);
-		status.setText(data.status, 140);
+		// 状态汉化：在线 / 离线
+		if(data.status != null) {
+			var statusText = data.status.toLowerCase() == "offline" ? "离线" : "在线";
+			status.setText(statusText, 140);
+		}
 
 		var statusFormat = status.defaultTextFormat;
 		if (data.status.toLowerCase() != "offline") {
@@ -326,8 +330,8 @@ class SmolProfile extends Sprite implements ITabInteractable {
 
 typedef FriendsResponseData = {
 	var friends:Array<FriendData>;
-	var pending:Array<String>; // list of requests the player has sent to other players
-	var requests:Array<String>; // requests to be ignored or accepted
+	var pending:Array<String>;
+	var requests:Array<String>;
 }
 
 typedef FriendData = {
