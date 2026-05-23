@@ -282,7 +282,7 @@ class ReplayRecorder extends FlxBasic {
 		data.keys = Note.maniaKeys;
 
 		if (data.accuracy < 5) {
-			Alert.alert("git gud", 'your performance was SHIT');
+			Alert.alert("太菜啦", 'your performance was SHIT');
 			return 0;
 		}
 
