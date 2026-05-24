@@ -476,7 +476,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 		if (stage != null)
 			stage.createPost();
 
-		GameClient.send("status", "在房间大厅");
+		GameClient.send("status", "In the Lobby");
 
 		mobileManager.addMobilePad('FULL', 'B_C_Y_T_M');
 		mobileManager.addMobilePadCamera();
@@ -541,7 +541,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 		controls.isInSubstate = false;
 		super.closeSubState();
 
-		GameClient.send("status", "在房间大厅");
+		GameClient.send("status", "In the Lobby");
 	}
 
 	var optionShake:FlxTween;
@@ -554,7 +554,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
     override function update(elapsed:Float) {
 		if (GameClient.getPlayerSelf() == null) {
 			if (FlxG.keys.justPressed.ESCAPE) {
-				GameClient.leaveRoom('自身不在房间内（更新）');
+				GameClient.leaveRoom('Self not in the room (update).');
 			}
 			return;
 		}
@@ -565,7 +565,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 
 		if (GameClient.getPlayerSelf() == null) {
 			if (FlxG.keys.justPressed.ESCAPE) {
-				GameClient.leaveRoom('自身不在房间内（更新）');
+				GameClient.leaveRoom('Self not in the room (update).');
 			}
 			return;
 		}
@@ -584,9 +584,9 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 
 		if (lastFocused != (chatBox.focused && chatBox.typeText.text.length > 0)) {
 			if (!lastFocused) // 正在输入
-				GameClient.send("status", "正在输入...");
+				GameClient.send("status", "Typing...");
 			else
-				GameClient.send("status", "在房间大厅");
+				GameClient.send("status", "In the Lobby");
 		}
 
 		lastFocused = chatBox.focused && chatBox.typeText.text.length > 0;
@@ -605,13 +605,13 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 			}
 
 			if (sumContentLength > 0) {
-				GameClient.send("status", '正在下载 (${Math.floor(sumReceivedBytes / sumContentLength * 100)}%)');
+				GameClient.send("status", 'Downloading (${Math.floor(sumReceivedBytes / sumContentLength * 100)}%)');
 			}
 			else {
 				if (lastFocused)
-					GameClient.send("status", "正在输入...");
+					GameClient.send("status", "Typing...");
 				else
-					GameClient.send("status", "在房间大厅");
+					GameClient.send("status", "In the Lobby");
 			}
 		}
 		
