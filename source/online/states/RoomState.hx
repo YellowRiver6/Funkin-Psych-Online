@@ -124,7 +124,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 
 	function registerMessages() {
 		if (GameClient.getPlayerSelf() == null) {
-			GameClient.leaveRoom('自身不在房间内（注册消息）');
+			GameClient.leaveRoom('Self not in the room (registerMessages).');
 			return;
 		}
 
