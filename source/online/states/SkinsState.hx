@@ -437,7 +437,7 @@ class SkinsState extends MusicBeatState {
 		mobileManager.addMobilePad('FULL', 'A_B_C_D_V_X_Y_Z');
 		mobileManager.addMobilePadCamera();
 
-		GameClient.send("status", "选择皮肤中");
+		GameClient.send("status", "Selecting their skin");
     }
 
 	function getCharacterName(i:Int) {
