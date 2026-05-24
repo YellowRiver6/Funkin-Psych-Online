@@ -1166,7 +1166,7 @@ class LobbyCharacter extends FlxTypedGroup<FlxSprite> {
 			 : "") +
 			"延迟: <p>" + player.ping + "毫秒<p>\n\n" +
 			player.status + "\n" +
-			(!player.isReady ? "未 " : "") + "准备就绪" +
+			(!player.isReady ? "未准备":"已准备" )+
 			(noSkin ? "\n(皮肤未加载)" : "")
 		, [pingMarker]);
 
