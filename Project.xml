@@ -92,7 +92,7 @@
 	<haxelib name="mobile-controls"/>
 	<haxedef name="mobile_controls_file_support"/>
 	<haxedef name="mobile_controls_allow_mouse_clicks" if="desktop"/>
-
+		
 	<haxelib name="linc_luajit" if="LUA_ALLOWED" />
 	<haxelib name="hscript-improved" if="HSC_ALLOWED" />
 	<haxelib name="SScript" if="HSCRIPT_ALLOWED" />
@@ -180,22 +180,24 @@
 		<icon path="art/iconOG.png" />
 	</section>
 
-	<!-- Windows中文IME支持：开启输入法编辑候选 -->
-	<haxedef name="LIME_ENABLE_IME" if="windows" />
+	<!-- 全局开启IME支持（Windows+安卓通用） -->
+<haxedef name="lime_text_input_compose" />
+<haxedef name="openfl_enable_ime" />
+<haxedef name="openfl_text_input_immersive" />
 
-	<!-- Android输入法配置：允许中文、不遮挡、软键盘正常弹出/收起 -->
-	<android>
-		<manifest android:installLocation="auto">
-			<uses-permission android:name="android.permission.INTERNET"/>
-			<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-			<application android:hardwareAccelerated="true">
-				<activity 
-					android:name=".MainActivity" 
-					android:configChanges="keyboard|keyboardHidden|orientation|screenSize" 
-					android:windowSoftInputMode="adjustResize">
-				</activity>
-			</application>
-		</manifest>
-	</android>
+<!-- Android输入法完整配置 -->
+<android>
+    <manifest android:installLocation="auto">
+        <uses-permission android:name="android.permission.INTERNET"/>
+        <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+        <application android:hardwareAccelerated="true">
+            <activity
+                android:name=".MainActivity"
+                android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+                android:windowSoftInputMode="adjustResize|stateVisible">
+            </activity>
+        </application>
+    </manifest>
+</android>
 
 </project>
