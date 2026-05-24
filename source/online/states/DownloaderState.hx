@@ -42,7 +42,7 @@ class DownloaderState extends MusicBeatState {
 		DiscordClient.changePresence("在 GameBanana 浏览模组", null, null, false);
 		#end
 
-		GameClient.send("status", "在 GameBanana 浏览模组");
+		GameClient.send("status", "Browsing mods on GameBanana");
 
 		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		bg.color = 0xff46463b;
