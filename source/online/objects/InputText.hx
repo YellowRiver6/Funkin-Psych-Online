@@ -2,8 +2,8 @@ package online.objects;
 
 import online.gui.sidebar.SideUI;
 import flixel.addons.ui.FlxInputText;
-import lime.ui.Keyboard;
-import lime.events.TextEvent;
+import openfl.ui.Keyboard;
+import openfl.events.TextEvent;
 
 class InputText extends FlxInputText {
 
@@ -31,8 +31,9 @@ class InputText extends FlxInputText {
 
     override function set_focus(value:Bool):Bool {
         if (value) {
+            // 旧版兼容写法
             Keyboard.startTextInput();
-            Keyboard.setTextInputRect(new lime.geom.Rectangle(x, y, width, height));
+            Keyboard.setTextInputRect(new openfl.geom.Rectangle(x, y, width, height));
             addEventListener(TextEvent.TEXT_INPUT, onTextInput);
             
             #if android
