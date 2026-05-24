@@ -106,7 +106,7 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 		var option:GameplayOption = new GameplayOption('No Hurt Notes', 'nobadnotes', 'bool', false);
 		optionsArray.push(option);
 
-		GameClient.send("status", "在游戏修改器中");
+		GameClient.send("status", "In the Game Changers Menu");
 	}
 
 	public function getOptionByName(name:String)
