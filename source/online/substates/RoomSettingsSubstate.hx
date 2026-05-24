@@ -197,7 +197,7 @@ class RoomSettingsSubstate extends MusicBeatSubstate {
 		updateItems();
 		add(items);
 
-		GameClient.send("status", "正在房间设置界面");
+		GameClient.send("status", "In the Room Settings");
 		
 		mobileManager.addMobilePad('NONE', 'B');
 		mobileManager.addMobilePadCamera();
@@ -238,7 +238,7 @@ class RoomSettingsSubstate extends MusicBeatSubstate {
 	override function closeSubState() {
 		super.closeSubState();
 		controls.isInSubstate = true;
-		GameClient.send("status", "正在房间设置界面");
+		GameClient.send("status", "In the Room Settings");
 	}
 
 	override function destroy() {
