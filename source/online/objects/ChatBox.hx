@@ -20,6 +20,8 @@ class ChatBox extends FlxTypedSpriteGroup<FlxSprite> {
 			typeBg.colorTransform.alphaOffset = 0;
 			typeBg.scale.x = FlxG.width;
 			ClientPrefs.toggleVolumeKeys(false);
+			lime.ui.Keyboard.startTextInput();
+            lime.ui.Keyboard.setTextInputRect(new lime.geom.Rectangle(x, typeText.y, FlxG.width, 30));
 		}
 		else {
 			FlxG.mouse.visible = prevMouseVisibility;
