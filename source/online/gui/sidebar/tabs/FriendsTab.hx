@@ -24,7 +24,7 @@ class FriendsTab extends TabSprite {
 	var realHeight:Float = 0;
 
     public function new() {
-        super('Friends', 'friends');
+        super('好友', 'friends');
     }
 
     override function create() {
@@ -33,23 +33,23 @@ class FriendsTab extends TabSprite {
 		scrollRect = new Rectangle(0, 0, tabWidth, heightSpace);
 
 		loadingTxt = this.createText(20, 20, 40);
-		loadingTxt.setText('Fetching...');
+		loadingTxt.setText('加载中...');
 		loadingTxt.visible = false;
 		addChild(loadingTxt);
 
 		friendsTxt = this.createText(0, 0, 25, FlxColor.WHITE);
-		friendsTxt.setText('My Friends');
+		friendsTxt.setText('我的好友');
 		friendsTxt.x = tabWidth / 2 - friendsTxt.width / 2;
 		friendsTxt.y = 10;
 		addChild(friendsTxt);
 
 		requestsTxt = this.createText(0, 0, 25, FlxColor.WHITE);
-		requestsTxt.setText('Incoming Friend Invites');
+		requestsTxt.setText('收到的好友申请');
 		requestsTxt.x = tabWidth / 2 - requestsTxt.width / 2;
 		addChild(requestsTxt);
 
 		pendingTxt = this.createText(0, 0, 25, FlxColor.WHITE);
-		pendingTxt.setText('Pending Friend Invites from You');
+		pendingTxt.setText('我发出的好友申请');
 		pendingTxt.x = tabWidth / 2 - pendingTxt.width / 2;
 		addChild(pendingTxt);
     }
@@ -148,7 +148,7 @@ class FriendsTab extends TabSprite {
 			child.visible = !v;
 		}
 		tabBg.visible = true;
-		loadingTxt.setText('Fetching...');
+		loadingTxt.setText('加载中...');
 		loadingTxt.visible = v;
 		return loading = v;
 	}
@@ -241,16 +241,24 @@ class SmolProfile extends Sprite implements ITabInteractable {
 		addFriend.visible = data.isNotFriend && data.canFriend;
 
 		nick.setText(data.name, 140);
+		var statusStr = data.status != null ? data.status.toLowerCase() : "";
+        var statusText = "";
+        switch(statusStr) {
+            case "offline": statusText = "离线";
+            case "online": statusText = "在线";
+            case "away": statusText = "离开";
+            case "busy": statusText = "忙碌";
+            default: statusText = "在线";
+        } 
 		status.setText(data.status, 140);
 
 		var statusFormat = status.defaultTextFormat;
-		if (data.status.toLowerCase() != "offline") {
-			statusFormat.color = FlxColor.LIME;
-		}
-		else {
-			statusFormat.color = FlxColor.GRAY;
-		}
-		status.defaultTextFormat = statusFormat;
+        if (statusStr != "offline") { // 这里也改成判断小写状态，更严谨
+        statusFormat.color = FlxColor.LIME;
+    } else {
+    statusFormat.color = FlxColor.GRAY;
+    }
+status.defaultTextFormat = statusFormat;
 
 		invitePlay.onClick = () -> {
 			Util.inviteToPlay(data.name);
