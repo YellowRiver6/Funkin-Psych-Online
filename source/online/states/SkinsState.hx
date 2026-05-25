@@ -407,7 +407,7 @@ class SkinsState extends MusicBeatState {
 		add(arrowRight);
 
 		charSelect = new FlxText(0, 0, FlxG.width);
-		charSelect.text = 'Press ACCEPT to select!';
+		charSelect.text = '按 ACCEPT 确认选择！';
 		charSelect.setFormat("VCR OSD Mono", 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		charSelect.y = barDown.y + barDown.height / 2 - charSelect.height / 2;
 		charSelect.alpha = 0.8;
@@ -415,7 +415,7 @@ class SkinsState extends MusicBeatState {
 		add(charSelect);
 
 		charInfo = new FlxText(0, 0, FlxG.width);
-		charInfo.text = 'Sample';
+		charInfo.text = '示例';
 		charInfo.setFormat("VCR OSD Mono", 19, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		charInfo.y = barDown.y + (charSelect.y - barDown.y) / 2 - charInfo.height / 2;
 		charInfo.alpha = 0.6;
@@ -424,20 +424,20 @@ class SkinsState extends MusicBeatState {
 		add(charInfo);
 
 		var swagText = new FlxText(0, charSelect.y + charSelect.height + 5, FlxG.width);
-		swagText.text = 'Use Note keybinds while pressing SHIFT to move!';
+		swagText.text = '按住 SHIFT + 箭头控制键 做出动作！';
 		swagText.setFormat("VCR OSD Mono", 18, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		swagText.alpha = 0.8;
 		swagText.cameras = [hud];
 		add(swagText);
 
-		var tip1 = new FlxText(20, 0, FlxG.width, 'TAB - Flip skin\n8 - Edit skin\nCTRL - Open the Character List');
+		var tip1 = new FlxText(20, 0, FlxG.width, 'TAB - 翻转皮肤\n8 - 编辑皮肤\nCTRL - 打开角色列表');
 		tip1.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		tip1.y = charSelect.y - 10;
 		tip1.alpha = 0.5;
 		tip1.cameras = [hud];
 		add(tip1);
 
-		var tip2 = new FlxText(-20, 0, FlxG.width, 'F1 for Help!\nF2 to Browse Verified Skins\nF3 to Browse GB Skins Category');
+		var tip2 = new FlxText(-20, 0, FlxG.width, 'F1 - 打开帮助！\nF2 - 浏览官方皮肤\nF3 - 浏览GB皮肤分类');
 		tip2.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		tip2.y = tip1.y;
 		tip2.alpha = tip1.alpha;
@@ -585,7 +585,7 @@ class SkinsState extends MusicBeatState {
 				return null;
 			};
 			selState.curGroup = curSelGroup;
-			selState.groups = ['All', 'Favorites'];
+			selState.groups = ['全部', '收藏'];
 			selState.groupCallback = i -> {
 				var curSelection = null;
 				if (selState.getSelectedOptionIndex() != -1) {
@@ -650,7 +650,7 @@ class SkinsState extends MusicBeatState {
 				charSelect.alpha = 1;
 			}
 			else {
-				charSelect.text = 'Press ACCEPT to select!';
+				charSelect.text = '按 ACCEPT 确认选择！';
 				charSelect.alpha = 0.8;
 			}
 			if (acceptSound != null)
@@ -690,7 +690,7 @@ class SkinsState extends MusicBeatState {
 				case 'codeberg':
 					RequestSubstate.requestURL("https://codeberg.org/Snirozu/Funkin-Psych-Online/wiki#skins", true);
 				default:
-					Alert.alert('Offline.');
+					Alert.alert('当前处于离线模式');
 			}
 		}
 
@@ -884,7 +884,7 @@ class SkinsState extends MusicBeatState {
 				catch (exc) {
 					staticSound.play(true);
 					staticMan.visible = true;
-					Alert.alert('Failed to load the skin!', 'exc: ' + exc);
+					Alert.alert('皮肤加载失败！', '错误: ' + exc);
 				}
 			});
 		}
@@ -897,17 +897,17 @@ class SkinsState extends MusicBeatState {
 		title.x = FlxG.width / 2 - title.width / 2;
 
 		if (isEquipped(curCharacter)) {
-			charSelect.text = 'Selected!';
+			charSelect.text = '已选择！';
 			charSelect.alpha = 1;
 		}
 		else {
-			charSelect.text = 'Press ACCEPT to select!';
+			charSelect.text = '按 ACCEPT 选择皮肤！';
 			charSelect.alpha = 0.8;
 		}
 
 		charInfo.visible = false;
 		if (charactersWithWeeks.contains(curCharacter)) {
-			charInfo.text = 'This character has custom MIXES!';
+			charInfo.text = '该角色拥有自定义混音！';
 			charInfo.visible = true;
 		}
     }
