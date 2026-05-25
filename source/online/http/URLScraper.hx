@@ -16,7 +16,7 @@ class URLScraper {
 
 				if (response.isFailed()) {
 					Waiter.putPersist(() -> {
-						Alert.alert("MediaFire Download failed!", "Couldn't connect to MediaFire!\n" + 'Status: ${ShitUtil.prettyStatus(response.status)}');
+						Alert.alert("MediaFire 下载失败！", "无法连接到 MediaFire！\n" + '状态: ${ShitUtil.prettyStatus(response.status)}');
 					});
 					return;
 				}
@@ -32,7 +32,7 @@ class URLScraper {
 
 				if (scrambledURL == null) {
 					Waiter.putPersist(() -> {
-						Alert.alert("MediaFire Download failed!", "Can't get the download link for this MediaFire file!");
+						Alert.alert("MediaFire 下载失败！", "无法获取此文件的下载链接！");
 					});
 					return;
 				}
@@ -45,7 +45,7 @@ class URLScraper {
 			}
 			catch (exc) {
 				Waiter.putPersist(() -> {
-					Alert.alert("MediaFire Download failed!", ShitUtil.prettyError(exc));
+					Alert.alert("MediaFire 下载失败！", ShitUtil.prettyError(exc));
 				});
 			}
 		});
