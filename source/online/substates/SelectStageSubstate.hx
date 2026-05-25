@@ -67,7 +67,7 @@ class SelectStageSubstate extends MusicBeatSubstate {
 			stageMods.push(stageInfo[1]);
         }
 
-        stageNames.unshift('(default)');
+        stageNames.unshift('(默认)');
         stageMods.unshift('');
 
         add(options = new FlxTypedGroup<StageText>());
@@ -76,14 +76,14 @@ class SelectStageSubstate extends MusicBeatSubstate {
         var endScrollY:Float = FlxG.height;
         for (i in 0...stageNames.length) {
             var text = new StageText(this, 50, 50 + 50 * i, stageNames[i]);
-            if (stageNames[i] == "(default)")
-                text.createDetails('Default option uses the stage of the currently selected song');
+            if (stageNames[i] == "(默认)")
+                text.createDetails('默认选项将使用当前歌曲自带的场景');
             else {
                 if (stageMods[i] != '') {
-                    text.createDetails(' from ' + stageMods[i].substr(0, 40) + (stageMods[i].length > 40 ? '...' : ''));
+                    text.createDetails(' 来自模组 ' + stageMods[i].substr(0, 40) + (stageMods[i].length > 40 ? '...' : ''));
                 }
                 else {
-                    text.createDetails(' from Vanilla');
+                    text.createDetails(' 来自原版游戏');
                 }
             }
 			text.ID = i;
@@ -130,7 +130,7 @@ class SelectStageSubstate extends MusicBeatSubstate {
 
         if (controls.ACCEPT || (FlxG.mouse.justPressed && FlxG.mouse.overlaps(options.members[curSelected], camera))) {
             if (curSelected == 0) {
-                Alert.alert("Stage set to default!");
+                Alert.alert("已将场景设置为默认！");
                 GameClient.send("setStage", ['', '', '']);
                 close();
                 return;
@@ -141,7 +141,7 @@ class SelectStageSubstate extends MusicBeatSubstate {
                 stageURL = OnlineMods.getModURL(stageMods[curSelected]);
             }
             GameClient.send("setStage", [stageNames[curSelected], stageMods[curSelected], stageURL]);
-            Alert.alert("Stage set to " + stageNames[curSelected] + "!");
+            Alert.alert("已将场景设置为： " + stageNames[curSelected] + "!");
             close();
         }
     }
