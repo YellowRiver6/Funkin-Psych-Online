@@ -66,7 +66,7 @@ class OnlineMods {
 				Waiter.putPersist(() -> {
 					LoadingScreen.toggle(false);
 					if (err != null) {
-						Alert.alert("Failed to download!", "For mod: " + url + "\n" + ShitUtil.readableError(err));
+						Alert.alert("下载失败！", "模组： " + url + "\n" + ShitUtil.readableError(err));
 						return;
 					}
 
@@ -82,7 +82,7 @@ class OnlineMods {
 		}
 
 		if (StringTools.startsWith(url, "https://drive.google.com/drive/folders/")) {
-			Alert.alert("Mod download failed!", "Can't download GDrive folders!");
+			Alert.alert("模组下载失败！", "无法下载谷歌云盘文件夹！");
 			return;
 		}
 
@@ -91,7 +91,7 @@ class OnlineMods {
 			return;
 		}
 
-		RequestSubstate.requestDownload(url, "Do you want to download this mod?", onSuccess);
+		RequestSubstate.requestDownload(url, "你要下载这个模组吗？", onSuccess);
 	}
 
 	static final vanillaSongs:Array<String> = [
@@ -166,7 +166,7 @@ class OnlineMods {
 				mode: LIST,
 				onError: (code, type) -> {
 					Waiter.putPersist(() -> {
-						Alert.alert("Listing RAR failed!", '$code\n$type');
+						Alert.alert("读取 RAR 失败！", '$code\n$type');
 					});
 					rarFailed = true;
 				},
@@ -177,7 +177,7 @@ class OnlineMods {
 			});
 			#else
 			Waiter.putPersist(() -> {
-				Alert.alert("RAR is not supported on this platform!");
+				Alert.alert("当前平台不支持 RAR 格式！");
 			});
 			#end
 			if (rarFailed) {
@@ -193,7 +193,7 @@ class OnlineMods {
 				trace(exc, CallStack.toString(exc.stack));
 				file.close();
 				Waiter.putPersist(() -> {
-					Alert.alert("Mod's data is corrupted or invalid!", exc + "\n" + CallStack.toString(exc.stack) + "\n\n" + fileName);
+					Alert.alert("模组文件损坏或无效！", exc + "\n" + CallStack.toString(exc.stack) + "\n\n" + fileName);
 				});
 				return;
 			}
@@ -209,8 +209,8 @@ class OnlineMods {
 			}
 			if (Math.min(fileSize, dataSize) < 0 || Math.max(fileSize, dataSize) >= 3000000000) {
 				Waiter.putPersist(() -> {
-					Alert.alert("Downloading Cancelled",
-						'Mod\'s archive file is WAY too big!\n${FlxMath.roundDecimal(Math.max(fileSize, dataSize) / 1000000000, 4)}GB');
+					Alert.alert("下载已取消",
+						'模组压缩包过大！\n${FlxMath.roundDecimal(Math.max(fileSize, dataSize) / 1000000000, 4)}GB');
 				});
 				return;
 			}
@@ -223,7 +223,7 @@ class OnlineMods {
 
 		if (beginFolder == null) {
 			Waiter.putPersist(() -> {
-				Alert.alert("Mod data not found inside of the archive!");
+				Alert.alert("在压缩包内未找到模组数据！");
 			});
 			return;
 		}
@@ -234,7 +234,7 @@ class OnlineMods {
 			}
 			catch (exc) {
 				Waiter.putPersist(() -> {
-					Alert.alert("Installation Error!", "It seems this mod directory is already being accessed\nby the game or another program!\n\nPlease try again by re-opening the game!");
+					Alert.alert("安装错误！", "该模组文件夹正在被游戏或其他程序占用！\n\n请重启游戏后重试！");
 				});
 				return;
 			}
@@ -249,7 +249,7 @@ class OnlineMods {
 				onError: (code, type) -> {
 					trace("RAR FAILED: " + code + " - " + type);
 					Waiter.putPersist(() -> {
-						Alert.alert("Extracting RAR failed!", '$code\n$type');
+						Alert.alert("解压 RAR 失败！", '$code\n$type');
 					});
 					rarFailed = true;
 				},
@@ -268,7 +268,7 @@ class OnlineMods {
 			});
 			#else
 			Waiter.putPersist(() -> {
-				Alert.alert("RAR is not supported on this platform!");
+				Alert.alert("当前平台不支持 RAR 格式！");
 			});
 			#end
 			if (rarFailed) {
@@ -292,7 +292,7 @@ class OnlineMods {
 				}
 				catch (exc) {
 					Waiter.putPersist(() -> {
-						Alert.alert("Copying a file failed!", ShitUtil.prettyError(exc));
+						Alert.alert("复制文件失败！", ShitUtil.prettyError(exc));
 					});
 				}
 			}
@@ -301,7 +301,7 @@ class OnlineMods {
 		if ((gbMod != null ? gbMod.rootCategory == "Skins" : false) && !FileSystem.exists(Paths.mods(modName + '/pack.json'))) {
 			var isLegacy = false;
 			if (FileSystem.exists(Paths.mods(modName + '/images/BOYFRIEND.png'))) {
-				Sys.println("Legacy mod detected! (Converting)");
+				Sys.println("检测到旧版模组！(正在转换)");
 
 				FileSystem.createDirectory(Paths.mods(modName + '/images/characters/'));
 				FileSystem.rename(Paths.mods(modName + '/images/BOYFRIEND.png'), Paths.mods(modName + '/images/characters/BOYFRIEND.png'));
@@ -328,7 +328,7 @@ class OnlineMods {
 			}));
 		}
 		else { // if (/*(gbMod != null ? gbMod.rootCategory == "Executables" : */isExecutable) { // sometimes dum dum people put their non-exe mods to that section
-			trace("Regular mod found! Converting...");
+			trace("检测到普通模组！正在转换...");
 			if (isExecutable) {
 				for (file in FileSystem.readDirectory(Paths.mods(modName))) {
 					if (file != "assets" && file != "mods")
@@ -422,7 +422,7 @@ class OnlineMods {
 					}
 				}
 				catch (exc) {
-					Sys.println("failed to include a song " + exc);
+					Sys.println("添加歌曲失败 " + exc);
 				}
 			});
 			var _normalIndex = -1;
@@ -483,7 +483,7 @@ class OnlineMods {
 
 		Waiter.putPersist(() -> {
 			if (!PlayState.redditMod)
-				Alert.alert("Mod Installation Successful!", "Downloaded mod: " + modName + "\nFrom: " + (modLink == null ? "Local Storage" : modLink));
+				Alert.alert("模组安装成功！", "已下载模组： " + modName + "\n来源： " + (modLink == null ? "本地文件" : modLink));
 
 			try {
 				// between states crash can occur
