@@ -20,7 +20,7 @@ class NotificationsTab extends TabSprite {
 	var realHeight:Float = 0;
 
     public function new() {
-        super('Notifications', 'notif');
+        super('通知', 'notif');
     }
 
     override function create() {
@@ -29,7 +29,7 @@ class NotificationsTab extends TabSprite {
 		scrollRect = new Rectangle(0, 0, tabWidth, heightSpace);
 
 		loadingTxt = this.createText(20, 20, 40);
-		loadingTxt.setText('Fetching...');
+		loadingTxt.setText('加载中...');
 		loadingTxt.visible = false;
 		addChild(loadingTxt);
     }
@@ -43,7 +43,7 @@ class NotificationsTab extends TabSprite {
 		notifsList = [];
 
 		if (data.length == 0) {
-			loadingTxt.setText('None...');
+			loadingTxt.setText('暂无通知...');
 			loadingTxt.visible = true;
 			return;
 		}
@@ -83,7 +83,7 @@ class NotificationsTab extends TabSprite {
 			}
 			else {
 				Waiter.putPersist(() -> {
-					loadingTxt.setText('Failed to fetch!');
+					loadingTxt.setText('获取失败！');
 					loadingTxt.visible = true;
 				});
 			}
@@ -95,7 +95,7 @@ class NotificationsTab extends TabSprite {
 			child.visible = !v;
 		}
 		tabBg.visible = true;
-		loadingTxt.setText('Fetching...');
+		loadingTxt.setText('加载中...');
 		loadingTxt.visible = v;
 		return loading = v;
 	}
