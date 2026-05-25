@@ -154,7 +154,7 @@ class RoomSettingsSubstate extends MusicBeatSubstate {
 					case 0: winCondition.descText.text = '准确率最高的一方获胜！';
 					case 1: winCondition.descText.text = '分数最高的一方获胜！';
 					case 2: winCondition.descText.text = '失误最少的一方获胜！';
-					case 3: winCondition.descText.text = '完美判定最多的一方获胜！';
+					case 3: winCondition.descText.text = 'FP最高的一方获胜！';
 					case 4: winCondition.descText.text = '连击数最高的一方获胜！';
 				}
 				winCondition.descText.text += '（点击切换）';
