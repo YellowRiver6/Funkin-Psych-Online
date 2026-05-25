@@ -50,10 +50,10 @@ class HTTPClient {
 
 	public function request(?data:OneOf<HTTPRequest, String>):HTTPResponse {
 		if (socket != null)
-			throw new Exception('Socket Still Open');
+			throw new Exception('Socket 仍在打开');
 
 		if (address == null)
-			throw new Exception('Address is null!');
+			throw new Exception('地址为空！');
 
 		cancelRequested = false;
 		contentLength = 0;
@@ -111,7 +111,7 @@ class HTTPClient {
 						continue;
 					}
 					if (ClientPrefs.isDebug())
-						trace('Failed to connect!');
+						trace('连接失败！');
 					throw e;
 				}
 			}
@@ -137,7 +137,7 @@ class HTTPClient {
 					}
 
 					if (ClientPrefs.isDebug())
-						trace('Failed to read header!');
+						trace('读取头部失败！');
 					throw e;
 				}
 			}
@@ -169,7 +169,7 @@ class HTTPClient {
 						break;
 					}
 					if (ClientPrefs.isDebug())
-						trace('Failed to read headers!');
+						trace('读取头部失败！');
 					throw e;
 				}
 			}
@@ -247,10 +247,10 @@ class HTTPClient {
 		}
 		catch (exc) {
 			if (cancelRequested || exc == null || (exc is ValueException && (cast exc).value == null))
-				exc = new Exception('Socket Closed');
+				exc = new Exception('Socket 已关闭');
 
 			if (ClientPrefs.isDebug())
-				trace('Status: $status ' + ShitUtil.prettyError(exc) + "\nLine: " + response.statusLine);
+				trace('状态: $status ' + ShitUtil.prettyError(exc) + "\n行: " + response.statusLine);
 
 			response.exception = exc;
 		}
@@ -288,7 +288,7 @@ class HTTPClient {
 		// if the url comes from location http header then it can be sometimes a relative path instead of absolute
 		if (url.startsWith('/')) {
 			if (from == null)
-				throw new Exception('The URL is a path to an address which wasn\'t provided');
+				throw new Exception('URL 是路径，但未提供基础地址');
 
 			return {
 				host: from.host,
@@ -399,9 +399,9 @@ class HTTPResponse {
 	public function getErrorTitle():String {
 		if (isFailed()) {
 			if (exception != null)
-				return "Exception: " + request.path;
+				return "异常 " + request.path;
 
-			return 'HTTP Error ${ShitUtil.prettyStatus(status)}: ' + request.path;
+			return 'HTTP 错误 ${ShitUtil.prettyStatus(status)}: ' + request.path;
 		}
 		return null;
 	}
