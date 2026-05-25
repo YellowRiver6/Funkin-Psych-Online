@@ -125,7 +125,7 @@ class Alert extends Sprite {
 
 		instance = this;
 
-		if (Main.LOW_STORAGE) alert(haxe.crypto.Base64.decode('5Y2D6YeO5bm057OVb3Zv55qE5rGJ5YyW54mI5pys77yB').toString());
+		if (Main.LOW_STORAGE) alert(title('你正在运行由千野年糕ovo汉化的版本！！！').toString());
 
 		if (stage != null)
 			init();
