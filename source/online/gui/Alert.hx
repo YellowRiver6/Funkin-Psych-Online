@@ -125,7 +125,7 @@ class Alert extends Sprite {
 
 		instance = this;
 
-		if (Main.LOW_STORAGE) alert(haxe.crypto.Base64.decode('UlVOTklORyBPTiBBIFVOT0ZGSUNJQUwgQlVJTEQhISEh').toString());
+		if (Main.LOW_STORAGE) alert(haxe.crypto.Base64.decode('5Y2D6YeO5bm057OVb3Zv55qE5rGJ5YyW54mI5pys77yB').toString());
 
 		if (stage != null)
 			init();
