@@ -308,7 +308,7 @@ class OnlineOptionsState extends MusicBeatState {
 			sezOption.ID = i++;
 
 			var sidebarOption:InputOption;
-			items.add(sidebarOption = new InputOption("打开侧边栏, "打开在线功能侧边栏, 如果你无法打开的话。\n(按 " + InputFormatter.getKeyName(cast(ClientPrefs.keyBinds.get('sidebar')[0], FlxKey)) + " 键可随时打开！)", null, () -> {
+			items.add(sidebarOption = new InputOption("打开侧边栏", "打开在线功能侧边栏, 如果你无法打开的话。\n(按 " + InputFormatter.getKeyName(cast(ClientPrefs.keyBinds.get('sidebar')[0], FlxKey)) + " 键可随时打开！)", null, () -> {
 				online.gui.sidebar.SideUI.instance.active = true;
 			}));
 			sidebarOption.y = sezOption.y + sezOption.height + 50;
