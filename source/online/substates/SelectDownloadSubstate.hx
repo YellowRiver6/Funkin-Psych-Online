@@ -70,7 +70,7 @@ class SelectDownloadSubstate extends MusicBeatSubstate {
 		var i = -1;
 
 		var altText = new FlxText(bg.x, 0, bg.width);
-		altText.text = 'Files';
+		altText.text = '文件';
 		altText.setFormat("VCR OSD Mono", 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		altText.y = 30;
 		add(altText);
@@ -94,7 +94,7 @@ class SelectDownloadSubstate extends MusicBeatSubstate {
 
 		if (downloads._aAlternateFileSources != null && downloads._aAlternateFileSources.length > 0) {
 			var altText = new FlxText(bg.x, 0, bg.width);
-			altText.text = 'Alternate File Sources';
+			altText.text = '备用下载来源';
 			altText.setFormat("VCR OSD Mono", 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 			if (items.members.length > 0)
 				altText.y = endCoord + 20;
@@ -164,7 +164,7 @@ class DownloadBox extends FlxSpriteGroup {
 				daDescription = '';
 			}
 			else {
-				daName = '(unknown)';
+				daName = '(未知文件)';
 			}
 		}
 
