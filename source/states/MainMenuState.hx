@@ -163,7 +163,7 @@ class MainMenuState extends MusicBeatState
 		versionShit.scrollFactor.set();
 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);
-		var versionShit:FlxText = new FlxText(12, FlxG.height - 44, 0, !Main.UNOFFICIAL_BUILD ? "(OFFICIAL BUILD)" : "(NOT AN OFFICIAL BUILD)", 12);
+		var versionShit:FlxText = new FlxText(12, FlxG.height - 44, 0, !Main.UNOFFICIAL_BUILD ? "(官服版本)" : "(千野年糕ovo汉化版本)", 12);
 		if (Main.UNOFFICIAL_BUILD)
 			versionShit.color = FlxColor.RED;
 		versionShit.scrollFactor.set();
@@ -212,8 +212,6 @@ class MainMenuState extends MusicBeatState
 		if (leDate.getMonth() == 9) {
 			online.backend.DateEvent.isHalloween = true;
 		}
-
-		mobileManager.addMobilePad("NONE", "E");
 
 		var debugPoser = new online.objects.DebugPosHelper();
 		debugPoser.target = cast menuIcons;
@@ -377,12 +375,14 @@ class MainMenuState extends MusicBeatState
 					});
 				}
 			}
-			else if (mobileButtonJustPressed('E') || controls.justPressed('debug_1'))
+			#if desktop
+			else if (controls.justPressed('debug_1'))
 			{
 				selectedSomethin = true;
 				FlxG.switchState(() -> new MasterEditorMenu());
 			}
-	
+			#end
+
 			if (FlxG.mouse.justPressed && updatEBg != null && FlxG.mouse.overlaps(updatEBg)) {
 				if (TitleState.mustUpdate)
 					online.substates.RequestSubstate.requestURL(Main.updatePageURL, true);
