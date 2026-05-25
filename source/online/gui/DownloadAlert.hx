@@ -50,10 +50,10 @@ class DownloadAlerts extends Sprite {
 
 			if (downloader != null) {
 				if (downloader.client.cancelRequested) {
-					alert.cancelText.text = 'Cancelling...';
+					alert.cancelText.text = '正在取消...';
 				}
 				else {
-					alert.cancelText.text = 'Cancel: ALT + $i ';
+					alert.cancelText.text = '取消: ALT + $i ';
 					if (i >= 10) {
 						alert.cancelText.text = "";
 					}
@@ -61,21 +61,21 @@ class DownloadAlerts extends Sprite {
 
 				switch (downloader.status) {
 					case CONNECTING:
-						alert.setStatus("Connecting...");
+						alert.setStatus("正在连接...");
 					case READING_HEADERS:
-						alert.setStatus("Reading Headers...");
+						alert.setStatus("正在读取信息...");
 					case READING_BODY:
 						alert.updateProgress(downloader.client.receivedBytes, downloader.client.contentLength);
 					case FAILED(exc):
-						alert.setStatus("Failed! " + exc);
+						alert.setStatus("下载失败！ " + exc);
 					case DOWNLOADED:
-						alert.setStatus("Preparing to instal...");
+						alert.setStatus("准备安装...");
 					case INSTALLING:
-						alert.setStatus("Installing...");
+						alert.setStatus("正在安装...");
 					case FINISHED:
-						alert.setStatus("Finished!");
+						alert.setStatus("完成！");
 					default:
-						alert.setStatus("Initializing...");
+						alert.setStatus("正在初始化...");
 				}
 			}
 			else {
@@ -134,7 +134,7 @@ class DownloadAlert extends Sprite {
 		addChild(bar);
 
 		text = new TextField();
-		text.text = 'Waiting to download: $id';
+		text.text = '等待下载: $id';
 		text.selectable = false;
 		text.defaultTextFormat = new TextFormat(Assets.getFont('assets/fonts/vcr.ttf').fontName, 15, 0xFFFFFFFF);
 		addChild(text);
@@ -154,12 +154,12 @@ class DownloadAlert extends Sprite {
 		addChild(cancelBg);
 
 		cancelText = new TextField();
-		cancelText.text = 'Cancel: ALT + ' + ModDownloader.downloaders.length;
+		cancelText.text = '取消: ALT + ' + ModDownloader.downloaders.length;
 		cancelText.selectable = false;
 		cancelText.defaultTextFormat = new TextFormat(Assets.getFont('assets/fonts/vcr.ttf').fontName, 13, 0xFFFFFFFF);
 		addChild(cancelText);
 
-		setStatus('Initializing the Download...');
+		setStatus('正在初始化下载...');
     }
 
     public function updateProgress(loaded:Float, total:Float) {
@@ -175,12 +175,12 @@ class DownloadAlert extends Sprite {
 			bar.visible = false;
 			bar.scaleX = 1;
 			total = 1;
-			text.text = 'Downloading $idCut: ${prettyBytes(loaded)} of ?MB';
+			text.text = '正在下载 $idCut: ${prettyBytes(loaded)} 未知大小';
 			return;
 		}
 		
 		bar.visible = true;
-		text.text = 'Downloading $idCut: ${prettyBytes(loaded)} of ${prettyBytes(total)}';
+		text.text = '正在下载 $idCut: ${prettyBytes(loaded)} of ${prettyBytes(total)}';
 
 		bar.scaleX = (bg.width - 20) * (loaded / total);
 		// bar.x = bg.x + bg.width / 2 - bar.width / 2;
