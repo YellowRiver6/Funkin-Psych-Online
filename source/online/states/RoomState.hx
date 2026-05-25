@@ -374,7 +374,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 						var anims = "";
 						for (anim in @:privateAccess getCharacterSelf().animation._animations)
 							anims += '"${anim.name}" ';
-						ChatBox.addMessage("> Please enter the animation you want to play!\nAvailable animations: " + anims);
+						ChatBox.addMessage("> 请输入要播放的动作！\n可用动作: " + anims);
 					}
 					return true;
 				case "results":
@@ -384,7 +384,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 					checkStage();
 					return true;
 				case "help":
-					ChatBox.addMessage("> Room Commands: /pa <anim>, /results, /restage");
+					ChatBox.addMessage("> 房间指令: /pa <anmi>, /results, /restage");
 			}
 			return false;
 		});
@@ -446,7 +446,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 		playIcon.ID = 2;
 		items.add(playIcon);
 
-		roomCode = new FlxText(0, 0, 0, "Room Code: ????");
+		roomCode = new FlxText(0, 0, 0, "房间代码: ????");
 		roomCode.setFormat("VCR OSD Mono", 18, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		roomCode.x = settingsIconBg.x + settingsIconBg.width - roomCode.width;
 		roomCode.y = settingsIconBg.y - roomCode.height - 10;
@@ -462,7 +462,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 		groupHUD.add(roomCodeBg);
 		items.add(roomCode);
 
-		songName = new FlxText(0, 0, 0, "Selected Song: ????");
+		songName = new FlxText(0, 0, 0, "已选歌曲: ????");
 		songName.setFormat("VCR OSD Mono", 18, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		songName.x = roomCodeBg.x + roomCodeBg.width - songName.width;
 		songName.y = roomCodeBg.y - songName.height - 10;
@@ -501,7 +501,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 		itemTipBg.updateHitbox();
 		groupHUD.add(itemTipBg);
 
-		itemTip = new FlxText(0, 0, 0, "Placeholder");
+		itemTip = new FlxText(0, 0, 0, "占位文本");
 		itemTip.setFormat("VCR OSD Mono", 18, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		groupHUD.add(itemTip);
 
@@ -610,7 +610,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 
 		#if lumod
 		if (FlxG.keys.justPressed.F12) {
-			trace('reloading lumod');
+			trace('重载Lumod脚本');
 			Lumod.cache.scripts.clear();
 			lmLoad();
 		}
@@ -774,7 +774,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 				}
 				if (FlxG.keys.pressed.CONTROL && FlxG.keys.justPressed.C) {
 					Clipboard.text = GameClient.getRoomSecret(true);
-					Alert.alert("Room code copied!");
+					Alert.alert("房间代码已复制！");
 				}
 
 				if (FlxG.keys.justPressed.SHIFT) {
@@ -797,7 +797,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 								GameClient.send("verifyChart", Md5.encode(Song.loadRawSong(GameClient.room.state.song, GameClient.room.state.folder)));
 							}
 							catch (exc) {
-								Alert.alert("Caught an exception!", ShitUtil.readableError(exc));
+								Alert.alert("出现异常！", ShitUtil.readableError(exc));
 								if (optionShake != null)
 									optionShake.cancel();
 								optionShake = FlxTween.shake(playIcon, 0.05, 0.3, FlxAxes.X);
@@ -807,7 +807,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 							checkStage();
 
 							if (!hasStage) {
-								Alert.alert("You don't have the current stage!");
+								Alert.alert("你缺少当前使用的背景！");
 							}
 							else {
 								GameClient.send("startGame");
@@ -815,10 +815,10 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 						}
 						else {
 							if (GameClient.room.state.song == "") {
-								Alert.alert("Song isn't selected!");
+								Alert.alert("未选择歌曲！");
 							}
 							else {
-								Alert.alert("You don't have the current song/mod!");
+								Alert.alert("你缺少当前歌曲/模组！");
 							}
 							var sond = FlxG.sound.play(Paths.sound('badnoise' + FlxG.random.int(1, 3)));
 							sond.pitch = 1.1;
@@ -827,7 +827,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 							optionShake = FlxTween.shake(playIcon, 0.05, 0.3, FlxAxes.X);
 						}
 					case 3:
-						roomCode.text = 'Room Code: "' + GameClient.getRoomSecret() + '"';
+						roomCode.text = '房间代码: "' + GameClient.getRoomSecret() + '"';
 						roomCode.x = settingsIconBg.x + settingsIconBg.width - roomCode.width;
 						roomCodeBg.scale.set(roomCode.width, roomCode.height);
 						roomCodeBg.updateHitbox();
@@ -835,21 +835,21 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 						if (revealTimer != null)
 							revealTimer.cancel();
 						revealTimer = new FlxTimer().start(10, (t) -> {
-							roomCode.text = "Room Code: ????";
+							roomCode.text = "房间代码: ????";
 							roomCode.x = settingsIconBg.x + settingsIconBg.width - roomCode.width;
 							roomCodeBg.scale.set(roomCode.width, roomCode.height);
 							roomCodeBg.updateHitbox();
 							roomCodeBg.x = roomCode.x;
 						});
 						Clipboard.text = GameClient.getRoomSecret(true);
-						Alert.alert("Room code copied!");
+						Alert.alert("房间代码已复制！");
 					case 4:
 						if (GameClient.hasPerms() || GameClient.room.state.allPlayersChoose) {
 							FlxG.switchState(() -> new FreeplayState());
 							FlxG.mouse.visible = false;
 						}
 						else {
-							Alert.alert("Only the host can do that!");
+							Alert.alert("仅房主可执行此操作！");
 							var sond = FlxG.sound.play(Paths.sound('badnoise' + FlxG.random.int(1, 3)));
 							sond.pitch = 1.1;
 							if (optionShake != null)
@@ -883,7 +883,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 				if (GameClient.hasPerms())
 					return true;
 
-				Alert.alert("Song isn't selected!");
+				Alert.alert("未选择歌曲！");
 				var sond = FlxG.sound.play(Paths.sound('badnoise' + FlxG.random.int(1, 3)));
 				sond.pitch = 1.1;
 				if (optionShake != null)
@@ -898,7 +898,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 				if (GameClient.hasPerms())
 					return true;
 
-				Alert.alert("You already have this song installed!");
+				Alert.alert("你已安装该歌曲！");
 				var sond = FlxG.sound.play(Paths.sound('badnoise' + FlxG.random.int(1, 3)));
 				sond.pitch = 1.1;
 				if (optionShake != null)
@@ -936,10 +936,10 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 			}
 			else if (!ignoreAlert) {
 				if (GameClient.room.state.modURL == null || GameClient.room.state.modURL == "") {
-					Alert.alert("Mod couldn't be found!", "Host didn't specify the URL of this mod");
+					Alert.alert("未找到模组！", "房主未提供该模组的下载地址");
 				}
 				else if (Mods.getModDirectories().contains(GameClient.room.state.modDir)) {
-					Alert.alert("Mod couldn't be found!", "Expected mod data to exist in this path: " + (GameClient.room.state.modDir ?? "mods/"));
+					Alert.alert("未找到模组！", "预期模组路径：" + (GameClient.room.state.modDir ?? "mods/"));
 				}
 				var sond = FlxG.sound.play(Paths.sound('badnoise' + FlxG.random.int(1, 3)));
 				sond.pitch = 1.1;
@@ -973,16 +973,16 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 		}
 
 		if (daModName == "" || GameClient.room.state.song == "") {
-			verifyMod.text = "No chosen mod.";
+			verifyMod.text = "未选择模组";
 		}
 		else if (selfPlayer.hasSong) {
-			verifyMod.text = "Mod: " + daModName;
+			verifyMod.text = "模组: " + daModName;
 		}
 		else {
 			if (GameClient.room.state.modURL == null || GameClient.room.state.modURL == "")
-				verifyMod.text = "No mod named: " + daModName + " (Unknown; Host didn't specify mod's URL)";
+				verifyMod.text = "缺少模组: " + daModName + " (未知；房主未提供模组地址)";
 			else 
-				verifyMod.text = "No mod named: " + daModName + " (Download/Verify it here!)";
+				verifyMod.text = "缺少模组: " + daModName + " (点击下载/验证)";
 		}
 
 		verifyMod.x = songNameBg.x + songNameBg.width - verifyMod.width;
@@ -990,11 +990,11 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 		verifyModBg.updateHitbox();
 		verifyModBg.x = verifyMod.x;
 
-		songName.text = "Selected Song: " + GameClient.room.state.song;
+		songName.text = "已选歌曲: " + GameClient.room.state.song;
 		if (GameClient.room.state.song == null || GameClient.room.state.song.trim() == "")
-			songName.text += "(None)";
+			songName.text += "(无)";
 		else if (!selfPlayer.hasSong)
-			songName.text += " (Not found!)";
+			songName.text += " (未找到！)";
 		songName.x = roomCodeBg.x + roomCodeBg.width - songName.width;
 		songNameBg.scale.set(songName.width, songName.height);
 		songNameBg.updateHitbox();
@@ -1004,19 +1004,19 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 
 		switch (curSelected) {
 			case 0:
-				itemTip.text = " - SETTINGS - \nOpens server settings.\n\n(Keybind: SHIFT)";
+				itemTip.text = " - 设置 - \n打开房间设置。\n\n(快捷键: SHIFT)";
 			case 1:
-				itemTip.text = " - CHAT - \nOpens chat.\n\n(Keybind: TAB)";
+				itemTip.text = " - 聊天 - \n打开聊天框。\n\n(快捷键: TAB)";
 			case 2:
-				itemTip.text = " - START GAME/READY - \nToggles your READY status.\n\nPlayers also need to have the\ncurrently selected mod installed.\n\n(Both sides can only\nhave up to 2 players).";
+				itemTip.text = " - 开始游戏/准备 - \n切换你的准备状态。\n\n玩家需要安装当前选择的模组。\n\n(双方最多3名玩家)。";
 			case 3:
-				itemTip.text = " - ROOM CODE - \nUnique code of this room.\n\nACCEPT - Reveals the code and\ncopies it to your clipboard.\n\nCTRL + C - Copies the code without\nrevealing it on the screen.";
+				itemTip.text = " - 房间代码 - \n该房间的加入代码。\n\nACCEPT - 显示代码并复制到剪贴板。\n\nCTRL + C - 不显示直接复制代码";
 			case 4:
-				itemTip.text = " - SELECT SONG - \nSelects the song.\n\n(Players with host permissions\ncan only do that)";
+				itemTip.text = " - 选择歌曲 - \n选择对局歌曲。\n\n(仅房主可操作)";
 			case 5:
-				itemTip.text = " - MOD - \nDownloads the currently selected mod\nif it isn't installed.\n\nAfter you install it\npress this button again!\n\nRIGHT CLICK - Open Mod Downloader";
+				itemTip.text = " - 模组 - \n未安装时下载当前模组\n安装后再次点击验证！\n\n右键 - 打开模组下载器";
 			default:
-				itemTip.text = " - LOBBY - \nPress UI keybinds\nor use your mouse\nto select an option!";
+				itemTip.text = " - 大厅 - \n使用方向键\n或鼠标\n选择功能！";
 		}
 
 		itemTip.x = settingsIconBg.x + settingsIconBg.width - itemTip.width;
@@ -1156,7 +1156,7 @@ class LobbyCharacter extends FlxTypedGroup<FlxSprite> {
 		//	profileBox.camera = camHUD;
 		add(profileBox);
 
-		dlSkinTxt = new FlxText(0, 0, 0, "DOWNLOAD SKIN");
+		dlSkinTxt = new FlxText(0, 0, 0, "下载皮肤");
 		dlSkinTxt.setFormat("VCR OSD Mono", 18, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 
 		loadCharacter();
@@ -1225,10 +1225,10 @@ class LobbyCharacter extends FlxTypedGroup<FlxSprite> {
 			(player.verified && profileBox.profileData != null ? 
 				FlxStringUtil.formatMoney(player.points, false) + 'FP (' + ShitUtil.toOrdinalNumber(profileBox.profileData.rank) + ")\n"
 			 : "") +
-			"Ping: <p>" + player.ping + "ms<p>\n\n" +
+			"延迟: <p>" + player.ping + "毫秒<p>\n\n" +
 			player.status + "\n" +
-			(!player.isReady ? "NOT " : "") + "READY" +
-			(noSkin ? "\n(Unloaded Skin)" : "")
+			(!player.isReady ? "未准备":"已准备")+
+			(noSkin ? "\n(皮肤未加载)" : "")
 		, [pingMarker]);
 
 		profileBox.updatePositions();
