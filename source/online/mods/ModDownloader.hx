@@ -39,7 +39,7 @@ class ModDownloader {
 
 		if (downloaders.length >= 6) {
 			Waiter.putPersist(() -> {
-				Alert.alert('Downloading failed!', 'Too many files are downloading right now! (Max 6)');
+				Alert.alert('下载失败！', '当前正在下载的文件过多！(最多 6 个)');
 			});
 			return;
 		}
@@ -62,8 +62,8 @@ class ModDownloader {
 					if (!isMediaTypeAllowed(client.response.headers.get("content-type"))) {
 						client.cancel();
 						Waiter.putPersist(() -> {
-							Alert.alert('Downloading failed!', client.response.headers.get("content-type") + " may be invalid or unsupported file type!");
-							RequestSubstate.requestURL(url, "The following mod needs to be installed from this source", true);
+							Alert.alert('下载失败！', client.response.headers.get("content-type") + " 可能是无效或不支持的文件类型！");
+							RequestSubstate.requestURL(url, "该模组需要从此来源手动安装", true);
 						});
 					}
 				case COMPLETED:
@@ -86,7 +86,7 @@ class ModDownloader {
 			catch (exc) {
 				if (!client.cancelRequested) {
 					Waiter.putPersist(() -> {
-						Alert.alert('Error!', id + ': ' + ShitUtil.prettyError(exc));
+						Alert.alert('错误！', id + ': ' + ShitUtil.prettyError(exc));
 					});
 				}
 			}
@@ -96,12 +96,12 @@ class ModDownloader {
 			if (client.response?.isFailed()) {
 				if (client.cancelRequested) {
 					Waiter.putPersist(() -> {
-						Alert.alert('Download canceled!');
+						Alert.alert('下载已取消！');
 					});
 				}
 				else {
 					Waiter.putPersist(() -> {
-						Alert.alert('Downloading failed!', 
+						Alert.alert('下载失败！', 
 							ShitUtil.prettyStatus(client.response.status) + "\n" +
 							(client?.response?.exception != null ? ShitUtil.prettyError(client.response.exception) : '')
 						);
@@ -160,7 +160,7 @@ class ModDownloader {
 	}
 
 	public static function cancelAll() {
-		Sys.println("Cancelling " + downloaders.length + " downloads...");
+		Sys.println("正在取消 " + downloaders.length + " 个下载...");
 		for (downloader in downloaders) {
 			if (downloader != null)
 				downloader.client.cancel();
