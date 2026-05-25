@@ -51,14 +51,14 @@ class NetworkClient {
 		NetworkClient.room = null;
         if (err != null) {
 			Waiter.putPersist(() -> {
-				ChatTab.addMessage('Failed to connect to the network chatroom! (Reopen this tab to try again)');
+				ChatTab.addMessage('无法连接到网络聊天室！(重新打开此标签重试)');
 			});
             //trace(err);
             return;
         }
 
 		Waiter.putPersist(() -> {
-			ChatTab.addMessage('Connected to the network chatroom!');
+			ChatTab.addMessage('已连接到网络聊天室！');
         });
 
 		NetworkClient.room = room;
@@ -90,11 +90,11 @@ class NetworkClient {
 			var inviteData = Json.parse(message);
 
 			Waiter.putPersist(() -> {
-				Alert.alert(inviteData.name + ' has invited you to their room!', '(Click to Join)', () -> {
+				Alert.alert(inviteData.name + ' 邀请你进入他们的房间！', '(点击加入)', () -> {
 					OnlineState.inviteRoomID = inviteData.roomid;
 
 					if (GameClient.isConnected()) {
-						GameClient.leaveRoom('Switching States');
+						GameClient.leaveRoom('正在切换房间');
 					}
 					else {
 						Waiter.putPersist(() -> {
@@ -110,7 +110,7 @@ class NetworkClient {
 				return;
 
 			Waiter.putPersist(() -> {
-				Alert.alert(player + ' is now online!', null);
+				Alert.alert(player + ' 上线了！', null);
 			});
 		});
 
@@ -119,7 +119,7 @@ class NetworkClient {
 				Sys.println("NetworkRoom.onError: " + code + " - " + e);
 				if (code == 524)
 					return;
-				Alert.alert("Network Room error!", "room.onError: " + ShitUtil.prettyStatus(code) + "\n" + ShitUtil.readableError(e));
+				Alert.alert("网络房间错误！", "room.onError: " + ShitUtil.prettyStatus(code) + "\n" + ShitUtil.readableError(e));
             }, e -> {
 				trace(ShitUtil.prettyError(e));
             });
@@ -130,7 +130,7 @@ class NetworkClient {
 				trace(code);
 
 				Waiter.putPersist(() -> {
-					ChatTab.addMessage('Disconnected from the chatroom');
+					ChatTab.addMessage('已从聊天室断开连接');
 				});
 
 				var recToken = NetworkClient.room.reconnectionToken;
