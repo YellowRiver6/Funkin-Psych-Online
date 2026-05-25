@@ -101,8 +101,8 @@ class OnlineOptionsState extends MusicBeatState {
 				address += ":2567";
 			}
 
-			if (address == "ws://funkin.sniro.boo") {
-				address = "wss://funkin.sniro.boo";
+			if (address == "ws://psychcn.online") {
+				address = "wss://psychcn.online";
 			}
 
 			if (address == "ws://gettinfreaky.onrender.com") {
