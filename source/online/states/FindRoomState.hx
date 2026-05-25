@@ -33,7 +33,7 @@ class FindRoomState extends MusicBeatState {
 		super.create();
 
 		#if DISCORD_ALLOWED
-		DiscordClient.changePresence("Looking for a room.", null, null, false);
+		DiscordClient.changePresence("正在寻找房间...", null, null, false);
 		#end
 
 		camera.follow(camFollow = new FlxObject(FlxG.width / 2), TOPDOWN, 0.1);
@@ -52,7 +52,7 @@ class FindRoomState extends MusicBeatState {
 			refreshRooms(false);
 		}, 0);
 
-		tip = new FlxText(0, 0, 0, 'ACCEPT - Enter selected room.');
+		tip = new FlxText(0, 0, 0, 'ACCEPT - 进入选中的房间');
 		tip.setFormat("VCR OSD Mono", 18, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		tip.scrollFactor.set(0, 0);
 		tip.screenCenter(X);
@@ -65,7 +65,7 @@ class FindRoomState extends MusicBeatState {
 		add(tipBg);
 		add(tip);
 
-		emptyMessage = new FlxText(0, 0, FlxG.width, 'No available rooms found!');
+		emptyMessage = new FlxText(0, 0, FlxG.width, '未找到可用的房间！');
 		emptyMessage.setFormat("VCR OSD Mono", 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		emptyMessage.scrollFactor.set(0, 0);
 		emptyMessage.screenCenter();
@@ -114,7 +114,7 @@ class FindRoomState extends MusicBeatState {
 				items.clear();
 
                 if (err != null) {
-					Alert.alert("Couldn't connect!", "ERROR: " + ShitUtil.prettyStatus(err.code) + " - " + err.message + (GameClient.serverAddress.endsWith(".onrender.com") ? "\nTry again in a few minutes! The server is probably restarting!" : ""));
+					Alert.alert("连接失败！", "错误： " + ShitUtil.prettyStatus(err.code) + " - " + err.message + (GameClient.serverAddress.endsWith(".onrender.com") ? "\nTry again in a few minutes! The server is probably restarting!" : ""));
                     return;
                 }
 
@@ -184,12 +184,12 @@ class RoomBox extends FlxSpriteGroup {
 			title.color = FlxColor.YELLOW;
 		add(title);
 
-		ping = new FlxText(0, 0, bg.width - 20, pingMs + "ms");
+		ping = new FlxText(0, 0, bg.width - 20, pingMs + "毫秒");
 		ping.setFormat("VCR OSD Mono", 20, FlxColor.WHITE, RIGHT);
 		ping.setPosition(10, title.y);
 		add(ping);
 
-		detailsTxt = new FlxText(0, 0, bg.width - 20, '> Enter: $code < ');
+		detailsTxt = new FlxText(0, 0, bg.width - 20, '> 进入房间： $code < ');
 		detailsTxt.setFormat("VCR OSD Mono", 20, FlxColor.WHITE, CENTER);
 		detailsTxt.setPosition(10, title.y + title.height + 20);
 		add(detailsTxt);
