@@ -144,7 +144,7 @@ class RoomSettingsSubstate extends MusicBeatSubstate {
 		}, 0, 0, GameClient.room.state.disableSkins));
 
 		var prevCond:Int = -1;
-		items.add(winCondition = new Option("Win Condition", "...", () -> {
+		items.add(winCondition = new Option("胜利条件", "...", () -> {
 			GameClient.send("nextWinCondition");
 		}, (elapsed) -> {
 			if (GameClient.room.state.winCondition != prevCond) {
