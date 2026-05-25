@@ -249,6 +249,27 @@ class OnlineState extends MusicBeatState {
 		credit.y = FlxG.height - credit.height - 5;
 		add(credit);
 
+		networkBg = new FlxSprite(20, 20);
+		networkBg.makeGraphic(1, 1, FlxColor.BLACK);
+		networkBg.alpha = 0.6;
+		add(networkBg);
+
+		networkPlayer = new FlxText(30, 30);
+		networkPlayer.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		networkPlayer.alpha = 0.5;
+		networkPlayer.text = FunkinNetwork.loggedIn ? "以游客身份登录 " + FunkinNetwork.nickname : "未登录！";
+		if (FunkinNetwork.loggedIn) {
+		networkPlayer.text += "\nPoints:" + FunkinNetwork.points;
+		}
+		add(networkPlayer);
+
+		networkBg.scale.set(networkPlayer.width + 20, networkPlayer.height + 20);
+		networkBg.updateHitbox();
+
+		// // slide to the right
+		networkBg.x = FlxG.width - networkBg.width - 20;
+		networkPlayer.x = networkBg.x + 10;
+
 		var frontMessage = new FlxText(0, 0, 500);
 		frontMessage.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		frontMessage.alpha = 0.5;
