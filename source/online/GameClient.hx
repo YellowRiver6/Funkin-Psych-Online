@@ -731,9 +731,9 @@ class GameClient {
 		var url:String = '';
 		switch (Main.repoHost) {
 			case 'github':
-				url = "https://raw.githubusercontent.com/Snirozu/Funkin-Psych-Online/main/server_addresses.txt";
+				url = "https://raw.githubusercontent.com/qyovo438/Psych-Extended-Online-ChineseText/refs/heads/main/server_addresses.txt";
 			case 'codeberg':
-				url = "https://codeberg.org/Snirozu/Funkin-Psych-Online/raw/branch/main/server_addresses.txt";
+				url = "https://raw.githubusercontent.com/qyovo438/Psych-Extended-Online-ChineseText/refs/heads/main/server_addresses.txt";
 			default:
 		}
 		var http = new haxe.Http(url);
