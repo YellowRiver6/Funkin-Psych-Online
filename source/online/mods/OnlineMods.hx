@@ -205,7 +205,7 @@ class OnlineMods {
 
 				iterFunc(entry.fileName);
 			}
-			if (Math.min(fileSize, dataSize) < 0 || Math.max(fileSize, dataSize) >= 3000000000) {
+			if (Math.min(fileSize, dataSize) < 0 || Math.max(fileSize, dataSize) >= 5000000000) {
 				Waiter.putPersist(() -> {
 					Alert.alert("下载已取消",
 						'模组压缩包过大！\n${FlxMath.roundDecimal(Math.max(fileSize, dataSize) / 1000000000, 4)}GB');
