@@ -58,7 +58,7 @@ class MobileExtraControl extends MusicBeatSubstate
 			var _x = FlxG.width / 2 + 25 + (titleWidth + 50) * ((bro-1) - 4 / 2);
 			var _y = 150;
 			if (i > 4) _y = 300;
-			var titleObject = new ChooseButton(_x, _y, titleWidth, titleHeight, data, "Key " + Std.string(i));
+			var titleObject = new ChooseButton(_x, _y, titleWidth, titleHeight, data, "控制键 " + Std.string(i));
 			titleTeam.add(titleObject);
 		}
 
