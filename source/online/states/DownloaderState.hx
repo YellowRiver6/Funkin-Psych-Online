@@ -173,10 +173,10 @@ class DownloaderState extends MusicBeatState {
 			return;
 
 		if (mods == null)
-			err = "未找到模组！";
+			err = "请前往https://psychcn.online/mods下载模组！";
 
 		if (err != null) {
-			pageInfo.text = "错误：" + err;
+			pageInfo.text = "警告！" + err;
 			return;
 		}
 
