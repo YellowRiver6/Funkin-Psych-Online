@@ -8,7 +8,6 @@ import unrar.UnRAR;
 import backend.WeekData;
 import haxe.io.Path;
 import online.substates.RequestSubstate;
-import online.mods.GameBanana.GBMod;
 import openfl.display.PNGEncoderOptions;
 import haxe.Json;
 import openfl.geom.Rectangle;
@@ -110,11 +109,11 @@ class OnlineMods {
 		'tutorial', 'week1', 'week2', 'week3', 'week4', 'week5', 'week6', 'week7'
 	];
 
-	public static function startDownloadMod(fileName:String, modURL:String, ?gbMod:GBMod, ?onSuccess:String->Void, ?headers:Map<String, String>, ?ogURL:String) {
-		return new ModDownloader(fileName, modURL, gbMod, onSuccess, headers, ogURL);
+	public static function startDownloadMod(fileName:String, modURL:String, ?onSuccess:String->Void, ?headers:Map<String, String>, ?ogURL:String) {
+		return new ModDownloader(fileName, modURL, onSuccess, headers, ogURL);
 	}
 
-	public static function installMod(fileName:String, ?modURL:String, ?gbMod:GBMod, ?onSuccess:String->Void) {
+	public static function installMod(fileName:String, ?modURL:String, ?onSuccess:String->Void) {
 		fileName = Path.normalize(fileName);
 		var _fileNameSplit = fileName.split("/");
 		var swagFileName = _fileNameSplit[_fileNameSplit.length - 1].split(".")[0];
