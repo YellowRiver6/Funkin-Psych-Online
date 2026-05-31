@@ -6,88 +6,74 @@ import haxe.Http;
 import haxe.Json;
 
 class GameBanana {
-	// 搜索模组 对接自建API
 	public static function searchMods(?search:String, page:Int, ?sortOrder:String = "default", response:(mods:Array<GBSub>, err:Dynamic) -> Void) {
 		Thread.run(() -> {
-			var baseUrl = "https://psychcn.online/api/mods";
-			var queryList = ["page=" + page];
-			if (search != null && search != "") {
-				queryList.push("keyword=" + Http.urlEncode(search));
-			}
-			if (sortOrder != null && sortOrder != "default") {
-				queryList.push("sort=" + Http.urlEncode(sortOrder));
-			}
-			var fullUrl = baseUrl + "?" + queryList.join("&");
+			var http = new Http("https://psychcn.online/api/mods?page=" + page + (search != null ? "&keyword=" + Http.urlEncode(search) : ""));
 
-			var http = new Http(fullUrl);
-			http.onData = function(rawText:String) {
+			http.onData = function(data:String) {
 				Waiter.put(() -> {
+					var json:Dynamic;
 					try {
-						var jsonRoot = Json.parse(rawText);
-						if (jsonRoot.error != null) {
-							response(null, jsonRoot.error);
-							return;
-						}
-						var rawModArray = jsonRoot.data;
-						var outputGBSub:Array<GBSub> = [];
-						for (var rawItem in rawModArray) {
-							var fakeItem:GBSub = {
-								_idRow: rawItem.id,
-								_sModelName: "Mod",
-								_sName: rawItem.name,
-								_sProfileUrl: rawItem.download,
-								_aPreviewMedia: {
-									_aImages: [
-										{
-											_sBaseUrl: "",
-											_sFile: "",
-											_sFile220: "",
-											_wFile220: 220,
-											_hFile220: 125,
-											_sFile100: ""
-										}
-									]
-								},
-								_aRootCategory: {
-									_sName: "本站Mod",
-									_sIconUrl: ""
-								},
-								_sVersion: "1.0",
-								_aGame: { _idRow: 8694 },
-								_nLikeCount: 0
-							};
-							outputGBSub.push(fakeItem);
-						}
-						response(outputGBSub, null);
-					} catch (parseErr) {
-						response(null, "JSON解析异常：" + Std.string(parseErr));
+						json = Json.parse(data);
 					}
+					catch (exc) {
+						response(null, exc);
+						return;
+					}
+
+					var list:Array<GBSub> = [];
+					for (m in json.data) {
+						var sub:GBSub = {
+							_idRow: m.id,
+							_sModelName: "Mod",
+							_sName: m.name,
+							_sProfileUrl: m.download,
+							_aPreviewMedia: {
+								_aImages: [{
+									_sBaseUrl: "",
+									_sFile: "",
+									_sFile220: "",
+									_wFile220: 220,
+									_hFile220: 125,
+									_sFile100: ""
+								}]
+							},
+							_aRootCategory: {
+								_sName: "本站Mod",
+								_sIconUrl: ""
+							},
+							_sVersion: "1.0",
+							_aGame: { _idRow: 8694 },
+							_nLikeCount: 0
+						};
+						list.push(sub);
+					}
+					response(list, null);
 				});
 			};
-			http.onError = function(errMsg) {
+
+			http.onError = function(error) {
 				Waiter.put(() -> {
-					response(null, "网络请求失败：" + errMsg);
+					response(null, error);
 				});
 			};
+
 			http.request();
 		});
 	}
 
-	// 分类列表 兼容调用，复用搜索接口
 	public static function listCategory(id:String, page:Int, response:(mods:Array<GBSub>, err:Dynamic) -> Void) {
-		searchMods(null, page, null, response);
+		searchMods(null, page, "", response);
 	}
 
-	// 合集列表 兼容调用，复用搜索接口
 	public static function listCollection(id:String, page:Int, response:(mods:Array<GBSub>, err:Dynamic) -> Void) {
-		searchMods(null, page, null, response);
+		searchMods(null, page, "", response);
 	}
 
-	// 假详情接口，不请求网络，返回空数据
 	public static function getMod(id:String, response:(mod:GBMod, err:Dynamic)->Void, ?threaded:Bool = true) {
-		var fakeMod:GBMod = {
+		var fake:GBMod = {
 			_id: id,
-			name: "",
+			name: "Mod",
 			description: "",
 			downloads: {},
 			pageDownload: "",
@@ -99,23 +85,21 @@ class GameBanana {
 			likes: 0,
 			screenshots: []
 		};
-		response(fakeMod, null);
+		response(fake, null);
 	}
 
-	// 假下载页面接口，直接返回空
 	public static function getModDownloads(modID:Float, response:(downloads:DownloadPage, err:Dynamic) -> Void) {
-		var emptyPage:DownloadPage = {
+		var fake:DownloadPage = {
 			_bIsTrashed: false,
 			_bIsWithheld: false,
 			_aFiles: [],
 			_aAlternateFileSources: []
 		};
-		response(emptyPage, null);
+		response(fake, null);
 	}
 
-	// 拦截旧下载函数，弹窗提示点击卡片直接下载
 	public static function downloadMod(mod:GBMod, ?onSuccess:String->Void) {
-		Alert.alert("提示", "请返回模组列表，点击模组卡片下载按钮进行下载！");
+		Alert.alert("提示", "请点击卡片直接下载！");
 	}
 }
 
@@ -151,7 +135,7 @@ typedef GBGame = {
 }
 
 typedef GBPrevMedia = {
-	var _aImages:Array<GBImage>;
+	_aImages:Array<GBImage>;
 }
 
 typedef GBImage = {
