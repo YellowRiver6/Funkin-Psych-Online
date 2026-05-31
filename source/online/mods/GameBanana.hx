@@ -9,7 +9,7 @@ class GameBanana {
 	public static function searchMods(?search:String, page:Int, ?sortOrder:String = "default", response:(mods:Array<GBSub>, err:Dynamic) -> Void) {
 		Thread.run(() -> {
 			var http = new Http(
-			'https://gamebanana.com/apiv11/Game/8694/Subfeed?_nPage=${page}&_sSort=${sortOrder}&_csvModelInclusions=Mod' + (search != null ? '&_sName=${search.urlEncode()}' : '')
+			'https:///apiv11/Game/8694/Subfeed?_nPage=${page}&_sSort=${sortOrder}&_csvModelInclusions=Mod' + (search != null ? '&_sName=${search.urlEncode()}' : '')
 			);
 
 			http.onData = function(data:String) {
