@@ -135,7 +135,7 @@ typedef GBGame = {
 }
 
 typedef GBPrevMedia = {
-	_aImages:Array<GBImage>;
+	var _aImages:Array<GBImage>;
 }
 
 typedef GBImage = {
