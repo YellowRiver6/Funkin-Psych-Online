@@ -8,6 +8,7 @@ import unrar.UnRAR;
 import backend.WeekData;
 import haxe.io.Path;
 import online.substates.RequestSubstate;
+import online.mods.GameBanana.GBMod;
 import openfl.display.PNGEncoderOptions;
 import haxe.Json;
 import openfl.geom.Rectangle;
@@ -109,11 +110,11 @@ class OnlineMods {
 		'tutorial', 'week1', 'week2', 'week3', 'week4', 'week5', 'week6', 'week7'
 	];
 
-	public static function startDownloadMod(fileName:String, modURL:String, ?onSuccess:String->Void, ?headers:Map<String, String>, ?ogURL:String) {
-		return new ModDownloader(fileName, modURL, onSuccess, headers, ogURL);
+	public static function startDownloadMod(fileName:String, modURL:String, ?gbMod:GBMod, ?onSuccess:String->Void, ?headers:Map<String, String>, ?ogURL:String) {
+		return new ModDownloader(fileName, modURL, gbMod, onSuccess, headers, ogURL);
 	}
 
-	public static function installMod(fileName:String, ?modURL:String, ?onSuccess:String->Void) {
+	public static function installMod(fileName:String, ?modURL:String, ?gbMod:GBMod, ?onSuccess:String->Void) {
 		fileName = Path.normalize(fileName);
 		var _fileNameSplit = fileName.split("/");
 		var swagFileName = _fileNameSplit[_fileNameSplit.length - 1].split(".")[0];
@@ -204,7 +205,7 @@ class OnlineMods {
 
 				iterFunc(entry.fileName);
 			}
-			if (Math.min(fileSize, dataSize) < 0 || Math.max(fileSize, dataSize) >= 5000000000) {
+			if (Math.min(fileSize, dataSize) < 0 || Math.max(fileSize, dataSize) >= 3000000000) {
 				Waiter.putPersist(() -> {
 					Alert.alert("下载已取消",
 						'模组压缩包过大！\n${FlxMath.roundDecimal(Math.max(fileSize, dataSize) / 1000000000, 4)}GB');
