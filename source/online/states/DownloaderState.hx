@@ -42,7 +42,7 @@ class DownloaderState extends MusicBeatState {
 		DiscordClient.changePresence("在 GameBanana 浏览模组", null, null, false);
 		#end
 
-		GameClient.send("status", "Browsing mods on GameBanana");
+		GameClient.send("status", "在 GameBanana 浏览模组");
 
 		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		bg.color = 0xff46463b;
@@ -275,40 +275,30 @@ class DownloaderState extends MusicBeatState {
     }
 
 	function openModDownloads(modId:Float) {
-	if (modId == 479714) {
-		FlxG.openURL('https://www.youtube.com/watch?v=WC_mHIBCHDo');
-		return;
-	}
-
-	// 遍历当前页面所有模组，匹配ID获取直链
-	var targetUrl:Null<String> = null;
-	var targetName:Null<String> = null;
-	for (var item in items.members) {
-		if (item.mod.id == modId) {
-			targetUrl = item.mod.url;
-			targetName = item.mod.name;
-			break;
+		if (modId == 479714) {
+			FlxG.openURL('https://www.youtube.com/watch?v=WC_mHIBCHDo');
+			return;
 		}
+
+		LoadingScreen.toggle(true);
+		GameBanana.getModDownloads(modId, (downloads, err) -> {
+			LoadingScreen.toggle(false);
+
+			if (err != null) {
+				Alert.alert("获取下载链接失败！", err);
+				return;
+			}
+
+			if (downloads._bIsTrashed || downloads._bIsWithheld) {
+				Alert.alert("获取下载链接失败！", "该模组已被删除！");
+				return;
+			}
+
+			openSubState(new SelectDownloadSubstate(downloads));
+		});
 	}
 
-	if (targetUrl == null || OnlineMods.checkInvalidURL(targetUrl)) {
-		Alert.alert("错误", "未找到有效的下载链接！");
-		return;
-	}
-
-	// 提取文件名，自动补充zip后缀
-	var fileName = targetUrl.split("/").pop();
-	if (!fileName.endsWith(".zip") && !fileName.endsWith(".rar") && !fileName.endsWith(".tgz") && !fileName.endsWith(".tar")) {
-		fileName = targetName + ".zip";
-	}
-
-	// 调用游戏内置下载，自动解压安装
-	OnlineMods.startDownloadMod(fileName, targetUrl, null, (installName) -> {
-		Alert.alert("安装完成", "模组「" + installName + "」下载并安装成功！");
-	});
-}
-
- function loadMods(mods:Array<GBSub>) {
+	function loadMods(mods:Array<GBSub>) {
 		items.clear();
 		curSelected = 0;
 
