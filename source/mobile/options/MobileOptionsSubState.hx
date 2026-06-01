@@ -74,8 +74,8 @@ class MobileOptionsSubState extends BaseOptionsMenu {
 		addOption(option);
 
 		option = new Option('Hitbox Hint',
-			'Hitbox Hint',
-			'点击按钮区域提示',
+			'点击区域显示提示',
+			'HitboxHint',
 			'bool');
 		addOption(option);
 
