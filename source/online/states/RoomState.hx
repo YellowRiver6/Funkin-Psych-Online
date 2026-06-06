@@ -24,9 +24,6 @@ import states.FreeplayState;
 import states.ModsMenuState;
 import openfl.utils.Assets as OpenFlAssets;
 import openfl.Lib;
-#if windows
-import externs.WinAPI;
-#end
 
 #if lumod
 @:build(lumod.LuaScriptClass.build())
@@ -388,11 +385,6 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 					return true;
 				case "help":
 					ChatBox.addMessage("> 房间指令: /pa <anmi>, /results, /restage");
-				#if windows
-				case "chat":
-					var msg = WinAPI.prompt("输入聊天内容","");
-					GameClient.send("chat", msg);
-				#end
 			}
 			return false;
 		});
