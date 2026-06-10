@@ -30,6 +30,7 @@
 	<define name="HSC_ALLOWED" />
 	<define name="SCRIPTING_ALLOWED" />
 	<define name="TRANSLATIONS_ALLOWED" />
+	<define name="PEXO_SUPPORT" />
 
 	<!-- ______________________ PSYCH ENGINE CUSTOMIZATION ______________________ -->
 
@@ -135,7 +136,7 @@
 
 	<!--Psych stuff needed-->
 	<haxelib name="linc_luajit" if="LUA_ALLOWED" />
-	<haxelib name="hscript-improved" if="HSC_ALLOWED" />
+	<haxelib name="hscript-improved" if="HSC_ALLOWED || SCRIPTING_ALLOWED" />
 	<haxelib name="SScript" if="HSCRIPT_ALLOWED" />
 	<haxelib name="hxvlc" if="VIDEOS_ALLOWED" />
 	<section if="desktop">

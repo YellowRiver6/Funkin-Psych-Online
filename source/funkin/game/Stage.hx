@@ -46,9 +46,11 @@ class Stage extends FlxBasic implements IBeatReceiver {
 		}
 
 		if (PlayState.instance != null) {
+			#if HSC_ALLOWED
 			stageScript = Script.create(Paths.script('data/stages/$stage'));
 			PlayState.instance.scripts.add(stageScript);
 			stageScript.load();
+			#end
 		}
 
 		if (stageXML != null) {
@@ -73,10 +75,12 @@ class Stage extends FlxBasic implements IBeatReceiver {
 					elems.push(node);
 			}
 
+			#if HSC_ALLOWED
 			if (PlayState.instance != null) {
 				var event = PlayState.instance.scripts.event("onStageXMLParsed", EventManager.get(StageXMLEvent).recycle(this, stageXML, elems));
 				elems = event.elems;
 			}
+			#end
 
 			for(node in elems) {
 				var sprite:Dynamic = switch(node.name) {
@@ -144,9 +148,11 @@ class Stage extends FlxBasic implements IBeatReceiver {
 					default: null;
 				}
 
+				#if HSC_ALLOWED
 				if(PlayState.instance != null) {
 					sprite = PlayState.instance.scripts.event("onStageNodeParsed", EventManager.get(StageNodeEvent).recycle(this, node, sprite, node.name)).sprite;
 				}
+				#end
 
 				if (sprite != null) {
 					for(e in node.nodes.property)

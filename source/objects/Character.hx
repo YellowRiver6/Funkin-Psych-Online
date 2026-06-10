@@ -578,7 +578,7 @@ class Character extends FlxSkewedSprite {
 
         if(animOffsets.exists('singLEFTmiss') || animOffsets.exists('singDOWNmiss') || animOffsets.exists('singUPmiss') || animOffsets.exists('singRIGHTmiss')) hasMissAnimations = true;
         recalculateDanceIdle();
-        if ((PlayState.playsAsBF() && isPlayer != playerOffsets || !PlayState.playsAsBF() && isPlayer == playerOffsets) && (betterOffsets || codenameOffsets))
+        if (isPlayer != playerOffsets && (betterOffsets || codenameOffsets))
             swapLeftRightAnimations();
 
         dance();
@@ -673,12 +673,7 @@ class Character extends FlxSkewedSprite {
             else if (PlayState.isCharacterPlayer(this) || GameClient.isConnected())
                 holdTimer = 0;
 
-            if (!noHoldBullshit && lastHit + (Conductor.stepCrochet * singDuration) < Conductor.songPosition && codenameOffsets)
-            {
-                dance();
-                holdTimer = 0;
-            }
-            if (!noHoldBullshit && holdTimer >= Conductor.stepCrochet * (0.0011 / (FlxG.sound.music != null ? FlxG.sound.music.pitch : 1)) * singDuration && !codenameOffsets) {
+            if (!noHoldBullshit && holdTimer >= Conductor.stepCrochet * (0.0011 / (FlxG.sound.music != null ? FlxG.sound.music.pitch : 1)) * singDuration) {
                 dance();
                 holdTimer = 0;
             }
