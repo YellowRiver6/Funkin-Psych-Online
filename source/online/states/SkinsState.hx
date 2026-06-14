@@ -439,7 +439,7 @@ class SkinsState extends MusicBeatState {
 		tip1.cameras = [hud];
 		add(tip1);
 
-		var tip2 = new FlxText(-20, 0, FlxG.width, InputFormatter.getKeyName(cast(ClientPrefs.keyBinds.get('fav')[0], FlxKey)) + ' - Favorite skin\nF2 to Browse GB Skins Category\nF1 for Help!');
+		var tip2 = new FlxText(-20, 0, FlxG.width, InputFormatter.getKeyName(cast(ClientPrefs.keyBinds.get('fav')[0], FlxKey)) + ' - 设置为最喜欢的角色\nF2 - 在香蕉网浏览皮肤\nF1 - 帮助!');
 		tip2.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		tip2.y = tip1.y;
 		tip2.alpha = tip1.alpha;
@@ -648,7 +648,7 @@ class SkinsState extends MusicBeatState {
             ClientPrefs.saveSettings();
             
 			if (isEquipped(curCharacter)) {
-				charSelect.text = 'Selected!';
+				charSelect.text = '已选择!';
 				charSelect.alpha = 1;
 			}
 			else {
@@ -945,7 +945,7 @@ class SkinsState extends MusicBeatState {
 		if (charactersList[curCharacter] != null) {
 			final charId = charactersList[curCharacter][0] + ':' + charactersList[curCharacter][3];
 			if (ClientPrefs.data.favSkins.contains(charId)) {
-				charInfo.text += (charInfo.text.length > 0 ? ' ' : '') + '(Favorite Character)';
+				charInfo.text += (charInfo.text.length > 0 ? ' ' : '') + '(最喜欢的角色)';
 				charInfo.visible = true;
 			}
 		}

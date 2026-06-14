@@ -85,7 +85,7 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 		addOption(option);
 
 		var option:Option = new Option('Filter Script Functions',
-			"If checked, only create-like functions will be run for scripts, preventing more frequent code to not be run.",
+			"如果勾选，脚本中频繁执行的代码将不被运行，仅运行初始化代码。",
 			'filterScriptFunctions',
 			'bool');
 		addOption(option);

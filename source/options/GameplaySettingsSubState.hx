@@ -186,7 +186,7 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		addOption(option);
 
 		var option:Option = new Option('Disable Character Sounds',
-			'Disables the sounds of character animations',
+			'如果勾选，将禁用角色自带的箭头人声音效。',
 			'disableAnimAudio',
 			'bool');
 		addOption(option);
