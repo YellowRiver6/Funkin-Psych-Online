@@ -159,7 +159,7 @@ class OnlineOptionsState extends MusicBeatState {
 
 		var lastOption:InputOption;
 		var recentOption:InputOption;
-		items.add(recentOption = new InputOption("启用SSL验证", "启用后游戏会验证SSL证书, 让下载/连接更安全。\n（不推荐开启，因为服务器并不是绝对安全，且因为Haxe的套接字实现存在缺陷）", 
+		items.add(recentOption = new InputOption("启用SSL验证", "启用后游戏会验证SSL证书, 让下载/连接更安全。\n（不推荐开启，因为服务器并不是绝对安全，且因为Haxe的套接字实现存在缺陷）",
 		ClientPrefs.data.verifySSL,
 		() -> {
 			recentOption.checked = !recentOption.checked;
@@ -246,8 +246,8 @@ class OnlineOptionsState extends MusicBeatState {
 		else {
 			lastOption = recentOption;
 			var recentOption:InputOption;
-			items.add(recentOption = new InputOption("在线聊天通知", 
-			'启用后，你会收到在线聊天的所有消息通知。\n可使用 "/notify" 命令切换开关。', 
+			items.add(recentOption = new InputOption("在线聊天通知",
+			'启用后，你会收到在线聊天的所有消息通知。\n可使用 "/notify" 命令切换开关。',
 			ClientPrefs.data.notifyOnChatMsg,
 			() -> {
 				recentOption.checked = !recentOption.checked;
@@ -611,7 +611,10 @@ class InputOption extends FlxSpriteGroup {
 			}
 		}
 
-		box.makeGraphic(Std.int(width) + 10, Std.int(height) + 20, 0x81000000);
+		// try to reuse existing bitmaps
+		box.makeGraphic(1, 1, 0x81000000);
+		box.scale.set(Std.int(width) + 10, Std.int(height) + 20);
+		box.updateHitbox();
 
 		borderline = new FlxSprite(box.x, box.y);
 		borderline.makeGraphic(Std.int(box.width), Std.int(box.height), FlxColor.TRANSPARENT);

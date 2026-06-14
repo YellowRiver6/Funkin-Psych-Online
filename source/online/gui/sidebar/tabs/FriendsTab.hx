@@ -27,6 +27,10 @@ class FriendsTab extends TabSprite {
         super('好友', 'friends');
     }
 
+	override function get_locked():Bool {
+		return !online.network.FunkinNetwork.loggedIn;
+	}
+
     override function create() {
         super.create();
 

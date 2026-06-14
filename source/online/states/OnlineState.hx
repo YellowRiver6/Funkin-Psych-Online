@@ -28,7 +28,7 @@ class OnlineState extends MusicBeatState {
 		"模组下载"
     ];
 
-	// var networkPlayer:FlxText;
+	var presenceInfo:FlxText;
 	// var networkBg:FlxSprite;
 	var itemDesc:FlxText;
 	var playersOnline:FlxText;
@@ -113,6 +113,7 @@ class OnlineState extends MusicBeatState {
 		OnlineMods.checkMods();
 
 		#if DISCORD_ALLOWED
+		DiscordClient.resetClientID();
 		DiscordClient.changePresence("In the Menus", "Online Menu");
 		#end
 
@@ -157,7 +158,7 @@ class OnlineState extends MusicBeatState {
 				text.y += prevText.height * i;
 			}
             text.ID = i;
-			text.setFormat("VCR OSD Mono", 36, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+			text.setFormat("VCR OSD Mono", 40, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 			text.alpha = inputWait ? 0.5 : 0.8;
 			if (text.ID == curSelected) {
 				text.text = "> " + text.text + " <";
@@ -254,6 +255,28 @@ class OnlineState extends MusicBeatState {
 		credit.y = FlxG.height - credit.height - 5;
 		add(credit);
 
+		// networkBg = new FlxSprite(20, 20);
+		// networkBg.makeGraphic(1, 1, FlxColor.BLACK);
+		// networkBg.alpha = 0.6;
+		// add(networkBg);
+
+		if (!FunkinNetwork.loggedIn) {
+			presenceInfo = new FlxText(0, 30);
+			presenceInfo.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+			presenceInfo.alpha = 0.1;
+			presenceInfo.text = "未登录!\n\n在联机设置中登录!";
+			presenceInfo.x = FlxG.width - presenceInfo.width - 30;
+			add(presenceInfo);
+			FlxTween.tween(presenceInfo, {alpha: 0.7}, 1, {ease: FlxEase.quadInOut, type: PINGPONG});
+		}
+
+		// networkBg.scale.set(networkPlayer.width + 20, networkPlayer.height + 20);
+		// networkBg.updateHitbox();
+
+		// // slide to the right
+		// networkBg.x = FlxG.width - networkBg.width - 20;
+		// networkPlayer.x = networkBg.x + 10;
+
 		var frontMessage = new FlxText(0, 0, 500);
 		frontMessage.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		frontMessage.alpha = 0.5;
@@ -278,7 +301,7 @@ class OnlineState extends MusicBeatState {
 			Waiter.put(() -> {
 				if (data == null) {
 					playersOnline.text = "服务器离线";
-					// networkPlayer.visible = false;
+                    presenceInfo.visible = false;
 					// networkBg.visible = false;
 				}
 				else {

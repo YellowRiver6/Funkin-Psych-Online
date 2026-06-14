@@ -309,6 +309,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 		#end
 
 		#if DISCORD_ALLOWED
+		DiscordClient.resetClientID();
 		DiscordClient.changePresence("In the Lobby", null, null, false);
 		#end
 
@@ -501,7 +502,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 		itemTipBg.updateHitbox();
 		groupHUD.add(itemTipBg);
 
-		itemTip = new FlxText(0, 0, 0, "占位文本");
+		itemTip = new FlxText(0, 0, 0, "占位文本(见到这个请你大退重新进)");
 		itemTip.setFormat("VCR OSD Mono", 18, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		groupHUD.add(itemTip);
 
