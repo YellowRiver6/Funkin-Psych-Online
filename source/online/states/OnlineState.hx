@@ -158,7 +158,7 @@ class OnlineState extends MusicBeatState {
 				text.y += prevText.height * i;
 			}
             text.ID = i;
-			text.setFormat("VCR OSD Mono", 40, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+			text.setFormat("vcr.ttf", 30, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 			text.alpha = inputWait ? 0.5 : 0.8;
 			if (text.ID == curSelected) {
 				text.text = "> " + text.text + " <";
@@ -344,7 +344,7 @@ class OnlineState extends MusicBeatState {
 			item.screenCenter(X);
 		}
 
-		var mouseInItems = FlxG.mouse.y > items.y && FlxG.mouse.y < items.y + items.members.length * 40;
+		var mouseInItems = FlxG.mouse.y > items.y && FlxG.mouse.y < items.y + items.members.length * 35;
 
 		if (FlxG.mouse.justPressed && inputWait) {
 			if (!FlxG.mouse.overlaps(items.members[curSelected])) {
@@ -360,7 +360,7 @@ class OnlineState extends MusicBeatState {
 		}
 
 		if (FlxG.mouse.justMoved && !inputWait && mouseInItems) {
-			curSelected = Std.int((FlxG.mouse.y - (items.y)) / 40);
+			curSelected = Std.int((FlxG.mouse.y - (items.y)) / 30);
 			changeSelection(0);
 		}
 
@@ -519,8 +519,8 @@ class OnlineState extends MusicBeatState {
 		descBox.y = itemDesc.y + descBox.scale.y * 0.5 - itemDesc.size;
 		descBox.screenCenter(X);
 		
-		selectLine.y = (items.y + 20) + (curSelected) * 40;
-		selectLine.scale.set(FlxG.width, 40);
+		selectLine.y = (items.y + 20) + (curSelected) * 32;
+		selectLine.scale.set(FlxG.width, 35);
 		selectLine.screenCenter(X);
 
 		for (item in items) {
