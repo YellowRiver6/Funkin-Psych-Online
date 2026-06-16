@@ -21,11 +21,15 @@ class ChatInputText extends FlxText {
         hasFocus = v;
 
         if (v) {
-            Application.current.window.textInputEnabled = true;
+            @:privateAccess {
+            Application.current.window.set_textInputEnabled(true);
             updateTextInputRect();
+            }
         }
         else {
-            Application.current.window.textInputEnabled = false;
+            @:privateAccess {
+            Application.current.window.set_textInputEnabled(false);
+            }
         }
 
         caretVisible = v;
@@ -63,7 +67,7 @@ class ChatInputText extends FlxText {
 
         this.onEnter = onEnter;
 
-        setFormat("vcr.ttf", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+        setFormat("cn.ttf", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 
         caret = new FlxSprite();
         caret.makeGraphic(2, Std.int(size), FlxColor.WHITE);
