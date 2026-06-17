@@ -158,7 +158,7 @@ class ChatBox extends FlxTypedSpriteGroup<FlxSprite> {
 			if (FlxG.state is PlayState)
 				nextFocused = false;
 		});
-		typeText.setFormat("cn.ttf", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		typeText.setFormat("vcr.ttf", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 
 		typeTextHint.y = typeBg.y;
 		typeText.y = typeBg.y;

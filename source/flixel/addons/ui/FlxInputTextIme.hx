@@ -359,7 +359,7 @@ class FlxInputTextIme extends FlxText
 					}
 					if (TSFBridge.getTotalCandidates() > pageStart + candCount) ds += ">";
 					if (!_imeFontReady) {
-						try { _imeCandText.setFormat(Paths.font("cn.ttf"), 16, FlxColor.ORANGE); _imeFontReady = true; } catch (e) {}
+						try { _imeCandText.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.ORANGE); _imeFontReady = true; } catch (e) {}
 					}
 					_imeCandText.text = ds;
 					_imeCandText.x = x;
