@@ -5,7 +5,7 @@ import online.substates.RequestSubstate;
 import flixel.math.FlxRect;
 import openfl.events.KeyboardEvent;
 import lime.system.Clipboard;
-import online.objects.ChatInputText;
+import online.objects.InputTextIme;
 
 class ChatBox extends FlxTypedSpriteGroup<FlxSprite> {
 	public static var instance:ChatBox;
@@ -34,7 +34,7 @@ class ChatBox extends FlxTypedSpriteGroup<FlxSprite> {
 	var bg:FlxSprite;
 	var chatGroup:FlxTypedSpriteGroup<ChatMessage> = new FlxTypedSpriteGroup<ChatMessage>();
 	var typeBg:FlxSprite;
-    public var typeText:ChatInputText;
+    public var typeText:InputTextIme;
     var typeTextHint:FlxText; // i can call it a hint or tip whatever i want
 	var targetAlpha:Float;
 	var chatHeight:Float;
@@ -145,7 +145,7 @@ class ChatBox extends FlxTypedSpriteGroup<FlxSprite> {
 		}
 		add(chatGroup);
 
-		typeText = new ChatInputText(0, 0, typeBg.width, text -> {
+		typeText = new InputTextIme(0, 0, typeBg.width, text -> {
 			if (StringTools.startsWith(text, "/")) {
 				if (onCommand != null && parseCommand(text) == true)
 					return;
@@ -159,7 +159,7 @@ class ChatBox extends FlxTypedSpriteGroup<FlxSprite> {
 			if (FlxG.state is PlayState)
 				nextFocused = false;
 		});
-		typeText.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		typeText.setFormat("cn.ttf", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 
 		typeTextHint.y = typeBg.y;
 		typeText.y = typeBg.y;
