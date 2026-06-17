@@ -8,12 +8,12 @@ import lime.math.Rectangle as LimeRectangle;
 import lime.ui.Window;
 import openfl.Lib;
 import flixel.addons.ui.FlxUI.NamedString;
-import backend.Paths;
 
 import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
 
 import flixel.util.FlxDestroyUtil;
+import backend.Paths;
 
 #if (windows && cpp)
 import externs.TSFBridge;
@@ -31,7 +31,7 @@ import externs.TSFBridge;
  * Copyright (c) 2009 Martín Sebastián Wain
  * License: Creative Commons Attribution 3.0 United States
  * @link http://creativecommons.org/licenses/by/3.0/us/
- * 
+ *
  */
 class FlxInputTextIme extends FlxText
 {
@@ -187,6 +187,8 @@ class FlxInputTextIme extends FlxText
 	 * The left- and right- most fully visible character indeces
 	 */
 	private var _imeCandText:FlxText;
+	private var _imeCandBg:FlxSprite;
+	private var _imeFontReady:Bool = false;
 	private var _scrollBoundIndeces:{left:Int, right:Int} = {left: 0, right: 0};
 
 	// workaround to deal with non-availability of getCharIndexAtPoint or getCharBoundaries on cpp/neko targets
@@ -208,7 +210,7 @@ class FlxInputTextIme extends FlxText
 	 * @param	EmbeddedFont	Whether this text field uses embedded fonts or not
 	 */
 	public function new(X:Float = 0, Y:Float = 0, Width:Int = 150, ?Text:String, size:Int = 8, TextColor:Int = FlxColor.BLACK,
-			BackgroundColor:Int = FlxColor.WHITE, EmbeddedFont:Bool = true)
+	                    BackgroundColor:Int = FlxColor.WHITE, EmbeddedFont:Bool = true)
 	{
 		super(X, Y, Width, Text, size, EmbeddedFont);
 		backgroundColor = BackgroundColor;
@@ -226,10 +228,13 @@ class FlxInputTextIme extends FlxText
 		_caretTimer = new FlxTimer();
 
 		_imeCandText = new FlxText(0, 0, 0, "", 16);
-		_imeCandText.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE);
 		_imeCandText.borderStyle = OUTLINE;
 		_imeCandText.borderColor = FlxColor.BLACK;
 		_imeCandText.visible = false;
+		_imeCandBg = new FlxSprite(0, 0);
+		_imeCandBg.makeGraphic(1, 1, FlxColor.fromRGB(0, 0, 0, 180));
+		_imeCandBg.visible = false;
+		_imeFontReady = false;
 
 		caretIndex = 0;
 		hasFocus = false;
@@ -303,6 +308,15 @@ class FlxInputTextIme extends FlxText
 			_imeCandText.scrollFactor = scrollFactor;
 			_imeCandText.cameras = cameras;
 			_imeCandText.draw();
+
+			// Redraw bg behind text with fresh dimensions
+			_imeCandBg.makeGraphic(Std.int(_imeCandText.width + 4), Std.int(_imeCandText.height + 4), FlxColor.fromRGB(0, 0, 0, 180));
+			_imeCandBg.x = _imeCandText.x - 2;
+			_imeCandBg.y = _imeCandText.y - 2;
+			_imeCandBg.scrollFactor = scrollFactor;
+			_imeCandBg.cameras = cameras;
+			_imeCandBg.draw();
+			_imeCandText.draw();
 		}
 	}
 
@@ -344,6 +358,9 @@ class FlxInputTextIme extends FlxText
 						ds += " ";
 					}
 					if (TSFBridge.getTotalCandidates() > pageStart + candCount) ds += ">";
+					if (!_imeFontReady) {
+						try { _imeCandText.setFormat(Paths.font("cn.ttf"), 16, FlxColor.ORANGE); _imeFontReady = true; } catch (e) {}
+					}
 					_imeCandText.text = ds;
 					_imeCandText.x = x;
 					// Edge detection: show above if near bottom
@@ -356,13 +373,20 @@ class FlxInputTextIme extends FlxText
 					if (_imeCandText.x + _imeCandText.width > FlxG.width)
 						_imeCandText.x = FlxG.width - _imeCandText.width - 4;
 					if (_imeCandText.x < 4) _imeCandText.x = 4;
-					_imeCandText.fieldWidth = width;
+					_imeCandText.fieldWidth = 0; // auto width based on content
+					// Position background sprite behind text
+					_imeCandBg.x = _imeCandText.x - 2;
+					_imeCandBg.y = _imeCandText.y - 2;
+					_imeCandBg.makeGraphic(Std.int(_imeCandText.width + 4), Std.int(_imeCandText.height + 4), FlxColor.fromRGB(0, 0, 0, 180));
+					_imeCandBg.visible = true;
 					_imeCandText.visible = true;
 				} else {
 					_imeCandText.visible = false;
+					_imeCandBg.visible = false;
 				}
 			} else {
 				_imeCandText.visible = false;
+				_imeCandBg.visible = false;
 			}
 		}
 		#end
@@ -389,13 +413,13 @@ class FlxInputTextIme extends FlxText
 		}
 		#end
 	}
-	
+
 	function mouseOverlapping()
 	{
 		var mousePoint = FlxG.mouse.getScreenPosition(camera);
 		var objPoint = this.getScreenPosition(null, camera);
 		if(mousePoint.x >= objPoint.x && mousePoint.y >= objPoint.y &&
-			mousePoint.x < objPoint.x + this.width && mousePoint.y < objPoint.y + this.height)
+		mousePoint.x < objPoint.x + this.width && mousePoint.y < objPoint.y + this.height)
 		{
 			return true;
 		}
@@ -412,28 +436,28 @@ class FlxInputTextIme extends FlxText
 		if (hasFocus)
 		{
 
-			  //// Crtl/Cmd + C to copy text to the clipboard
-			  // This copies the entire input, because i'm too lazy to do caret selection, and if i did it i whoud probabbly make it a pr in flixel-ui.
+			//// Crtl/Cmd + C to copy text to the clipboard
+			// This copies the entire input, because i'm too lazy to do caret selection, and if i did it i whoud probabbly make it a pr in flixel-ui.
 
-			  #if (macos)
+			#if (macos)
 			  if (key == 67 && e.commandKey) {
 			  #else
-			  if (key == 67 && e.ctrlKey) {
-		 	  #end
+			if (key == 67 && e.ctrlKey) {
+				#end
 				Clipboard.text = text;
 
 				onChange(COPY_ACTION);
 
 				// Stops the function to go further, because it whoud type in a c to the input
 				return;
-			  }
+			}
 
-			  //// Crtl/Cmd + V to paste in the clipboard text to the input
-			  #if (macos)
+			//// Crtl/Cmd + V to paste in the clipboard text to the input
+			#if (macos)
 			  if (key == 86 && e.commandKey) {
 			  #else
-			  if (key == 86 && e.ctrlKey) {
-			  #end
+			if (key == 86 && e.ctrlKey) {
+				#end
 				var newText:String = filter(Clipboard.text);
 
 				if (newText.length > 0 && (maxLength == 0 || (text.length + newText.length) < maxLength)) {
@@ -453,7 +477,7 @@ class FlxInputTextIme extends FlxText
 			if (key == 88 && e.commandKey) {
 			#else
 			if (key == 88 && e.ctrlKey) {
-			#end
+				#end
 				Clipboard.text = text;
 				text = '';
 				caretIndex = 0;
@@ -470,7 +494,7 @@ class FlxInputTextIme extends FlxText
 			{
 				return;
 			}
-			// Left arrow
+				// Left arrow
 			else if (key == 37)
 			{
 				if (caretIndex > 0)
@@ -479,7 +503,7 @@ class FlxInputTextIme extends FlxText
 					text = text; // forces scroll update
 				}
 			}
-			// Right arrow
+				// Right arrow
 			else if (key == 39)
 			{
 				if (caretIndex < text.length)
@@ -488,19 +512,19 @@ class FlxInputTextIme extends FlxText
 					text = text; // forces scroll update
 				}
 			}
-			// End key
+				// End key
 			else if (key == 35)
 			{
 				caretIndex = text.length;
 				text = text; // forces scroll update
 			}
-			// Home key
+				// Home key
 			else if (key == 36)
 			{
 				caretIndex = 0;
 				text = text;
 			}
-			// Backspace
+				// Backspace
 			else if (key == 8)
 			{
 				if (caretIndex > 0)
@@ -510,7 +534,7 @@ class FlxInputTextIme extends FlxText
 					onChange(BACKSPACE_ACTION);
 				}
 			}
-			// Delete
+				// Delete
 			else if (key == 46)
 			{
 				if (text.length > 0 && caretIndex < text.length)
@@ -519,12 +543,12 @@ class FlxInputTextIme extends FlxText
 					onChange(DELETE_ACTION);
 				}
 			}
-			// Enter
+				// Enter
 			else if (key == 13)
 			{
 				onChange(ENTER_ACTION);
 			}
-			// Character input handled by onTextInputIME
+				// Character input handled by onTextInputIME
 			else
 			{
 				return;
@@ -737,10 +761,10 @@ class FlxInputTextIme extends FlxText
 				{
 					case RIGHT:
 						X = X - textField.width + textField.textWidth
-							;
+						;
 					case CENTER:
 						X = X - textField.width / 2 + textField.textWidth / 2
-							;
+						;
 					default:
 				}
 			}
@@ -1104,7 +1128,7 @@ class FlxInputTextIme extends FlxText
 					caret.y = boundaries.top + y;
 				}
 			}
-			// Caret is to the right of text
+				// Caret is to the right of text
 			else
 			{
 				boundaries = getCharBoundaries(caretIndex - 1);
@@ -1113,7 +1137,7 @@ class FlxInputTextIme extends FlxText
 					caret.x = offx + boundaries.right + x;
 					caret.y = boundaries.top + y;
 				}
-				// Text box is empty
+					// Text box is empty
 				else if (text.length == 0)
 				{
 					// 2 px gutters
