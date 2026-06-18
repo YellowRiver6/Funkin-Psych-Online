@@ -38,6 +38,7 @@ class Waiter extends FlxBasic {
 
 	public static var waiterReports:String = '';
 	function _tryQueueCall() {
+		if (_queueRAW == null) return;
 		_queueCall = cast _queueRAW[0];
 		_queueCallPos = cast _queueRAW[1];
 
