@@ -5,6 +5,7 @@ import online.substates.RequestSubstate;
 import flixel.math.FlxRect;
 import openfl.events.KeyboardEvent;
 import lime.system.Clipboard;
+import online.objects.InputTextIme;
 
 class ChatBox extends FlxTypedSpriteGroup<FlxSprite> {
 	public static var instance:ChatBox;

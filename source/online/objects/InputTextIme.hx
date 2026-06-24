@@ -7,13 +7,13 @@ class InputTextIme extends FlxInputTextIme {
     public function new(x:Float, y:Float, width:Float, onEnter:(text:String)->Void) {
         super(x, y, Std.int(width));
 
-		backgroundColor = FlxColor.TRANSPARENT;
-		fieldBorderColor = FlxColor.TRANSPARENT;
-		caretColor = FlxColor.WHITE;
+        backgroundColor = FlxColor.TRANSPARENT;
+        fieldBorderColor = FlxColor.TRANSPARENT;
+        caretColor = FlxColor.WHITE;
 
         var prevText:String = '';
-		callback = (text, action) -> {
-			if (SideUI.instance != null && SideUI.instance.active) {
+        callback = (text, action) -> {
+            if (SideUI.instance != null && SideUI.instance.active) {
                 this.text = prevText;
                 return;
             }
@@ -21,8 +21,8 @@ class InputTextIme extends FlxInputTextIme {
             prevText = text;
 
             if (action == FlxInputTextIme.ENTER_ACTION) {
-				hasFocus = false; //allow event to overwrite it
-				onEnter(text);
+                hasFocus = false; //allow event to overwrite it
+                onEnter(text);
             }
         };
     }
@@ -30,7 +30,7 @@ class InputTextIme extends FlxInputTextIme {
     override function update(elapsed) {
         super.update(elapsed);
 
-		if (hasFocus && (FlxG.keys.justPressed.ESCAPE || (FlxG.mouse.justPressed && !FlxG.mouse.overlaps(this)))) {
+        if (hasFocus && (FlxG.keys.justPressed.ESCAPE || (FlxG.mouse.justPressed && !FlxG.mouse.overlaps(this)))) {
             hasFocus = false;
         }
     }

@@ -226,6 +226,7 @@ class FreeplayState extends MusicBeatState
 				continue;
 
 			var leWeek:WeekData = WeekData.weeksLoaded.get(WeekData.weeksList[i]);
+				if (leWeek == null) continue;
 			var leSongs:Array<String> = [];
 			var leChars:Array<String> = [];
 
