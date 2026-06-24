@@ -35,7 +35,7 @@ class ChatBox extends FlxTypedSpriteGroup<FlxSprite> {
 	var bg:FlxSprite;
 	var chatGroup:FlxTypedSpriteGroup<ChatMessage> = new FlxTypedSpriteGroup<ChatMessage>();
 	var typeBg:FlxSprite;
-    public var typeText:InputText;
+    public var typeText:InputTextIme;
     var typeTextHint:FlxText;
 	var targetAlpha:Float;
 	var chatHeight:Float;
@@ -146,7 +146,7 @@ class ChatBox extends FlxTypedSpriteGroup<FlxSprite> {
 		}
 		add(chatGroup);
 
-		typeText = new InputText(0, 0, typeBg.width, text -> {
+		typeText = new InputTextIme(0, 0, typeBg.width, text -> {
 			if (StringTools.startsWith(text, "/")) {
 				if (onCommand != null && parseCommand(text) == true)
 					return;
