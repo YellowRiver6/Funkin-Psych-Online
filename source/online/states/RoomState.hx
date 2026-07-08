@@ -1232,7 +1232,7 @@ class LobbyCharacter extends FlxTypedGroup<FlxSprite> {
 				FlxStringUtil.formatMoney(player.points, false) + 'FP (' + ShitUtil.toOrdinalNumber(profileBox.profileData.rank) + ")\n"
 			 : "") +
 			"延迟: <p>" + player.ping + "毫秒<p>\n\n" +
-			player.status + "\n" +
+			this.mapStateChinese(player.status) + "\n" +
 			(!player.isReady ? "未准备":"已准备")+
 			(noSkin ? "\n(皮肤未加载)" : "")
 		, [pingMarker]);
@@ -1328,6 +1328,25 @@ class LobbyCharacter extends FlxTypedGroup<FlxSprite> {
 		// profileBox.y = profileBoxYOffset + character.ox * yBoxStepOffset;
 		// profileBox.x = character.x + character.width / 2 - profileBox.width / 2;
 		profileBox.y = 100;
+	}
+
+	function mapStateChinese(s: String): String {
+		switch s {
+			case "In the Lobby": return "在大厅中";
+			case "Selecting their skin": return "正在选择皮肤";
+			case "Browsing mods": return "在模组下载器中浏览";
+			case "Typing...": return "正在打字...";
+			case "In the Room Settings": return "修改房间设置中";
+			case "Choosing a Song": return "选歌中";
+			case "In the Game Changers Menu": return "修改对局设置中";
+			case "In the Game Options": return "修改游戏设置中";
+			case "Viewing results": return "正在查看对局结果";
+			case "In-Game": return "正在对局中";
+		}
+		if (s.indexOf("Downloading") != -1) {
+			return "下载中" + s.substr(12);
+		}
+		return s;
 	}
 }
 
