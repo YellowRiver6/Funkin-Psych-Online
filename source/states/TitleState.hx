@@ -746,6 +746,7 @@ class TitleState extends MusicBeatState
 			WeekData.reloadWeekFiles(false);
 			for (i in 0...WeekData.weeksList.length) {
 				var leWeek:WeekData = WeekData.weeksLoaded.get(WeekData.weeksList[i]);
+				if (leWeek == null || leWeek.songs == null) continue;
 				WeekData.setDirectoryFromWeek(leWeek);
 	
 				for (song in leWeek.songs) {

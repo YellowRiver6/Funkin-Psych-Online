@@ -123,6 +123,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 	}
 
 	function registerMessages() {
+		if (GameClient.callbacks == null) return;
 		if (GameClient.getPlayerSelf() == null) {
 			GameClient.leaveRoom('Self not in the room (registerMessages).');
 			return;
@@ -141,12 +142,14 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 		});
 
 		GameClient.room.onMessage("checkChart", function(message) {
+				if (GameClient.room == null) return;
 			Waiter.putPersist(() -> {
 				verifyDownloadMod(false, true);
 			});
 		});
 
 		GameClient.room.onMessage("checkStage", function(message) {
+				if (GameClient.room == null) return;
 			Waiter.put(() -> {
 				checkStage();
 			});
@@ -315,7 +318,9 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 
 		WeekData.reloadWeekFiles(false);
 		for (i in 0...WeekData.weeksList.length) {
-			WeekData.setDirectoryFromWeek(WeekData.weeksLoaded.get(WeekData.weeksList[i]));
+			var wd:WeekData = WeekData.weeksLoaded.get(WeekData.weeksList[i]);
+				if (wd == null) continue;
+				WeekData.setDirectoryFromWeek(wd);
 		}
 		Mods.loadTopMod();
 		WeekData.setDirectoryFromWeek();
@@ -528,7 +533,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 
 	var hasStage:Bool = false;
 	function checkStage() {
-		if (!GameClient.isConnected()) {
+		if (!GameClient.isConnected() || GameClient.room == null) {
 			return;
 		}
 

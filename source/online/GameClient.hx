@@ -363,6 +363,7 @@ class GameClient {
 
 		GameClient.room.onMessage("gameStarted", function(message) {
 			Waiter.putPersist(() -> {
+				if (GameClient.room == null) return;
 				FlxG.mouse.visible = false;
 
 				Mods.currentModDirectory = GameClient.room.state.modDir;
@@ -413,6 +414,7 @@ class GameClient {
 
 		GameClient.room.onMessage("checkChart", function(message) {
 			Waiter.putPersist(() -> {
+				if (GameClient.room == null) return;
 				try {
 					var hash = Md5.encode(Song.loadRawSong(GameClient.room.state.song, GameClient.room.state.folder));
 					trace("verifying song: " + GameClient.room.state.song + " | " + GameClient.room.state.folder + " : " + hash);

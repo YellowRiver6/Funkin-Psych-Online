@@ -158,7 +158,7 @@ class OnlineState extends MusicBeatState {
 				text.y += prevText.height * i;
 			}
             text.ID = i;
-			text.setFormat("VCR OSD Mono", 40, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+			text.setFormat("vcr.ttf", 40, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 			text.alpha = inputWait ? 0.5 : 0.8;
 			if (text.ID == curSelected) {
 				text.text = "> " + text.text + " <";
