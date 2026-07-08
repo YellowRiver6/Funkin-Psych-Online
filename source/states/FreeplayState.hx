@@ -815,6 +815,9 @@ class FreeplayState extends MusicBeatState
 	}
 
 	function setDiffVisibility(value:Bool) {
+		if (value)
+			updateDiff();
+		return;
 		searchInput.visible = value;
 		scoreBG.scale.y = 1;
 		scoreBG.y = 0;
@@ -918,7 +921,7 @@ class FreeplayState extends MusicBeatState
 			return;
 		}
 
-		if (!searchInputWait && FlxG.keys.justPressed.F) {
+		if (!selected && !searchInputWait && FlxG.keys.justPressed.F) {
 			searchInputWait = true;
 			searchString = searchString;
 		}
@@ -1124,8 +1127,8 @@ class FreeplayState extends MusicBeatState
 				}
 
 				curPage = 0;
-				listenToSong();
 				selected = true;
+				listenToSong();
 				setDiffVisibility(false);
 				updateSelectSelection();
 
@@ -1394,6 +1397,18 @@ class FreeplayState extends MusicBeatState
 			leaderboardTimer += elapsed;
 	}
 
+	public function updateDiff() {
+		if (!selected) {
+			searchString = searchString;
+			return;
+		}
+
+		searchInput.text = '???';
+		var diff = online.ChartAnalyzer.calc(PlayState.SONG, !ClientPrefs.getGameplaySetting('opponentplay'));
+		if (diff != null)
+			searchInput.text = 'NPS: ${FlxMath.roundDecimal(diff.nps, 2)} · Strain: ${FlxMath.roundDecimal(diff.strain, 2)}';
+	}
+
 	var itemsCameraZoom:Float = 1;
 	var itemsCameraScrollX:Float = 0;
 
@@ -1454,6 +1469,7 @@ class FreeplayState extends MusicBeatState
 		_ledSong = formatSong;
 
 		updateManiaKeys();
+		updateDiff();
 	}
 
 	function updateManiaKeys() {
@@ -1557,6 +1573,7 @@ class FreeplayState extends MusicBeatState
 
 		scoreText.visible = true;
 		scoreBG.visible = true;
+		searchInput.visible = true;
 
 		itemsCamera.targetOffset.set(0, 0);
 
@@ -1650,6 +1667,7 @@ class FreeplayState extends MusicBeatState
 
 				scoreText.visible = false;
 				scoreBG.visible = false;
+				searchInput.visible = false;
 		}
 
 		if (selected)
@@ -1680,6 +1698,8 @@ class FreeplayState extends MusicBeatState
 				PlayState.loadSong(poop, getSongName().toLowerCase());
 				Conductor.bpm = PlayState.SONG.bpm;
 				Conductor.mapBPMChanges(PlayState.SONG);
+
+				updateDiff();
 
 				vocals = new FlxSound();
 				opponentVocals = new FlxSound();
@@ -1732,7 +1752,13 @@ class FreeplayState extends MusicBeatState
 				playFreakyMusic();
 
 				updateTexts(FlxG.elapsed);
+
+				if (selected)
+					searchInput.text = '???';
 			}
+		}
+		else {
+			updateDiff();
 		}
 	}
 
@@ -1802,8 +1828,14 @@ class FreeplayState extends MusicBeatState
 		missingText.visible = false;
 		missingTextBG.visible = false;
 
-		if (selected)
-			listenToSong();
+		if (selected) {
+			try {
+				loadSong();
+				listenToSong();
+			} catch (exc) {
+				searchInput.text = '???';
+			}
+		}
 	}
 
 	function swapItems(arr:Array<Dynamic>, indexA:Int, indexB:Int) {
