@@ -633,7 +633,7 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 
 		updateTimer -= elapsed;
 		if (updateTimer <= 0) {
-			updateTimer = 5.0;
+			updateTimer = 0.1;
 
 			var sumReceivedBytes = 0.0;
 			var sumContentLength = 0.0;
