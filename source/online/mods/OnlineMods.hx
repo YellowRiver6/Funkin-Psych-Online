@@ -207,7 +207,7 @@ class OnlineMods {
 
 				iterFunc(entry.fileName);
 			}
-			if (Math.min(fileSize, dataSize) < 0 || Math.max(fileSize, dataSize) >= 3000000000) {
+			if (Math.min(fileSize, dataSize) < 0 || Math.max(fileSize, dataSize) >= 10000000000) {
 				Waiter.putPersist(() -> {
 					Alert.alert("Downloading Cancelled",
 						'Mod\'s archive file is WAY too big!\n${FlxMath.roundDecimal(Math.max(fileSize, dataSize) / 1000000000, 4)}GB');
