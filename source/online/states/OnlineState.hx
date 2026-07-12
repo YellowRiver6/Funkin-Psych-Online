@@ -20,13 +20,13 @@ class OnlineState extends MusicBeatState {
 	var items:FlxTypedSpriteGroup<FlxText>;
 
 	var itms:Array<String> = [
-        "加入房间",
-        "创建房间",
-        "查找房间",
-		"联机设置",
-		"在线排行",
-		"模组下载"
-    ];
+		"加入房间",
+		"创建房间",
+		"查找房间",
+		"在线设置",
+		"排行榜",
+		"模组下载器"
+	];
 
 	var presenceInfo:FlxText;
 	// var networkBg:FlxSprite;
@@ -158,7 +158,7 @@ class OnlineState extends MusicBeatState {
 				text.y += prevText.height * i;
 			}
             text.ID = i;
-			text.setFormat("vcr.ttf", 30, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+			text.setFormat("vcr.ttf", 36, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 			text.alpha = inputWait ? 0.5 : 0.8;
 			if (text.ID == curSelected) {
 				text.text = "> " + text.text + " <";
@@ -247,7 +247,7 @@ class OnlineState extends MusicBeatState {
 		availableRooms.screenCenter(X);
 		add(availableRooms);
 
-		var credit = new FlxText(0, 0, 0, 'Psych Online 汉化 by 千野年糕ovo');
+		var credit = new FlxText(0, 0, 0, '您游玩的是由千野年糕ovo汉化的版本');
 		credit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		credit.alpha = 0.3;
 		credit.screenCenter(X);
@@ -264,7 +264,7 @@ class OnlineState extends MusicBeatState {
 			presenceInfo = new FlxText(0, 30);
 			presenceInfo.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 			presenceInfo.alpha = 0.1;
-			presenceInfo.text = "未登录!\n\n在联机设置中登录!";
+			presenceInfo.text = "未登录!\n\n请进入 联机设置 注册账号!";
 			presenceInfo.x = FlxG.width - presenceInfo.width - 30;
 			add(presenceInfo);
 			FlxTween.tween(presenceInfo, {alpha: 0.7}, 1, {ease: FlxEase.quadInOut, type: PINGPONG});
@@ -305,8 +305,8 @@ class OnlineState extends MusicBeatState {
 					return;
 
 				if (data == null) {
-					playersOnline.text = "服务器离线";
-                    presenceInfo.visible = false;
+					playersOnline.text = "网络离线";
+					presenceInfo.visible = false;
 					// networkBg.visible = false;
 				}
 				else {
@@ -349,7 +349,7 @@ class OnlineState extends MusicBeatState {
 			item.screenCenter(X);
 		}
 
-		var mouseInItems = FlxG.mouse.y > items.y && FlxG.mouse.y < items.y + items.members.length * 35;
+		var mouseInItems = FlxG.mouse.y > items.y && FlxG.mouse.y < items.y + items.members.length * 40;
 
 		if (FlxG.mouse.justPressed && inputWait) {
 			if (!FlxG.mouse.overlaps(items.members[curSelected])) {
@@ -365,7 +365,7 @@ class OnlineState extends MusicBeatState {
 		}
 
 		if (FlxG.mouse.justMoved && !inputWait && mouseInItems) {
-			curSelected = Std.int((FlxG.mouse.y - (items.y)) / 30);
+			curSelected = Std.int((FlxG.mouse.y - (items.y)) / 40);
 			changeSelection(0);
 		}
 
@@ -386,12 +386,12 @@ class OnlineState extends MusicBeatState {
 					case "创建房间":
 						disableInput = true;
 						GameClient.createRoom(GameClient.serverAddress, onRoomJoin);
-					case "联机设置":
+					case "在线设置":
 						disableInput = true;
 						FlxG.switchState(() -> new OnlineOptionsState());
-					case "在线排行":
+					case "排行榜":
 						openSubState(new TopPlayerSubstate());
-					case "模组下载":
+					case "模组下载器":
 						disableInput = true;
 						FlxG.switchState(() -> new DownloaderState());
 				}
@@ -418,11 +418,11 @@ class OnlineState extends MusicBeatState {
 					discord.animation.play("active");
 					discord.offset.set(2, 2);
 
-					itemDesc.text = "加入官方交流群";
+					itemDesc.text = "加入QQ交流群";
 					itemDesc.screenCenter(X);
 
 					if (FlxG.mouse.justPressed) {
-						RequestSubstate.requestURL("https://discord.gg/juHypjWuNc", true);
+						RequestSubstate.requestURL("https://qm.qq.com/q/d56LqrZKNy", true);
 					}
 				}
 				else {
@@ -524,8 +524,8 @@ class OnlineState extends MusicBeatState {
 		descBox.y = itemDesc.y + descBox.scale.y * 0.5 - itemDesc.size;
 		descBox.screenCenter(X);
 		
-		selectLine.y = (items.y + 20) + (curSelected) * 32;
-		selectLine.scale.set(FlxG.width, 35);
+		selectLine.y = (items.y + 20) + (curSelected) * 40;
+		selectLine.scale.set(FlxG.width, 40);
 		selectLine.screenCenter(X);
 
 		for (item in items) {
