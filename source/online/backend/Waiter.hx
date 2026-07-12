@@ -78,7 +78,7 @@ class Waiter extends FlxBasic {
 		}
 		catch (exc) {
 			waiterReports += 'Called for ${_queueCallPos.className}.${_queueCallPos.methodName} (${_queueCallPos.fileName} line ${_queueCallPos.lineNumber})\n';
-			trace(exc);
+			throw exc;
 		}
 	}
 
